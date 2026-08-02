@@ -199,6 +199,8 @@ export type Database = {
       }
       jobs: {
         Row: {
+          benefits: string | null
+          board: string | null
           created_at: string
           description: string | null
           employment_type: string
@@ -207,6 +209,7 @@ export type Database = {
           location: string | null
           min_experience_years: number
           openings: number
+          required_skills: string[]
           salary_max: number | null
           salary_min: number | null
           salary_range: string | null
@@ -217,6 +220,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          benefits?: string | null
+          board?: string | null
           created_at?: string
           description?: string | null
           employment_type?: string
@@ -225,6 +230,7 @@ export type Database = {
           location?: string | null
           min_experience_years?: number
           openings?: number
+          required_skills?: string[]
           salary_max?: number | null
           salary_min?: number | null
           salary_range?: string | null
@@ -235,6 +241,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          benefits?: string | null
+          board?: string | null
           created_at?: string
           description?: string | null
           employment_type?: string
@@ -243,6 +251,7 @@ export type Database = {
           location?: string | null
           min_experience_years?: number
           openings?: number
+          required_skills?: string[]
           salary_max?: number | null
           salary_min?: number | null
           salary_range?: string | null
