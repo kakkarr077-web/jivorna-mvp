@@ -93,7 +93,7 @@ function Field({
   );
 }
 
-export function JobPreview({ values, schoolName }: { values: JobFormValues; schoolName?: string | null }) {
+export function JobPreview({ values, schoolName }: { values: JobFormValues; schoolName?: string | null | undefined }) {
   return (
     <article className="rounded-2xl border border-border bg-background p-6 shadow-soft">
       <div className="flex flex-wrap items-start justify-between gap-3">
