@@ -394,6 +394,54 @@ export type Database = {
           },
         ]
       }
+      notification_preferences: {
+        Row: {
+          created_at: string
+          email_application: boolean
+          email_interview: boolean
+          email_job_match: boolean
+          email_offer: boolean
+          email_profile: boolean
+          inapp_application: boolean
+          inapp_interview: boolean
+          inapp_job_match: boolean
+          inapp_offer: boolean
+          inapp_profile: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email_application?: boolean
+          email_interview?: boolean
+          email_job_match?: boolean
+          email_offer?: boolean
+          email_profile?: boolean
+          inapp_application?: boolean
+          inapp_interview?: boolean
+          inapp_job_match?: boolean
+          inapp_offer?: boolean
+          inapp_profile?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email_application?: boolean
+          email_interview?: boolean
+          email_job_match?: boolean
+          email_offer?: boolean
+          email_profile?: boolean
+          inapp_application?: boolean
+          inapp_interview?: boolean
+          inapp_job_match?: boolean
+          inapp_offer?: boolean
+          inapp_profile?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body: string | null
@@ -699,6 +747,16 @@ export type Database = {
       is_application_teacher: {
         Args: { _application_id: string; _user_id: string }
         Returns: boolean
+      }
+      notify_user: {
+        Args: {
+          _body: string
+          _link: string
+          _title: string
+          _type: string
+          _user_id: string
+        }
+        Returns: undefined
       }
       owns_application_school: {
         Args: { _application_id: string; _user_id: string }
