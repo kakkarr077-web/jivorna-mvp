@@ -77,7 +77,8 @@ export function DashboardLayout({
               <span className="font-serif text-lg">{portal}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Button asChild variant="ghost" size="sm">
+              <NotificationBell />
+              <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
                 <Link to="/">Public site</Link>
               </Button>
               <Button variant="outline" size="sm" className="lg:hidden" onClick={handleSignOut}>
