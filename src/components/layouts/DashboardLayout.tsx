@@ -4,6 +4,7 @@ import { Link, useRouter } from "@tanstack/react-router";
 import { LogOut, Menu, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
+import { NotificationBell } from "@/components/shared/NotificationBell";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
@@ -77,7 +78,8 @@ export function DashboardLayout({
               <span className="font-serif text-lg">{portal}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Button asChild variant="ghost" size="sm">
+              <NotificationBell />
+              <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
                 <Link to="/">Public site</Link>
               </Button>
               <Button variant="outline" size="sm" className="lg:hidden" onClick={handleSignOut}>
