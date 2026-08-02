@@ -94,7 +94,7 @@ function SchoolApplicants() {
                   <TableCell className="font-medium">{r.jobs?.title ?? "—"}</TableCell>
                   <TableCell>{new Date(r.created_at).toLocaleDateString()}</TableCell>
                   <TableCell className="text-right">
-                    <Select value={r.status} onValueChange={(v) => update.mutate({ id: r.id, status: v })}>
+                    <Select value={r.status} onValueChange={(v) => update.mutate({ id: r.id, status: v as (typeof statuses)[number] })}>
                       <SelectTrigger className="ml-auto w-40 capitalize">
                         <SelectValue />
                       </SelectTrigger>
