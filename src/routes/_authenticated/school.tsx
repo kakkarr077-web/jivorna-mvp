@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { Bell, Building2, LayoutDashboard, Briefcase, Search, Users } from "lucide-react";
+import { Bell, Building2, LayoutDashboard, Briefcase, Receipt, Search, Users } from "lucide-react";
 import { DashboardLayout, type NavItem } from "@/components/layouts/DashboardLayout";
 import { RoleGate } from "@/components/auth/RoleGate";
 
@@ -9,6 +9,7 @@ const nav: NavItem[] = [
   { to: "/school/applicants", label: "Applicants", icon: Users },
   { to: "/school/teachers", label: "Browse teachers", icon: Search },
   { to: "/school/profile", label: "School profile", icon: Building2 },
+  { to: "/school/invoices", label: "Billing", icon: Receipt },
   { to: "/notifications", label: "Notifications", icon: Bell },
 ];
 

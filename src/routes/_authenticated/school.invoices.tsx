@@ -22,7 +22,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
-import { InvoiceStatusBadge } from "./admin.invoices";
+import { InvoiceStatusBadge } from "@/components/shared/InvoiceStatusBadge";
 import {
   downloadInvoicePdf,
   effectiveStatus,

@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Download, IndianRupee, Plus, Receipt, Search, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader, EmptyState, StatCard } from "@/components/shared/Primitives";
-import { Badge } from "@/components/ui/badge";
+import { InvoiceStatusBadge } from "@/components/shared/InvoiceStatusBadge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -62,18 +62,6 @@ export const Route = createFileRoute("/_authenticated/admin/invoices")({
     ],
   }),
 });
-
-const statusTone: Record<string, string> = {
-  Paid: "bg-emerald-100 text-emerald-800",
-  Pending: "bg-amber-100 text-amber-900",
-  Overdue: "bg-red-100 text-red-800",
-  Void: "bg-muted text-muted-foreground",
-};
-
-export function InvoiceStatusBadge({ status }: { status: InvoiceStatus }) {
-  const label = statusLabel(status);
-  return <Badge className={`border-0 ${statusTone[label] ?? ""}`}>{label}</Badge>;
-}
 
 function AdminInvoices() {
   const qc = useQueryClient();
