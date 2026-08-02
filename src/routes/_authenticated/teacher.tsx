@@ -2,6 +2,7 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Bell, Briefcase, ClipboardList, LayoutDashboard, Send, UserRound } from "lucide-react";
 import { DashboardLayout, type NavItem } from "@/components/layouts/DashboardLayout";
 import { RoleGate } from "@/components/auth/RoleGate";
+import { useProfileIncompleteNotice } from "@/hooks/useProfileIncompleteNotice";
 
 const nav: NavItem[] = [
   { to: "/teacher", label: "Overview", icon: LayoutDashboard, exact: true },
