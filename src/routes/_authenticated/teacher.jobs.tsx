@@ -117,23 +117,36 @@ function TeacherJobs() {
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {list.map((job) => {
             const done = applied?.has(job.id);
+            const isSaved = savedIds?.has(job.id) ?? false;
             return (
               <JobCard
                 key={job.id}
                 job={job}
                 action={
-                  <Button
-                    size="sm"
-                    variant={done ? "secondary" : "default"}
-                    disabled={done || apply.isPending}
-                    onClick={() => apply.mutate(job.id)}
-                  >
-                    {done ? "Applied" : "Apply now"}
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      aria-label={isSaved ? "Remove from saved jobs" : "Save job"}
+                      disabled={toggleSave.isPending}
+                      onClick={() => toggleSave.mutate({ jobId: job.id, saved: isSaved })}
+                    >
+                      <Bookmark className={isSaved ? "h-4 w-4 fill-gold text-gold" : "h-4 w-4"} />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={done ? "secondary" : "default"}
+                      disabled={done || apply.isPending}
+                      onClick={() => apply.mutate(job.id)}
+                    >
+                      {done ? "Applied" : "Apply now"}
+                    </Button>
+                  </div>
                 }
               />
             );
           })}
+
         </div>
       )}
     </div>
