@@ -2,20 +2,17 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
+  ArrowUpRight,
   BadgeCheck,
-  Building2,
   CalendarCheck,
   ClipboardCheck,
   GraduationCap,
-  Quote,
   Search,
   ShieldCheck,
   Sparkles,
-  Star,
   Users,
 } from "lucide-react";
 import { PublicLayout } from "@/components/layouts/PublicLayout";
-import { SectionHeading } from "@/components/shared/Primitives";
 import { Reveal } from "@/components/shared/Reveal";
 import { JobCard, type JobCardData } from "@/components/shared/JobCard";
 import { Button } from "@/components/ui/button";
@@ -45,25 +42,22 @@ export const Route = createFileRoute("/")({
 });
 
 const stats = [
-  { icon: Users, value: "4,800+", label: "Verified teachers" },
-  { icon: Building2, value: "620", label: "Partner schools" },
-  { icon: CalendarCheck, value: "9 days", label: "Median time to hire" },
-  { icon: BadgeCheck, value: "94%", label: "Offer acceptance rate" },
+  { value: "4,800+", label: "Verified teachers" },
+  { value: "620", label: "Partner schools" },
+  { value: "9 days", label: "Median time to hire" },
+  { value: "94%", label: "Offer acceptance" },
 ];
 
 const steps = [
   {
-    icon: Users,
     title: "Build or post in minutes",
     body: "Teachers create a living profile. Schools publish a vacancy with clear salary bands and expectations.",
   },
   {
-    icon: ShieldCheck,
     title: "We verify every side",
-    body: "Documents, qualifications and school credentials are reviewed before anything goes live.",
+    body: "Documents, qualifications and school credentials are reviewed by our team before anything goes live.",
   },
   {
-    icon: ClipboardCheck,
     title: "Shortlist and hire",
     body: "Track applications through review, interview and offer inside one shared, transparent pipeline.",
   },
@@ -75,7 +69,7 @@ const values = [
   { icon: Search, title: "Signal over noise", body: "Structured profiles and roles make relevance obvious, so shortlists take hours, not weeks." },
   { icon: GraduationCap, title: "Education-only focus", body: "Built around boards, grades, subjects and academic calendars — not a generic job board." },
   { icon: CalendarCheck, title: "Interviews, organised", body: "Schedule, track and record interview outcomes without leaving the platform." },
-  { icon: Sparkles, title: "Premium, calm experience", body: "A quiet interface that respects the time of principals, HR leads and teachers alike." },
+  { icon: Sparkles, title: "A calm, premium experience", body: "A quiet interface that respects the time of principals, HR leads and teachers alike." },
 ];
 
 const schools = [
@@ -125,104 +119,106 @@ function Index() {
 
   return (
     <PublicLayout>
-      {/* Hero */}
-      <section className="relative overflow-hidden border-b border-border bg-background">
+      {/* Hero — full-bleed ink band */}
+      <section className="band-ink grid-field relative overflow-hidden">
         <div
           aria-hidden
-          className="pointer-events-none absolute -top-40 -right-32 h-[38rem] w-[38rem] rounded-full bg-gradient-navy opacity-[0.05] blur-3xl"
+          className="pointer-events-none absolute top-[-18rem] right-[-14rem] h-[46rem] w-[46rem] rounded-full bg-gradient-gold opacity-[0.13] blur-[140px]"
         />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -bottom-48 -left-40 h-[32rem] w-[32rem] rounded-full bg-gradient-gold opacity-[0.07] blur-3xl"
-        />
-        <div className="mx-auto grid max-w-6xl items-center gap-14 px-5 py-20 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-28">
+        <div className="mx-auto grid max-w-7xl items-center gap-16 px-5 pt-20 pb-24 lg:grid-cols-[1.1fr_0.9fr] lg:px-10 lg:pt-28 lg:pb-32">
           <Reveal>
-            <p className="eyebrow inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold-soft px-3 py-1.5 text-accent-foreground">
-              <Sparkles className="h-3.5 w-3.5" /> Teacher recruitment, refined
-            </p>
-            <h1 className="text-display mt-6 text-4xl sm:text-5xl lg:text-[3.6rem]">
-              Helping Schools Hire{" "}
-              <span className="text-gold">Exceptional Teachers</span> Faster.
+            <p className="eyebrow eyebrow-rule text-gold">Teacher recruitment, refined</p>
+            <h1 className="text-display mt-8 text-[2.75rem] leading-[1.02] sm:text-6xl lg:text-[4.4rem]">
+              Helping schools hire
+              <br />
+              <span className="italic text-gold">exceptional teachers</span>
+              <br />
+              faster.
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              Jivorna connects schools with verified, qualified educators through a streamlined
-              recruitment process.
+            <p className="mt-8 max-w-lg text-lg leading-relaxed text-ink-muted">
+              Jivorna connects schools with verified, qualified educators through one streamlined,
+              transparent recruitment process.
             </p>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <Button asChild size="lg" className="rounded-full shadow-soft">
+            <div className="mt-10 flex flex-wrap gap-3">
+              <Button asChild size="lg" variant="gold" className="rounded-none px-8">
                 <Link to="/for-schools">
-                  Hire Teachers <ArrowRight className="ml-1 h-4 w-4" />
+                  Hire teachers <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="rounded-full">
-                <Link to="/jobs">Find Teaching Jobs</Link>
+              <Button asChild size="lg" variant="onDark" className="rounded-none px-8">
+                <Link to="/jobs">Find teaching jobs</Link>
               </Button>
             </div>
-            <p className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
-              <span className="flex text-gold">
-                {[0, 1, 2, 3, 4].map((i) => (
-                  <Star key={i} className="h-4 w-4 fill-current" />
-                ))}
-              </span>
-              Trusted by 620+ schools across 14 states
-            </p>
+            <div className="mt-12 flex flex-wrap items-center gap-x-10 gap-y-4 border-t border-ink-border pt-6 text-sm text-ink-muted">
+              <span>620+ schools across 14 states</span>
+              <span className="hidden h-4 w-px bg-ink-border sm:block" />
+              <span>IB · CBSE · ICSE · Cambridge</span>
+            </div>
           </Reveal>
 
-          <Reveal delay={120} className="relative">
-            <div className="absolute -inset-4 -z-10 rounded-3xl bg-gradient-navy opacity-[0.06]" />
-            <img
-              src={heroImage}
-              alt="A teacher standing in a bright school library"
-              className="aspect-4/5 w-full rounded-3xl object-cover shadow-lift"
-              loading="eager"
-            />
-            <div className="card-premium absolute -bottom-6 -left-4 hidden w-56 p-4 sm:block">
+          <Reveal delay={140} className="relative">
+            <div className="relative">
+              <div aria-hidden className="absolute -top-4 -left-4 h-24 w-24 border-t border-l border-gold/50" />
+              <img
+                src={heroImage}
+                alt="A teacher standing in a bright school library"
+                className="aspect-4/5 w-full object-cover shadow-ink"
+                loading="eager"
+              />
+              <div aria-hidden className="absolute -right-4 -bottom-4 h-24 w-24 border-r border-b border-gold/50" />
+            </div>
+            <div className="card-ink absolute -bottom-8 -left-6 hidden w-60 p-5 sm:block">
               <p className="eyebrow text-gold">Now hiring</p>
-              <p className="mt-2 font-serif text-2xl text-primary">128 live roles</p>
-              <p className="mt-1 text-xs text-muted-foreground">Across IB, CBSE, ICSE & Cambridge</p>
+              <p className="mt-2 font-serif text-3xl">128 live roles</p>
+              <p className="mt-1 text-xs text-ink-muted">Across IB, CBSE, ICSE &amp; Cambridge</p>
             </div>
           </Reveal>
         </div>
       </section>
 
-      {/* Statistics */}
-      <section className="border-b border-border bg-surface py-16">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-5 px-5 lg:grid-cols-4 lg:px-8">
+      {/* Statistics — hairline-divided figures */}
+      <section className="border-b border-border bg-background">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 px-5 lg:grid-cols-4 lg:px-10">
           {stats.map((s, i) => (
-            <Reveal key={s.label} delay={i * 90}>
-              <div className="card-premium card-premium-hover h-full p-6">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-soft text-primary">
-                  <s.icon className="h-5 w-5" />
-                </span>
-                <p className="mt-5 font-serif text-3xl text-primary sm:text-4xl">{s.value}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{s.label}</p>
+            <Reveal key={s.label} delay={i * 80}>
+              <div className="border-b border-border/70 py-10 pr-6 lg:border-b-0 lg:border-r lg:last:border-r-0">
+                <p className="font-serif text-4xl text-primary lg:text-5xl">{s.value}</p>
+                <p className="mt-3 text-xs tracking-[0.14em] text-muted-foreground uppercase">
+                  {s.label}
+                </p>
               </div>
             </Reveal>
           ))}
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="py-20 lg:py-24">
-        <div className="mx-auto max-w-6xl px-5 lg:px-8">
+      {/* How it works — ink band, numbered editorial rows */}
+      <section className="band-ink py-24 lg:py-32">
+        <div className="mx-auto max-w-7xl px-5 lg:px-10">
           <Reveal>
-            <SectionHeading
-              eyebrow="How it works"
-              title="A hiring process that respects everyone's time"
-              description="Three roles, one platform. Each portal is purpose-built for the work that role actually does."
-              align="center"
-            />
+            <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+              <div>
+                <p className="eyebrow eyebrow-rule text-gold">How it works</p>
+                <h2 className="text-display mt-6 text-4xl sm:text-5xl">
+                  A hiring process that respects everyone's time
+                </h2>
+              </div>
+              <p className="text-base leading-relaxed text-ink-muted lg:pb-2">
+                Three roles, one platform. Each portal is purpose-built for the work that role
+                actually does — no generic dashboards, no wasted clicks.
+              </p>
+            </div>
           </Reveal>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
+
+          <div className="mt-16 border-t border-ink-border">
             {steps.map((s, i) => (
-              <Reveal key={s.title} delay={i * 110}>
-                <div className="card-premium card-premium-hover h-full p-7">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-navy text-primary-foreground shadow-soft">
-                    <s.icon className="h-5 w-5" />
-                  </span>
-                  <p className="eyebrow mt-6 text-muted-foreground">Step {i + 1}</p>
-                  <h3 className="mt-2 font-serif text-xl">{s.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
+              <Reveal key={s.title} delay={i * 90}>
+                <div className="group grid gap-6 border-b border-ink-border py-10 md:grid-cols-[6rem_1fr_1.1fr] md:items-baseline">
+                  <p className="font-serif text-3xl text-gold">
+                    {String(i + 1).padStart(2, "0")}
+                  </p>
+                  <h3 className="font-serif text-2xl">{s.title}</h3>
+                  <p className="text-sm leading-relaxed text-ink-muted">{s.body}</p>
                 </div>
               </Reveal>
             ))}
@@ -230,20 +226,21 @@ function Index() {
         </div>
       </section>
 
-      {/* Why Choose Jivorna */}
-      <section className="border-y border-border bg-surface py-20 lg:py-24">
-        <div className="mx-auto max-w-6xl px-5 lg:px-8">
+      {/* Why Jivorna */}
+      <section className="bg-background py-24 lg:py-32">
+        <div className="mx-auto max-w-7xl px-5 lg:px-10">
           <Reveal>
-            <SectionHeading eyebrow="Why Jivorna" title="Why schools and teachers choose us" align="center" />
+            <p className="eyebrow eyebrow-rule text-gold">Why Jivorna</p>
+            <h2 className="text-display mt-6 max-w-2xl text-4xl sm:text-5xl">
+              Why schools and teachers choose us
+            </h2>
           </Reveal>
-          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-16 grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
             {values.map((v, i) => (
-              <Reveal key={v.title} delay={(i % 3) * 100}>
-                <div className="card-premium card-premium-hover h-full p-7">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-soft text-gold">
-                    <v.icon className="h-5 w-5" />
-                  </span>
-                  <h3 className="mt-5 font-serif text-xl">{v.title}</h3>
+              <Reveal key={v.title} delay={(i % 3) * 90}>
+                <div className="h-full bg-card p-8 transition-colors hover:bg-surface lg:p-10">
+                  <v.icon className="h-5 w-5 text-gold" />
+                  <h3 className="mt-8 font-serif text-2xl">{v.title}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{v.body}</p>
                 </div>
               </Reveal>
@@ -252,34 +249,47 @@ function Index() {
         </div>
       </section>
 
-      {/* Featured Schools */}
-      <section className="py-20 lg:py-24">
-        <div className="mx-auto max-w-6xl px-5 lg:px-8">
+      {/* Featured schools */}
+      <section className="border-y border-border bg-surface py-24 lg:py-32">
+        <div className="mx-auto max-w-7xl px-5 lg:px-10">
           <Reveal>
-            <SectionHeading
-              eyebrow="Featured schools"
-              title="Institutions hiring on Jivorna"
-              description="From IB world schools to fast-growing CBSE campuses — all verified before they publish."
-            />
+            <div className="flex flex-wrap items-end justify-between gap-6">
+              <div>
+                <p className="eyebrow eyebrow-rule text-gold">Featured schools</p>
+                <h2 className="text-display mt-6 max-w-xl text-4xl sm:text-5xl">
+                  Institutions hiring on Jivorna
+                </h2>
+              </div>
+              <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
+                From IB world schools to fast-growing CBSE campuses — all verified before they
+                publish a single role.
+              </p>
+            </div>
           </Reveal>
-          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+
+          <div className="mt-14 border-t border-border">
             {schools.map((s, i) => (
-              <Reveal key={s.name} delay={(i % 3) * 100}>
-                <div className="card-premium card-premium-hover flex h-full items-center gap-4 p-6">
-                  <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-navy font-serif text-lg text-primary-foreground">
-                    {s.name
-                      .split(" ")
-                      .slice(0, 2)
-                      .map((w) => w[0])
-                      .join("")}
-                  </span>
-                  <div className="min-w-0">
-                    <h3 className="truncate font-serif text-lg">{s.name}</h3>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {s.board} · {s.location}
-                    </p>
-                    <p className="mt-2 text-xs font-medium text-gold">{s.roles} open roles</p>
+              <Reveal key={s.name} delay={(i % 3) * 70}>
+                <div className="group flex flex-wrap items-center justify-between gap-4 border-b border-border py-6 transition-colors hover:bg-background">
+                  <div className="flex min-w-0 items-center gap-5">
+                    <span className="flex h-12 w-12 shrink-0 items-center justify-center bg-gradient-navy font-serif text-base text-primary-foreground">
+                      {s.name
+                        .split(" ")
+                        .slice(0, 2)
+                        .map((w) => w[0])
+                        .join("")}
+                    </span>
+                    <div className="min-w-0">
+                      <h3 className="truncate font-serif text-xl">{s.name}</h3>
+                      <p className="mt-0.5 text-xs tracking-wide text-muted-foreground uppercase">
+                        {s.board} · {s.location}
+                      </p>
+                    </div>
                   </div>
+                  <p className="flex items-center gap-2 text-sm text-gold">
+                    {s.roles} open roles
+                    <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </p>
                 </div>
               </Reveal>
             ))}
@@ -287,23 +297,25 @@ function Index() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="border-y border-border bg-surface py-20 lg:py-24">
-        <div className="mx-auto max-w-6xl px-5 lg:px-8">
+      {/* Testimonials — ink band */}
+      <section className="band-ink grid-field py-24 lg:py-32">
+        <div className="mx-auto max-w-7xl px-5 lg:px-10">
           <Reveal>
-            <SectionHeading eyebrow="Testimonials" title="What principals and teachers say" align="center" />
+            <p className="eyebrow eyebrow-rule text-gold">Testimonials</p>
+            <h2 className="text-display mt-6 max-w-2xl text-4xl sm:text-5xl">
+              What principals and teachers say
+            </h2>
           </Reveal>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
+          <div className="mt-16 grid gap-10 md:grid-cols-3">
             {testimonials.map((t, i) => (
-              <Reveal key={t.name} delay={i * 110}>
-                <figure className="card-premium card-premium-hover flex h-full flex-col p-7">
-                  <Quote className="h-6 w-6 text-gold" />
-                  <blockquote className="mt-5 flex-1 font-serif text-lg leading-relaxed text-foreground">
+              <Reveal key={t.name} delay={i * 100}>
+                <figure className="flex h-full flex-col border-t border-ink-border pt-8">
+                  <blockquote className="flex-1 font-serif text-xl leading-relaxed text-ink-foreground">
                     “{t.quote}”
                   </blockquote>
-                  <figcaption className="mt-6 border-t border-border pt-5">
-                    <p className="text-sm font-medium">{t.name}</p>
-                    <p className="mt-0.5 text-xs text-muted-foreground">{t.role}</p>
+                  <figcaption className="mt-8">
+                    <p className="text-sm text-gold">{t.name}</p>
+                    <p className="mt-1 text-xs text-ink-muted">{t.role}</p>
                   </figcaption>
                 </figure>
               </Reveal>
@@ -312,13 +324,18 @@ function Index() {
         </div>
       </section>
 
-      {/* Latest Jobs */}
-      <section className="py-20 lg:py-24">
-        <div className="mx-auto max-w-6xl px-5 lg:px-8">
+      {/* Latest jobs */}
+      <section className="bg-background py-24 lg:py-32">
+        <div className="mx-auto max-w-7xl px-5 lg:px-10">
           <Reveal>
             <div className="flex flex-wrap items-end justify-between gap-6">
-              <SectionHeading eyebrow="Latest jobs" title="Recently published vacancies" />
-              <Button asChild variant="ghost">
+              <div>
+                <p className="eyebrow eyebrow-rule text-gold">Latest jobs</p>
+                <h2 className="text-display mt-6 text-4xl sm:text-5xl">
+                  Recently published vacancies
+                </h2>
+              </div>
+              <Button asChild variant="ghost" className="rounded-none">
                 <Link to="/jobs">
                   View all jobs <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
@@ -326,14 +343,14 @@ function Index() {
             </div>
           </Reveal>
 
-          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {(jobs ?? []).map((job, i) => (
-              <Reveal key={job.id} delay={(i % 3) * 100}>
+              <Reveal key={job.id} delay={(i % 3) * 90}>
                 <JobCard job={job} />
               </Reveal>
             ))}
             {jobs && jobs.length === 0 && (
-              <div className="rounded-2xl border border-dashed border-border p-8 text-sm text-muted-foreground md:col-span-2 lg:col-span-3">
+              <div className="border border-dashed border-border p-10 text-sm text-muted-foreground md:col-span-2 lg:col-span-3">
                 No roles are live right now. Schools can publish a vacancy from the school portal in
                 under five minutes.
               </div>
@@ -342,31 +359,29 @@ function Index() {
         </div>
       </section>
 
-      {/* Call To Action */}
-      <section className="pb-20 lg:pb-24">
-        <div className="mx-auto max-w-6xl px-5 lg:px-8">
+      {/* Closing CTA */}
+      <section className="band-ink relative overflow-hidden py-24 lg:py-32">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-40 left-1/2 h-[34rem] w-[34rem] -translate-x-1/2 rounded-full bg-gradient-gold opacity-[0.14] blur-[130px]"
+        />
+        <div className="mx-auto max-w-4xl px-5 text-center lg:px-10">
           <Reveal>
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-navy px-8 py-16 text-center shadow-lift sm:px-14">
-              <div
-                aria-hidden
-                className="pointer-events-none absolute -top-24 right-0 h-72 w-72 rounded-full bg-gradient-gold opacity-20 blur-3xl"
-              />
-              <h2 className="text-display mx-auto max-w-2xl text-3xl text-primary-foreground sm:text-4xl">
-                Ready to hire — or be hired — the considered way?
-              </h2>
-              <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-primary-foreground/75">
-                Create a free account as a teacher or a school. Your dashboard is ready in seconds.
-              </p>
-              <div className="mt-8 flex flex-wrap justify-center gap-3">
-                <Button asChild size="lg" variant="gold" className="rounded-full">
-                  <Link to="/auth" search={{ mode: "signup" }}>
-                    Get started free
-                  </Link>
-                </Button>
-                <Button asChild size="lg" variant="onDark" className="rounded-full">
-                  <Link to="/contact">Talk to us</Link>
-                </Button>
-              </div>
+            <h2 className="text-display text-4xl sm:text-5xl">
+              Ready to hire — or be hired — the considered way?
+            </h2>
+            <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-ink-muted">
+              Create a free account as a teacher or a school. Your dashboard is ready in seconds.
+            </p>
+            <div className="mt-10 flex flex-wrap justify-center gap-3">
+              <Button asChild size="lg" variant="gold" className="rounded-none px-8">
+                <Link to="/auth" search={{ mode: "signup" }}>
+                  Get started free
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="onDark" className="rounded-none px-8">
+                <Link to="/contact">Talk to us</Link>
+              </Button>
             </div>
           </Reveal>
         </div>
