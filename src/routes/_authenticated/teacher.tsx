@@ -12,12 +12,17 @@ const nav: NavItem[] = [
   { to: "/notifications", label: "Notifications", icon: Bell },
 ];
 
-export const Route = createFileRoute("/_authenticated/teacher")({
-  component: () => (
+function TeacherPortal() {
+  useProfileIncompleteNotice();
+  return (
     <RoleGate allow="teacher">
       <DashboardLayout portal="Teacher portal" nav={nav}>
         <Outlet />
       </DashboardLayout>
     </RoleGate>
-  ),
+  );
+}
+
+export const Route = createFileRoute("/_authenticated/teacher")({
+  component: TeacherPortal,
 });
