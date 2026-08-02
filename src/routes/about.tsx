@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PublicLayout } from "@/components/layouts/PublicLayout";
+import { PageHero } from "@/components/site/PageHero";
 import { SectionHeading } from "@/components/shared/Primitives";
 
 export const Route = createFileRoute("/about")({
@@ -30,28 +31,28 @@ const principles = [
 function About() {
   return (
     <PublicLayout>
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-6xl px-5 py-20 lg:px-8 lg:py-24">
-          <p className="eyebrow text-gold">About</p>
-          <h1 className="text-display mt-4 max-w-3xl text-4xl sm:text-5xl">
-            Education deserves better hiring infrastructure.
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            Schools lose weeks and budget to intermediaries. Teachers send CVs into silence. Jivorna
-            replaces that with one shared, trustworthy platform — a teacher portal, a school portal
-            and an administration layer that keeps standards high.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="About"
+        title={
+          <>
+            Education deserves better <span className="italic text-gold">hiring infrastructure.</span>
+          </>
+        }
+        description="Schools lose weeks and budget to intermediaries. Teachers send CVs into silence. Jivorna replaces that with one shared, trustworthy platform — a teacher portal, a school portal and an administration layer that keeps standards high."
+      />
 
-      <section className="bg-surface py-20 lg:py-24">
-        <div className="mx-auto max-w-6xl px-5 lg:px-8">
+      <section className="bg-background py-24 lg:py-32">
+        <div className="mx-auto max-w-7xl px-5 lg:px-10">
           <SectionHeading eyebrow="Principles" title="How we make decisions" />
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {principles.map((p) => (
-              <div key={p.title} className="rounded-xl border border-border bg-card p-7">
-                <h3 className="font-serif text-xl">{p.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
+          <div className="mt-14 border-t border-border">
+            {principles.map((p, i) => (
+              <div
+                key={p.title}
+                className="grid gap-4 border-b border-border py-10 md:grid-cols-[6rem_1fr_1.2fr] md:items-baseline"
+              >
+                <p className="font-serif text-3xl text-gold">{String(i + 1).padStart(2, "0")}</p>
+                <h3 className="font-serif text-2xl">{p.title}</h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">{p.body}</p>
               </div>
             ))}
           </div>
@@ -60,3 +61,4 @@ function About() {
     </PublicLayout>
   );
 }
+
