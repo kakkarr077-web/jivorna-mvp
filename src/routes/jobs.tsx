@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import { PublicLayout } from "@/components/layouts/PublicLayout";
+import { PageHero } from "@/components/site/PageHero";
 import { JobCard, type JobCardData } from "@/components/shared/JobCard";
 import { EmptyState } from "@/components/shared/Primitives";
 import { Button } from "@/components/ui/button";
