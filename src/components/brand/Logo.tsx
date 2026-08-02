@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
+import markAsset from "@/assets/jivorna-mark.png.asset.json";
 
 export function Logo({
   className,
@@ -16,17 +17,17 @@ export function Logo({
       className={cn("group inline-flex items-center gap-2.5", className)}
       aria-label="Jivorna home"
     >
+      <img
+        src={markAsset.url}
+        alt="Jivorna"
+        className={cn("h-9 w-auto", tone === "light" && "brightness-0 invert")}
+        loading="eager"
+        width={64}
+        height={64}
+      />
       <span
         className={cn(
-          "flex h-9 w-9 items-center justify-center rounded-md font-serif text-lg leading-none",
-          tone === "dark" ? "bg-gradient-navy text-primary-foreground" : "bg-gradient-gold text-gold-foreground",
-        )}
-      >
-        J
-      </span>
-      <span
-        className={cn(
-          "font-serif text-xl tracking-tight",
+          "font-serif text-xl tracking-[0.12em] uppercase",
           tone === "dark" ? "text-foreground" : "text-primary-foreground",
         )}
       >
