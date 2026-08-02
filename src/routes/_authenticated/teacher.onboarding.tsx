@@ -41,9 +41,9 @@ function Field({
   children,
 }: {
   label: string;
-  htmlFor?: string;
-  error?: string;
-  hint?: string;
+  htmlFor?: string | undefined;
+  error?: string | undefined;
+  hint?: string | undefined;
   children: React.ReactNode;
 }) {
   return (
