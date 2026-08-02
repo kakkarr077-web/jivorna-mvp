@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 type Mode = "signin" | "signup";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>): { mode?: Mode } => ({
+  validateSearch: (search: Record<string, unknown>): { mode?: Mode | undefined } => ({
     mode: search["mode"] === "signup" ? "signup" : undefined,
   }),
   head: () => ({
