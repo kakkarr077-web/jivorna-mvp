@@ -1,0 +1,2 @@
+REVOKE EXECUTE ON FUNCTION public.owns_application_school(uuid, uuid) FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.is_application_teacher(uuid, uuid) FROM PUBLIC, anon, authenticated;
