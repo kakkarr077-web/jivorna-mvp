@@ -17,7 +17,9 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ForSchoolsRouteImport } from './routes/for-schools'
 import { Route as ForTeachersRouteImport } from './routes/for-teachers'
 import { Route as JobsRouteImport } from './routes/jobs'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedSchoolRouteImport } from './routes/_authenticated/school'
 import { Route as AuthenticatedTeacherRouteImport } from './routes/_authenticated/teacher'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
@@ -71,9 +73,19 @@ const JobsRoute = JobsRouteImport.update({
   path: '/jobs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSchoolRoute = AuthenticatedSchoolRouteImport.update({
@@ -157,7 +169,9 @@ export interface FileRoutesByFullPath {
   '/for-schools': typeof ForSchoolsRoute
   '/for-teachers': typeof ForTeachersRoute
   '/jobs': typeof JobsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/school': typeof AuthenticatedSchoolRouteWithChildren
   '/teacher': typeof AuthenticatedTeacherRouteWithChildren
   '/admin/jobs': typeof AuthenticatedAdminJobsRoute
@@ -180,6 +194,8 @@ export interface FileRoutesByTo {
   '/for-schools': typeof ForSchoolsRoute
   '/for-teachers': typeof ForTeachersRoute
   '/jobs': typeof JobsRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/admin/jobs': typeof AuthenticatedAdminJobsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/school/applicants': typeof AuthenticatedSchoolApplicantsRoute
@@ -202,7 +218,9 @@ export interface FileRoutesById {
   '/for-schools': typeof ForSchoolsRoute
   '/for-teachers': typeof ForTeachersRoute
   '/jobs': typeof JobsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/school': typeof AuthenticatedSchoolRouteWithChildren
   '/_authenticated/teacher': typeof AuthenticatedTeacherRouteWithChildren
   '/_authenticated/admin/jobs': typeof AuthenticatedAdminJobsRoute
@@ -227,7 +245,9 @@ export interface FileRouteTypes {
     | '/for-schools'
     | '/for-teachers'
     | '/jobs'
+    | '/reset-password'
     | '/admin'
+    | '/dashboard'
     | '/school'
     | '/teacher'
     | '/admin/jobs'
@@ -250,6 +270,8 @@ export interface FileRouteTypes {
     | '/for-schools'
     | '/for-teachers'
     | '/jobs'
+    | '/reset-password'
+    | '/dashboard'
     | '/admin/jobs'
     | '/admin/users'
     | '/school/applicants'
@@ -271,7 +293,9 @@ export interface FileRouteTypes {
     | '/for-schools'
     | '/for-teachers'
     | '/jobs'
+    | '/reset-password'
     | '/_authenticated/admin'
+    | '/_authenticated/dashboard'
     | '/_authenticated/school'
     | '/_authenticated/teacher'
     | '/_authenticated/admin/jobs'
@@ -296,6 +320,7 @@ export interface RootRouteChildren {
   ForSchoolsRoute: typeof ForSchoolsRoute
   ForTeachersRoute: typeof ForTeachersRoute
   JobsRoute: typeof JobsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -356,11 +381,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JobsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/school': {
@@ -508,12 +547,14 @@ const AuthenticatedTeacherRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedSchoolRoute: typeof AuthenticatedSchoolRouteWithChildren
   AuthenticatedTeacherRoute: typeof AuthenticatedTeacherRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedSchoolRoute: AuthenticatedSchoolRouteWithChildren,
   AuthenticatedTeacherRoute: AuthenticatedTeacherRouteWithChildren,
 }
@@ -530,6 +571,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForSchoolsRoute: ForSchoolsRoute,
   ForTeachersRoute: ForTeachersRoute,
   JobsRoute: JobsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
