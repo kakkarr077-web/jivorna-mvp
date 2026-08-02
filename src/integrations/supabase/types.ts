@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_logs: {
+        Row: {
+          action: string
+          created_at: string
+          detail: string | null
+          device: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          detail?: string | null
+          device?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          detail?: string | null
+          device?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       application_attachments: {
         Row: {
           application_id: string
@@ -567,12 +597,14 @@ export type Database = {
       schools: {
         Row: {
           board: string | null
+          brand_color: string | null
           city: string | null
           contact_email: string | null
           created_at: string
           description: string | null
           hr_name: string | null
           id: string
+          logo_url: string | null
           name: string
           owner_id: string
           phone: string | null
@@ -580,17 +612,20 @@ export type Database = {
           school_type: string | null
           student_count: number | null
           subscription_status: Database["public"]["Enums"]["subscription_status"]
+          tagline: string | null
           updated_at: string
           website: string | null
         }
         Insert: {
           board?: string | null
+          brand_color?: string | null
           city?: string | null
           contact_email?: string | null
           created_at?: string
           description?: string | null
           hr_name?: string | null
           id?: string
+          logo_url?: string | null
           name: string
           owner_id: string
           phone?: string | null
@@ -598,17 +633,20 @@ export type Database = {
           school_type?: string | null
           student_count?: number | null
           subscription_status?: Database["public"]["Enums"]["subscription_status"]
+          tagline?: string | null
           updated_at?: string
           website?: string | null
         }
         Update: {
           board?: string | null
+          brand_color?: string | null
           city?: string | null
           contact_email?: string | null
           created_at?: string
           description?: string | null
           hr_name?: string | null
           id?: string
+          logo_url?: string | null
           name?: string
           owner_id?: string
           phone?: string | null
@@ -616,6 +654,7 @@ export type Database = {
           school_type?: string | null
           student_count?: number | null
           subscription_status?: Database["public"]["Enums"]["subscription_status"]
+          tagline?: string | null
           updated_at?: string
           website?: string | null
         }
@@ -728,6 +767,36 @@ export type Database = {
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_settings: {
+        Row: {
+          created_at: string
+          marketing_emails: boolean
+          profile_visibility: string
+          searchable: boolean
+          show_contact: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          marketing_emails?: boolean
+          profile_visibility?: string
+          searchable?: boolean
+          show_contact?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          marketing_emails?: boolean
+          profile_visibility?: string
+          searchable?: boolean
+          show_contact?: boolean
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
