@@ -1,8 +1,22 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, BadgeCheck, Building2, ClipboardCheck, Search, ShieldCheck, Users } from "lucide-react";
+import {
+  ArrowRight,
+  BadgeCheck,
+  Building2,
+  CalendarCheck,
+  ClipboardCheck,
+  GraduationCap,
+  Quote,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  Users,
+} from "lucide-react";
 import { PublicLayout } from "@/components/layouts/PublicLayout";
 import { SectionHeading } from "@/components/shared/Primitives";
+import { Reveal } from "@/components/shared/Reveal";
 import { JobCard, type JobCardData } from "@/components/shared/JobCard";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,45 +25,87 @@ import heroImage from "@/assets/hero-teacher.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Jivorna — Teacher Recruitment, Refined" },
+      { title: "Jivorna — Hire Exceptional Teachers, Faster" },
       {
         name: "description",
         content:
-          "Jivorna is a premium teacher recruitment platform connecting schools with qualified teachers. Post roles, review vetted candidates and hire with confidence.",
+          "Jivorna connects schools with verified, qualified educators through a streamlined recruitment process. Post roles, review vetted teachers and hire with confidence.",
       },
-      { property: "og:title", content: "Jivorna — Teacher Recruitment, Refined" },
+      { property: "og:title", content: "Jivorna — Hire Exceptional Teachers, Faster" },
       {
         property: "og:description",
         content:
-          "A modern hiring platform for schools and teachers, with dedicated portals for teachers, schools and administrators.",
+          "A premium teacher recruitment platform: verified educators, transparent pipelines and dedicated portals for schools, teachers and admins.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,
 });
 
+const stats = [
+  { icon: Users, value: "4,800+", label: "Verified teachers" },
+  { icon: Building2, value: "620", label: "Partner schools" },
+  { icon: CalendarCheck, value: "9 days", label: "Median time to hire" },
+  { icon: BadgeCheck, value: "94%", label: "Offer acceptance rate" },
+];
+
 const steps = [
   {
     icon: Users,
-    title: "Teachers build a profile",
-    body: "Subjects, experience, availability and a short professional summary — no CV black holes.",
+    title: "Build or post in minutes",
+    body: "Teachers create a living profile. Schools publish a vacancy with clear salary bands and expectations.",
   },
   {
-    icon: Building2,
-    title: "Schools post roles",
-    body: "Publish a vacancy in minutes with clear salary bands and expectations.",
+    icon: ShieldCheck,
+    title: "We verify every side",
+    body: "Documents, qualifications and school credentials are reviewed before anything goes live.",
   },
   {
     icon: ClipboardCheck,
-    title: "Matches move forward",
-    body: "Track every application through review, shortlist and offer in one shared pipeline.",
+    title: "Shortlist and hire",
+    body: "Track applications through review, interview and offer inside one shared, transparent pipeline.",
   },
 ];
 
 const values = [
   { icon: ShieldCheck, title: "Verified on both sides", body: "Every school and teacher account is reviewed by our admin team before roles go live." },
-  { icon: BadgeCheck, title: "No agency mark-up", body: "Schools speak to candidates directly. Teachers keep control of their applications." },
+  { icon: BadgeCheck, title: "No agency mark-up", body: "Schools speak to candidates directly. Teachers keep full control of their applications." },
   { icon: Search, title: "Signal over noise", body: "Structured profiles and roles make relevance obvious, so shortlists take hours, not weeks." },
+  { icon: GraduationCap, title: "Education-only focus", body: "Built around boards, grades, subjects and academic calendars — not a generic job board." },
+  { icon: CalendarCheck, title: "Interviews, organised", body: "Schedule, track and record interview outcomes without leaving the platform." },
+  { icon: Sparkles, title: "Premium, calm experience", body: "A quiet interface that respects the time of principals, HR leads and teachers alike." },
+];
+
+const schools = [
+  { name: "Ashcroft International", board: "IB", location: "Bengaluru", roles: 12 },
+  { name: "Northfield Academy", board: "CBSE", location: "Pune", roles: 8 },
+  { name: "The Meridian School", board: "ICSE", location: "Hyderabad", roles: 15 },
+  { name: "Beaumont Public School", board: "CBSE", location: "Gurugram", roles: 6 },
+  { name: "Riverstone Global", board: "Cambridge", location: "Chennai", roles: 9 },
+  { name: "Lakeview Montessori", board: "State", location: "Kochi", roles: 4 },
+];
+
+const testimonials = [
+  {
+    quote:
+      "We filled three senior science vacancies in under two weeks. The shortlists were genuinely relevant — no scattergun CVs.",
+    name: "Dr. Ananya Rao",
+    role: "Principal, Ashcroft International",
+  },
+  {
+    quote:
+      "As a teacher I finally felt seen. My profile did the work, and every school I spoke to already knew my subjects and availability.",
+    name: "Imran Sheikh",
+    role: "Physics Teacher, Grade 11–12",
+  },
+  {
+    quote:
+      "The interview tracking alone saved our HR team hours each week. Everything lives in one place, and nothing gets lost.",
+    name: "Meera Kulkarni",
+    role: "HR Lead, Northfield Academy",
+  },
 ];
 
 function Index() {
@@ -61,7 +117,7 @@ function Index() {
         .select("id,title,subject,location,employment_type,salary_range,description,schools(name,city)")
         .eq("status", "published")
         .order("created_at", { ascending: false })
-        .limit(3);
+        .limit(6);
       if (error) throw error;
       return (data ?? []) as unknown as JobCardData[];
     },
@@ -69,94 +125,215 @@ function Index() {
 
   return (
     <PublicLayout>
+      {/* Hero */}
       <section className="relative overflow-hidden border-b border-border bg-background">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-40 -right-32 h-[38rem] w-[38rem] rounded-full bg-gradient-navy opacity-[0.05] blur-3xl"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -bottom-48 -left-40 h-[32rem] w-[32rem] rounded-full bg-gradient-gold opacity-[0.07] blur-3xl"
+        />
         <div className="mx-auto grid max-w-6xl items-center gap-14 px-5 py-20 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-28">
-          <div>
-            <p className="eyebrow text-gold">Teacher recruitment, refined</p>
-            <h1 className="text-display mt-5 text-4xl sm:text-5xl lg:text-6xl">
-              Where great schools meet <span className="text-gold">great teachers</span>.
+          <Reveal>
+            <p className="eyebrow inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold-soft px-3 py-1.5 text-accent-foreground">
+              <Sparkles className="h-3.5 w-3.5" /> Teacher recruitment, refined
+            </p>
+            <h1 className="text-display mt-6 text-4xl sm:text-5xl lg:text-[3.6rem]">
+              Helping Schools Hire{" "}
+              <span className="text-gold">Exceptional Teachers</span> Faster.
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              Jivorna is a modern hiring platform built for education. Schools publish roles,
-              teachers apply with a living profile, and every conversation stays in one calm,
-              transparent place.
+              Jivorna connects schools with verified, qualified educators through a streamlined
+              recruitment process.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
-              <Button asChild size="lg">
-                <Link to="/auth" search={{ mode: "signup" }}>
-                  Create your account <ArrowRight className="ml-1 h-4 w-4" />
+              <Button asChild size="lg" className="rounded-full shadow-soft">
+                <Link to="/for-schools">
+                  Hire Teachers <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link to="/jobs">Browse open roles</Link>
+              <Button asChild size="lg" variant="outline" className="rounded-full">
+                <Link to="/jobs">Find Teaching Jobs</Link>
               </Button>
             </div>
+            <p className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
+              <span className="flex text-gold">
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <Star key={i} className="h-4 w-4 fill-current" />
+                ))}
+              </span>
+              Trusted by 620+ schools across 14 states
+            </p>
+          </Reveal>
 
-            <dl className="mt-14 grid max-w-lg grid-cols-3 gap-6 border-t border-border pt-8">
-              {[
-                ["4,800+", "Vetted teachers"],
-                ["620", "Partner schools"],
-                ["9 days", "Median time to hire"],
-              ].map(([value, label]) => (
-                <div key={label}>
-                  <dt className="font-serif text-2xl text-primary">{value}</dt>
-                  <dd className="mt-1 text-xs text-muted-foreground">{label}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-
-          <div className="relative">
+          <Reveal delay={120} className="relative">
             <div className="absolute -inset-4 -z-10 rounded-3xl bg-gradient-navy opacity-[0.06]" />
             <img
               src={heroImage}
               alt="A teacher standing in a bright school library"
-              className="aspect-4/5 w-full rounded-2xl object-cover shadow-lift"
+              className="aspect-4/5 w-full rounded-3xl object-cover shadow-lift"
               loading="eager"
             />
-          </div>
+            <div className="card-premium absolute -bottom-6 -left-4 hidden w-56 p-4 sm:block">
+              <p className="eyebrow text-gold">Now hiring</p>
+              <p className="mt-2 font-serif text-2xl text-primary">128 live roles</p>
+              <p className="mt-1 text-xs text-muted-foreground">Across IB, CBSE, ICSE & Cambridge</p>
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      <section className="border-b border-border bg-surface py-20 lg:py-24">
-        <div className="mx-auto max-w-6xl px-5 lg:px-8">
-          <SectionHeading
-            eyebrow="How it works"
-            title="A hiring process that respects everyone's time"
-            description="Three roles, one platform. Each portal is purpose-built for the work that role actually does."
-          />
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {steps.map((s, i) => (
-              <div key={s.title} className="rounded-xl border border-border bg-card p-7 shadow-soft">
-                <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+      {/* Statistics */}
+      <section className="border-b border-border bg-surface py-16">
+        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-5 px-5 lg:grid-cols-4 lg:px-8">
+          {stats.map((s, i) => (
+            <Reveal key={s.label} delay={i * 90}>
+              <div className="card-premium card-premium-hover h-full p-6">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-soft text-primary">
                   <s.icon className="h-5 w-5" />
                 </span>
-                <p className="eyebrow mt-6 text-muted-foreground">Step {i + 1}</p>
-                <h3 className="mt-2 font-serif text-xl">{s.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
+                <p className="mt-5 font-serif text-3xl text-primary sm:text-4xl">{s.value}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{s.label}</p>
               </div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="py-20 lg:py-24">
+        <div className="mx-auto max-w-6xl px-5 lg:px-8">
+          <Reveal>
+            <SectionHeading
+              eyebrow="How it works"
+              title="A hiring process that respects everyone's time"
+              description="Three roles, one platform. Each portal is purpose-built for the work that role actually does."
+              align="center"
+            />
+          </Reveal>
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
+            {steps.map((s, i) => (
+              <Reveal key={s.title} delay={i * 110}>
+                <div className="card-premium card-premium-hover h-full p-7">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-navy text-primary-foreground shadow-soft">
+                    <s.icon className="h-5 w-5" />
+                  </span>
+                  <p className="eyebrow mt-6 text-muted-foreground">Step {i + 1}</p>
+                  <h3 className="mt-2 font-serif text-xl">{s.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
+      {/* Why Choose Jivorna */}
+      <section className="border-y border-border bg-surface py-20 lg:py-24">
+        <div className="mx-auto max-w-6xl px-5 lg:px-8">
+          <Reveal>
+            <SectionHeading eyebrow="Why Jivorna" title="Why schools and teachers choose us" align="center" />
+          </Reveal>
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {values.map((v, i) => (
+              <Reveal key={v.title} delay={(i % 3) * 100}>
+                <div className="card-premium card-premium-hover h-full p-7">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-soft text-gold">
+                    <v.icon className="h-5 w-5" />
+                  </span>
+                  <h3 className="mt-5 font-serif text-xl">{v.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{v.body}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Schools */}
       <section className="py-20 lg:py-24">
         <div className="mx-auto max-w-6xl px-5 lg:px-8">
-          <div className="flex flex-wrap items-end justify-between gap-6">
-            <SectionHeading eyebrow="Latest roles" title="Recently published vacancies" />
-            <Button asChild variant="ghost">
-              <Link to="/jobs">
-                View all jobs <ArrowRight className="ml-1 h-4 w-4" />
-              </Link>
-            </Button>
+          <Reveal>
+            <SectionHeading
+              eyebrow="Featured schools"
+              title="Institutions hiring on Jivorna"
+              description="From IB world schools to fast-growing CBSE campuses — all verified before they publish."
+            />
+          </Reveal>
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {schools.map((s, i) => (
+              <Reveal key={s.name} delay={(i % 3) * 100}>
+                <div className="card-premium card-premium-hover flex h-full items-center gap-4 p-6">
+                  <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-navy font-serif text-lg text-primary-foreground">
+                    {s.name
+                      .split(" ")
+                      .slice(0, 2)
+                      .map((w) => w[0])
+                      .join("")}
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="truncate font-serif text-lg">{s.name}</h3>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {s.board} · {s.location}
+                    </p>
+                    <p className="mt-2 text-xs font-medium text-gold">{s.roles} open roles</p>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
           </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="border-y border-border bg-surface py-20 lg:py-24">
+        <div className="mx-auto max-w-6xl px-5 lg:px-8">
+          <Reveal>
+            <SectionHeading eyebrow="Testimonials" title="What principals and teachers say" align="center" />
+          </Reveal>
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
+            {testimonials.map((t, i) => (
+              <Reveal key={t.name} delay={i * 110}>
+                <figure className="card-premium card-premium-hover flex h-full flex-col p-7">
+                  <Quote className="h-6 w-6 text-gold" />
+                  <blockquote className="mt-5 flex-1 font-serif text-lg leading-relaxed text-foreground">
+                    “{t.quote}”
+                  </blockquote>
+                  <figcaption className="mt-6 border-t border-border pt-5">
+                    <p className="text-sm font-medium">{t.name}</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">{t.role}</p>
+                  </figcaption>
+                </figure>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Latest Jobs */}
+      <section className="py-20 lg:py-24">
+        <div className="mx-auto max-w-6xl px-5 lg:px-8">
+          <Reveal>
+            <div className="flex flex-wrap items-end justify-between gap-6">
+              <SectionHeading eyebrow="Latest jobs" title="Recently published vacancies" />
+              <Button asChild variant="ghost">
+                <Link to="/jobs">
+                  View all jobs <ArrowRight className="ml-1 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </Reveal>
 
           <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {(jobs ?? []).map((job) => (
-              <JobCard key={job.id} job={job} />
+            {(jobs ?? []).map((job, i) => (
+              <Reveal key={job.id} delay={(i % 3) * 100}>
+                <JobCard job={job} />
+              </Reveal>
             ))}
             {jobs && jobs.length === 0 && (
-              <div className="rounded-xl border border-dashed border-border p-8 text-sm text-muted-foreground md:col-span-2 lg:col-span-3">
+              <div className="rounded-2xl border border-dashed border-border p-8 text-sm text-muted-foreground md:col-span-2 lg:col-span-3">
                 No roles are live right now. Schools can publish a vacancy from the school portal in
                 under five minutes.
               </div>
@@ -165,41 +342,33 @@ function Index() {
         </div>
       </section>
 
-      <section className="border-y border-border bg-surface py-20 lg:py-24">
+      {/* Call To Action */}
+      <section className="pb-20 lg:pb-24">
         <div className="mx-auto max-w-6xl px-5 lg:px-8">
-          <SectionHeading eyebrow="Why Jivorna" title="Trust is the product" align="center" />
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {values.map((v) => (
-              <div key={v.title} className="rounded-xl border border-border bg-card p-7">
-                <v.icon className="h-5 w-5 text-gold" />
-                <h3 className="mt-5 font-serif text-xl">{v.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{v.body}</p>
+          <Reveal>
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-navy px-8 py-16 text-center shadow-lift sm:px-14">
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -top-24 right-0 h-72 w-72 rounded-full bg-gradient-gold opacity-20 blur-3xl"
+              />
+              <h2 className="text-display mx-auto max-w-2xl text-3xl text-primary-foreground sm:text-4xl">
+                Ready to hire — or be hired — the considered way?
+              </h2>
+              <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-primary-foreground/75">
+                Create a free account as a teacher or a school. Your dashboard is ready in seconds.
+              </p>
+              <div className="mt-8 flex flex-wrap justify-center gap-3">
+                <Button asChild size="lg" variant="gold" className="rounded-full">
+                  <Link to="/auth" search={{ mode: "signup" }}>
+                    Get started free
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="onDark" className="rounded-full">
+                  <Link to="/contact">Talk to us</Link>
+                </Button>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-20 lg:py-24">
-        <div className="mx-auto max-w-6xl px-5 lg:px-8">
-          <div className="overflow-hidden rounded-2xl bg-gradient-navy px-8 py-14 text-center shadow-lift sm:px-14">
-            <h2 className="text-display mx-auto max-w-2xl text-3xl text-primary-foreground sm:text-4xl">
-              Ready to hire — or be hired — the considered way?
-            </h2>
-            <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-primary-foreground/75">
-              Create a free account as a teacher or a school. Your dashboard is ready in seconds.
-            </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Button asChild size="lg" variant="gold">
-                <Link to="/auth" search={{ mode: "signup" }}>
-                  Get started
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="onDark">
-                <Link to="/contact">Talk to us</Link>
-              </Button>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
     </PublicLayout>
