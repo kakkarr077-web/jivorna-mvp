@@ -4,6 +4,7 @@ import { Link, useRouter } from "@tanstack/react-router";
 import { LogOut, Menu, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
+import { NotificationBell } from "@/components/shared/NotificationBell";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
