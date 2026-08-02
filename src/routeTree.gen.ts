@@ -22,6 +22,7 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
 import { Route as AuthenticatedSchoolRouteImport } from './routes/_authenticated/school'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedTeacherRouteImport } from './routes/_authenticated/teacher'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminInvoicesRouteImport } from './routes/_authenticated/admin.invoices'
@@ -102,6 +103,11 @@ const AuthenticatedNotificationsRoute =
 const AuthenticatedSchoolRoute = AuthenticatedSchoolRouteImport.update({
   id: '/school',
   path: '/school',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedTeacherRoute = AuthenticatedTeacherRouteImport.update({
@@ -209,6 +215,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/school': typeof AuthenticatedSchoolRouteWithChildren
+  '/settings': typeof AuthenticatedSettingsRoute
   '/teacher': typeof AuthenticatedTeacherRouteWithChildren
   '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/admin/jobs': typeof AuthenticatedAdminJobsRoute
@@ -237,6 +244,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/admin/jobs': typeof AuthenticatedAdminJobsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -268,6 +276,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/school': typeof AuthenticatedSchoolRouteWithChildren
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/teacher': typeof AuthenticatedTeacherRouteWithChildren
   '/_authenticated/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/_authenticated/admin/jobs': typeof AuthenticatedAdminJobsRoute
@@ -300,6 +309,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/notifications'
     | '/school'
+    | '/settings'
     | '/teacher'
     | '/admin/invoices'
     | '/admin/jobs'
@@ -328,6 +338,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/dashboard'
     | '/notifications'
+    | '/settings'
     | '/admin/invoices'
     | '/admin/jobs'
     | '/admin/users'
@@ -358,6 +369,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/notifications'
     | '/_authenticated/school'
+    | '/_authenticated/settings'
     | '/_authenticated/teacher'
     | '/_authenticated/admin/invoices'
     | '/_authenticated/admin/jobs'
@@ -479,6 +491,13 @@ declare module '@tanstack/react-router' {
       path: '/school'
       fullPath: '/school'
       preLoaderRoute: typeof AuthenticatedSchoolRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/teacher': {
@@ -658,6 +677,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
   AuthenticatedSchoolRoute: typeof AuthenticatedSchoolRouteWithChildren
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTeacherRoute: typeof AuthenticatedTeacherRouteWithChildren
 }
 
@@ -666,6 +686,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
   AuthenticatedSchoolRoute: AuthenticatedSchoolRouteWithChildren,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTeacherRoute: AuthenticatedTeacherRouteWithChildren,
 }
 
