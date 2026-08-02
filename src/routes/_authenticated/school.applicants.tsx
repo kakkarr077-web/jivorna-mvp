@@ -59,11 +59,8 @@ function SchoolApplicants() {
   });
 
   const update = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase
-        .from("applications")
-        .update({ status: status as Row["status"] })
-        .eq("id", id);
+    mutationFn: async ({ id, status }: { id: string; status: (typeof statuses)[number] }) => {
+      const { error } = await supabase.from("applications").update({ status }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
