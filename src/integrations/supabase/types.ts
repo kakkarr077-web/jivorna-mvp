@@ -366,6 +366,33 @@ export type Database = {
           },
         ]
       }
+      saved_teachers: {
+        Row: {
+          created_at: string
+          id: string
+          list_type: string
+          school_owner_id: string
+          teacher_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          list_type?: string
+          school_owner_id: string
+          teacher_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          list_type?: string
+          school_owner_id?: string
+          teacher_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       schools: {
         Row: {
           board: string | null
@@ -428,6 +455,7 @@ export type Database = {
           available: boolean
           available_from: string | null
           bio: string | null
+          boards: string[]
           city: string | null
           created_at: string
           current_salary: number | null
@@ -456,6 +484,7 @@ export type Database = {
           available?: boolean
           available_from?: string | null
           bio?: string | null
+          boards?: string[]
           city?: string | null
           created_at?: string
           current_salary?: number | null
@@ -484,6 +513,7 @@ export type Database = {
           available?: boolean
           available_from?: string | null
           bio?: string | null
+          boards?: string[]
           city?: string | null
           created_at?: string
           current_salary?: number | null
