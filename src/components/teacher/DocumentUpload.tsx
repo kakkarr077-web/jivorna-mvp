@@ -88,7 +88,10 @@ export function DocumentUpload({
     const { data, error } = await supabase.storage
       .from("teacher-documents")
       .createSignedUrl(doc.file_url, 60);
-    if (error || !data) return toast.error("Could not open file");
+    if (error || !data) {
+      toast.error("Could not open file");
+      return;
+    }
     window.open(data.signedUrl, "_blank", "noopener,noreferrer");
   };
 
