@@ -24,10 +24,12 @@ import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authen
 import { Route as AuthenticatedSchoolRouteImport } from './routes/_authenticated/school'
 import { Route as AuthenticatedTeacherRouteImport } from './routes/_authenticated/teacher'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminInvoicesRouteImport } from './routes/_authenticated/admin.invoices'
 import { Route as AuthenticatedAdminJobsRouteImport } from './routes/_authenticated/admin.jobs'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedSchoolIndexRouteImport } from './routes/_authenticated/school.index'
 import { Route as AuthenticatedSchoolApplicantsRouteImport } from './routes/_authenticated/school.applicants'
+import { Route as AuthenticatedSchoolInvoicesRouteImport } from './routes/_authenticated/school.invoices'
 import { Route as AuthenticatedSchoolJobsRouteImport } from './routes/_authenticated/school.jobs'
 import { Route as AuthenticatedSchoolProfileRouteImport } from './routes/_authenticated/school.profile'
 import { Route as AuthenticatedSchoolTeachersRouteImport } from './routes/_authenticated/school.teachers'
@@ -112,6 +114,12 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminInvoicesRoute =
+  AuthenticatedAdminInvoicesRouteImport.update({
+    id: '/invoices',
+    path: '/invoices',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminJobsRoute = AuthenticatedAdminJobsRouteImport.update({
   id: '/jobs',
   path: '/jobs',
@@ -132,6 +140,12 @@ const AuthenticatedSchoolApplicantsRoute =
   AuthenticatedSchoolApplicantsRouteImport.update({
     id: '/applicants',
     path: '/applicants',
+    getParentRoute: () => AuthenticatedSchoolRoute,
+  } as any)
+const AuthenticatedSchoolInvoicesRoute =
+  AuthenticatedSchoolInvoicesRouteImport.update({
+    id: '/invoices',
+    path: '/invoices',
     getParentRoute: () => AuthenticatedSchoolRoute,
   } as any)
 const AuthenticatedSchoolJobsRoute = AuthenticatedSchoolJobsRouteImport.update({
@@ -196,9 +210,11 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/school': typeof AuthenticatedSchoolRouteWithChildren
   '/teacher': typeof AuthenticatedTeacherRouteWithChildren
+  '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/admin/jobs': typeof AuthenticatedAdminJobsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/school/applicants': typeof AuthenticatedSchoolApplicantsRoute
+  '/school/invoices': typeof AuthenticatedSchoolInvoicesRoute
   '/school/jobs': typeof AuthenticatedSchoolJobsRoute
   '/school/profile': typeof AuthenticatedSchoolProfileRoute
   '/school/teachers': typeof AuthenticatedSchoolTeachersRoute
@@ -221,9 +237,11 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
+  '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/admin/jobs': typeof AuthenticatedAdminJobsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/school/applicants': typeof AuthenticatedSchoolApplicantsRoute
+  '/school/invoices': typeof AuthenticatedSchoolInvoicesRoute
   '/school/jobs': typeof AuthenticatedSchoolJobsRoute
   '/school/profile': typeof AuthenticatedSchoolProfileRoute
   '/school/teachers': typeof AuthenticatedSchoolTeachersRoute
@@ -251,9 +269,11 @@ export interface FileRoutesById {
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/school': typeof AuthenticatedSchoolRouteWithChildren
   '/_authenticated/teacher': typeof AuthenticatedTeacherRouteWithChildren
+  '/_authenticated/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/_authenticated/admin/jobs': typeof AuthenticatedAdminJobsRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/school/applicants': typeof AuthenticatedSchoolApplicantsRoute
+  '/_authenticated/school/invoices': typeof AuthenticatedSchoolInvoicesRoute
   '/_authenticated/school/jobs': typeof AuthenticatedSchoolJobsRoute
   '/_authenticated/school/profile': typeof AuthenticatedSchoolProfileRoute
   '/_authenticated/school/teachers': typeof AuthenticatedSchoolTeachersRoute
@@ -281,9 +301,11 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/school'
     | '/teacher'
+    | '/admin/invoices'
     | '/admin/jobs'
     | '/admin/users'
     | '/school/applicants'
+    | '/school/invoices'
     | '/school/jobs'
     | '/school/profile'
     | '/school/teachers'
@@ -306,9 +328,11 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/dashboard'
     | '/notifications'
+    | '/admin/invoices'
     | '/admin/jobs'
     | '/admin/users'
     | '/school/applicants'
+    | '/school/invoices'
     | '/school/jobs'
     | '/school/profile'
     | '/school/teachers'
@@ -335,9 +359,11 @@ export interface FileRouteTypes {
     | '/_authenticated/notifications'
     | '/_authenticated/school'
     | '/_authenticated/teacher'
+    | '/_authenticated/admin/invoices'
     | '/_authenticated/admin/jobs'
     | '/_authenticated/admin/users'
     | '/_authenticated/school/applicants'
+    | '/_authenticated/school/invoices'
     | '/_authenticated/school/jobs'
     | '/_authenticated/school/profile'
     | '/_authenticated/school/teachers'
@@ -469,6 +495,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/invoices': {
+      id: '/_authenticated/admin/invoices'
+      path: '/invoices'
+      fullPath: '/admin/invoices'
+      preLoaderRoute: typeof AuthenticatedAdminInvoicesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/jobs': {
       id: '/_authenticated/admin/jobs'
       path: '/jobs'
@@ -495,6 +528,13 @@ declare module '@tanstack/react-router' {
       path: '/applicants'
       fullPath: '/school/applicants'
       preLoaderRoute: typeof AuthenticatedSchoolApplicantsRouteImport
+      parentRoute: typeof AuthenticatedSchoolRoute
+    }
+    '/_authenticated/school/invoices': {
+      id: '/_authenticated/school/invoices'
+      path: '/invoices'
+      fullPath: '/school/invoices'
+      preLoaderRoute: typeof AuthenticatedSchoolInvoicesRouteImport
       parentRoute: typeof AuthenticatedSchoolRoute
     }
     '/_authenticated/school/jobs': {
@@ -557,12 +597,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminInvoicesRoute: typeof AuthenticatedAdminInvoicesRoute
   AuthenticatedAdminJobsRoute: typeof AuthenticatedAdminJobsRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminInvoicesRoute: AuthenticatedAdminInvoicesRoute,
   AuthenticatedAdminJobsRoute: AuthenticatedAdminJobsRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
@@ -573,6 +615,7 @@ const AuthenticatedAdminRouteWithChildren =
 
 interface AuthenticatedSchoolRouteChildren {
   AuthenticatedSchoolApplicantsRoute: typeof AuthenticatedSchoolApplicantsRoute
+  AuthenticatedSchoolInvoicesRoute: typeof AuthenticatedSchoolInvoicesRoute
   AuthenticatedSchoolJobsRoute: typeof AuthenticatedSchoolJobsRoute
   AuthenticatedSchoolProfileRoute: typeof AuthenticatedSchoolProfileRoute
   AuthenticatedSchoolTeachersRoute: typeof AuthenticatedSchoolTeachersRoute
@@ -581,6 +624,7 @@ interface AuthenticatedSchoolRouteChildren {
 
 const AuthenticatedSchoolRouteChildren: AuthenticatedSchoolRouteChildren = {
   AuthenticatedSchoolApplicantsRoute: AuthenticatedSchoolApplicantsRoute,
+  AuthenticatedSchoolInvoicesRoute: AuthenticatedSchoolInvoicesRoute,
   AuthenticatedSchoolJobsRoute: AuthenticatedSchoolJobsRoute,
   AuthenticatedSchoolProfileRoute: AuthenticatedSchoolProfileRoute,
   AuthenticatedSchoolTeachersRoute: AuthenticatedSchoolTeachersRoute,
