@@ -29,6 +29,7 @@ import { Route as AuthenticatedSchoolIndexRouteImport } from './routes/_authenti
 import { Route as AuthenticatedSchoolApplicantsRouteImport } from './routes/_authenticated/school.applicants'
 import { Route as AuthenticatedSchoolJobsRouteImport } from './routes/_authenticated/school.jobs'
 import { Route as AuthenticatedSchoolProfileRouteImport } from './routes/_authenticated/school.profile'
+import { Route as AuthenticatedSchoolTeachersRouteImport } from './routes/_authenticated/school.teachers'
 import { Route as AuthenticatedTeacherIndexRouteImport } from './routes/_authenticated/teacher.index'
 import { Route as AuthenticatedTeacherApplicationsRouteImport } from './routes/_authenticated/teacher.applications'
 import { Route as AuthenticatedTeacherJobsRouteImport } from './routes/_authenticated/teacher.jobs'
@@ -137,6 +138,12 @@ const AuthenticatedSchoolProfileRoute =
     path: '/profile',
     getParentRoute: () => AuthenticatedSchoolRoute,
   } as any)
+const AuthenticatedSchoolTeachersRoute =
+  AuthenticatedSchoolTeachersRouteImport.update({
+    id: '/teachers',
+    path: '/teachers',
+    getParentRoute: () => AuthenticatedSchoolRoute,
+  } as any)
 const AuthenticatedTeacherIndexRoute =
   AuthenticatedTeacherIndexRouteImport.update({
     id: '/',
@@ -186,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/school/applicants': typeof AuthenticatedSchoolApplicantsRoute
   '/school/jobs': typeof AuthenticatedSchoolJobsRoute
   '/school/profile': typeof AuthenticatedSchoolProfileRoute
+  '/school/teachers': typeof AuthenticatedSchoolTeachersRoute
   '/teacher/applications': typeof AuthenticatedTeacherApplicationsRoute
   '/teacher/jobs': typeof AuthenticatedTeacherJobsRoute
   '/teacher/onboarding': typeof AuthenticatedTeacherOnboardingRoute
@@ -209,6 +217,7 @@ export interface FileRoutesByTo {
   '/school/applicants': typeof AuthenticatedSchoolApplicantsRoute
   '/school/jobs': typeof AuthenticatedSchoolJobsRoute
   '/school/profile': typeof AuthenticatedSchoolProfileRoute
+  '/school/teachers': typeof AuthenticatedSchoolTeachersRoute
   '/teacher/applications': typeof AuthenticatedTeacherApplicationsRoute
   '/teacher/jobs': typeof AuthenticatedTeacherJobsRoute
   '/teacher/onboarding': typeof AuthenticatedTeacherOnboardingRoute
@@ -237,6 +246,7 @@ export interface FileRoutesById {
   '/_authenticated/school/applicants': typeof AuthenticatedSchoolApplicantsRoute
   '/_authenticated/school/jobs': typeof AuthenticatedSchoolJobsRoute
   '/_authenticated/school/profile': typeof AuthenticatedSchoolProfileRoute
+  '/_authenticated/school/teachers': typeof AuthenticatedSchoolTeachersRoute
   '/_authenticated/teacher/applications': typeof AuthenticatedTeacherApplicationsRoute
   '/_authenticated/teacher/jobs': typeof AuthenticatedTeacherJobsRoute
   '/_authenticated/teacher/onboarding': typeof AuthenticatedTeacherOnboardingRoute
@@ -265,6 +275,7 @@ export interface FileRouteTypes {
     | '/school/applicants'
     | '/school/jobs'
     | '/school/profile'
+    | '/school/teachers'
     | '/teacher/applications'
     | '/teacher/jobs'
     | '/teacher/onboarding'
@@ -288,6 +299,7 @@ export interface FileRouteTypes {
     | '/school/applicants'
     | '/school/jobs'
     | '/school/profile'
+    | '/school/teachers'
     | '/teacher/applications'
     | '/teacher/jobs'
     | '/teacher/onboarding'
@@ -315,6 +327,7 @@ export interface FileRouteTypes {
     | '/_authenticated/school/applicants'
     | '/_authenticated/school/jobs'
     | '/_authenticated/school/profile'
+    | '/_authenticated/school/teachers'
     | '/_authenticated/teacher/applications'
     | '/_authenticated/teacher/jobs'
     | '/_authenticated/teacher/onboarding'
@@ -478,6 +491,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSchoolProfileRouteImport
       parentRoute: typeof AuthenticatedSchoolRoute
     }
+    '/_authenticated/school/teachers': {
+      id: '/_authenticated/school/teachers'
+      path: '/teachers'
+      fullPath: '/school/teachers'
+      preLoaderRoute: typeof AuthenticatedSchoolTeachersRouteImport
+      parentRoute: typeof AuthenticatedSchoolRoute
+    }
     '/_authenticated/teacher/': {
       id: '/_authenticated/teacher/'
       path: '/'
@@ -535,6 +555,7 @@ interface AuthenticatedSchoolRouteChildren {
   AuthenticatedSchoolApplicantsRoute: typeof AuthenticatedSchoolApplicantsRoute
   AuthenticatedSchoolJobsRoute: typeof AuthenticatedSchoolJobsRoute
   AuthenticatedSchoolProfileRoute: typeof AuthenticatedSchoolProfileRoute
+  AuthenticatedSchoolTeachersRoute: typeof AuthenticatedSchoolTeachersRoute
   AuthenticatedSchoolIndexRoute: typeof AuthenticatedSchoolIndexRoute
 }
 
@@ -542,6 +563,7 @@ const AuthenticatedSchoolRouteChildren: AuthenticatedSchoolRouteChildren = {
   AuthenticatedSchoolApplicantsRoute: AuthenticatedSchoolApplicantsRoute,
   AuthenticatedSchoolJobsRoute: AuthenticatedSchoolJobsRoute,
   AuthenticatedSchoolProfileRoute: AuthenticatedSchoolProfileRoute,
+  AuthenticatedSchoolTeachersRoute: AuthenticatedSchoolTeachersRoute,
   AuthenticatedSchoolIndexRoute: AuthenticatedSchoolIndexRoute,
 }
 
@@ -598,13 +620,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
