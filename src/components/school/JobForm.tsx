@@ -80,8 +80,8 @@ function Field({
   children,
 }: {
   label: string;
-  htmlFor?: string;
-  error?: string;
+  htmlFor?: string | undefined;
+  error?: string | undefined;
   children: React.ReactNode;
 }) {
   return (
@@ -167,7 +167,7 @@ export function JobForm({
   onChange: (v: JobFormValues) => void;
   onSubmit: (status: JobFormValues["status"]) => void;
   onCancel?: () => void;
-  schoolName?: string | null;
+  schoolName?: string | null | undefined;
   pending?: boolean;
   submitLabel?: string;
 }) {
