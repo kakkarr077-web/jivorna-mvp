@@ -57,6 +57,38 @@ function TeacherJobs() {
     onError: (e) => toast.error(e instanceof Error ? e.message : "Could not apply"),
   });
 
+  const { data: savedIds } = useQuery({
+    queryKey: ["teacher-saved-ids", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("saved_jobs").select("job_id").eq("teacher_id", user!.id);
+      if (error) throw error;
+      return new Set((data ?? []).map((r) => r.job_id));
+    },
+  });
+
+  const toggleSave = useMutation({
+    mutationFn: async ({ jobId, saved }: { jobId: string; saved: boolean }) => {
+      if (saved) {
+        const { error } = await supabase
+          .from("saved_jobs")
+          .delete()
+          .eq("teacher_id", user!.id)
+          .eq("job_id", jobId);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("saved_jobs").insert({ teacher_id: user!.id, job_id: jobId });
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["teacher-saved-ids"] });
+      void qc.invalidateQueries({ queryKey: ["teacher-saved-jobs"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not update saved jobs"),
+  });
+
+
   const q = query.trim().toLowerCase();
   const list = (jobs ?? []).filter((j) =>
     !q ? true : [j.title, j.subject, j.location, j.schools?.name].filter(Boolean).join(" ").toLowerCase().includes(q),
