@@ -14,16 +14,233 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      applications: {
+        Row: {
+          cover_letter: string | null
+          created_at: string
+          id: string
+          job_id: string
+          status: Database["public"]["Enums"]["application_status"]
+          teacher_id: string
+          updated_at: string
+        }
+        Insert: {
+          cover_letter?: string | null
+          created_at?: string
+          id?: string
+          job_id: string
+          status?: Database["public"]["Enums"]["application_status"]
+          teacher_id: string
+          updated_at?: string
+        }
+        Update: {
+          cover_letter?: string | null
+          created_at?: string
+          id?: string
+          job_id?: string
+          status?: Database["public"]["Enums"]["application_status"]
+          teacher_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "applications_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      jobs: {
+        Row: {
+          created_at: string
+          description: string | null
+          employment_type: string
+          id: string
+          location: string | null
+          salary_range: string | null
+          school_id: string
+          status: Database["public"]["Enums"]["job_status"]
+          subject: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          employment_type?: string
+          id?: string
+          location?: string | null
+          salary_range?: string | null
+          school_id: string
+          status?: Database["public"]["Enums"]["job_status"]
+          subject?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          employment_type?: string
+          id?: string
+          location?: string | null
+          salary_range?: string | null
+          school_id?: string
+          status?: Database["public"]["Enums"]["job_status"]
+          subject?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobs_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      schools: {
+        Row: {
+          city: string | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          owner_id: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          owner_id: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          city?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          owner_id?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      teacher_profiles: {
+        Row: {
+          available: boolean
+          bio: string | null
+          created_at: string
+          experience_years: number
+          headline: string | null
+          location: string | null
+          subjects: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          available?: boolean
+          bio?: string | null
+          created_at?: string
+          experience_years?: number
+          headline?: string | null
+          location?: string | null
+          subjects?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          available?: boolean
+          bio?: string | null
+          created_at?: string
+          experience_years?: number
+          headline?: string | null
+          location?: string | null
+          subjects?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "teacher" | "school" | "admin"
+      application_status:
+        | "submitted"
+        | "reviewing"
+        | "shortlisted"
+        | "rejected"
+        | "hired"
+      job_status: "draft" | "published" | "closed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +367,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["teacher", "school", "admin"],
+      application_status: [
+        "submitted",
+        "reviewing",
+        "shortlisted",
+        "rejected",
+        "hired",
+      ],
+      job_status: ["draft", "published", "closed"],
+    },
   },
 } as const
