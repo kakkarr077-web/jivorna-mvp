@@ -14,6 +14,129 @@ export type Database = {
   }
   public: {
     Tables: {
+      application_attachments: {
+        Row: {
+          application_id: string
+          created_at: string
+          file_path: string
+          file_size_bytes: number | null
+          id: string
+          name: string
+          updated_at: string
+          uploaded_by: string
+        }
+        Insert: {
+          application_id: string
+          created_at?: string
+          file_path: string
+          file_size_bytes?: number | null
+          id?: string
+          name: string
+          updated_at?: string
+          uploaded_by: string
+        }
+        Update: {
+          application_id?: string
+          created_at?: string
+          file_path?: string
+          file_size_bytes?: number | null
+          id?: string
+          name?: string
+          updated_at?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "application_attachments_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      application_comments: {
+        Row: {
+          application_id: string
+          author_id: string
+          body: string
+          created_at: string
+          id: string
+          internal: boolean
+          updated_at: string
+        }
+        Insert: {
+          application_id: string
+          author_id: string
+          body: string
+          created_at?: string
+          id?: string
+          internal?: boolean
+          updated_at?: string
+        }
+        Update: {
+          application_id?: string
+          author_id?: string
+          body?: string
+          created_at?: string
+          id?: string
+          internal?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "application_comments_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      application_events: {
+        Row: {
+          actor_id: string | null
+          application_id: string
+          created_at: string
+          event_type: string
+          from_status: string | null
+          id: string
+          summary: string
+          to_status: string | null
+          updated_at: string
+        }
+        Insert: {
+          actor_id?: string | null
+          application_id: string
+          created_at?: string
+          event_type?: string
+          from_status?: string | null
+          id?: string
+          summary: string
+          to_status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          actor_id?: string | null
+          application_id?: string
+          created_at?: string
+          event_type?: string
+          from_status?: string | null
+          id?: string
+          summary?: string
+          to_status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "application_events_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       applications: {
         Row: {
           cover_letter: string | null
@@ -573,6 +696,14 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_application_teacher: {
+        Args: { _application_id: string; _user_id: string }
+        Returns: boolean
+      }
+      owns_application_school: {
+        Args: { _application_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "teacher" | "school" | "admin"
@@ -582,6 +713,12 @@ export type Database = {
         | "shortlisted"
         | "rejected"
         | "hired"
+        | "screening"
+        | "interview_scheduled"
+        | "demo_class"
+        | "school_review"
+        | "offer"
+        | "joined"
       document_type:
         | "resume"
         | "certificate"
@@ -729,6 +866,12 @@ export const Constants = {
         "shortlisted",
         "rejected",
         "hired",
+        "screening",
+        "interview_scheduled",
+        "demo_class",
+        "school_review",
+        "offer",
+        "joined",
       ],
       document_type: [
         "resume",
