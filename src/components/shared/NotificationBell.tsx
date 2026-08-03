@@ -6,7 +6,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useNotifications, type AppNotification } from "@/hooks/useNotifications";
 
-export function notificationIcon(type: string) {
+export function notificationIcon(type: string, title?: string) {
+  const t = (title ?? "").toLowerCase();
+  if (t.includes("job approved")) return BadgeCheck;
+  if (t.includes("sent back") || t.includes("not approved") || t.includes("not successful")) return XCircle;
+  if (t.includes("viewed")) return Eye;
+  if (t.includes("received") && t.includes("application")) return Inbox;
+  if (t.includes("interview accepted")) return CalendarCheck;
   switch (type) {
     case "interview":
       return CalendarClock;
