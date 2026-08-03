@@ -44,12 +44,20 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const stats = [
-  { icon: Users, value: "4,800+", label: "Verified teachers" },
-  { icon: Building2, value: "620", label: "Partner schools" },
+type PlatformStats = {
+  teacher_count: number;
+  school_count: number;
+  live_job_count: number;
+};
+
+// Live counts come from the database; the two benchmark figures below are
+// illustrative targets and are labelled as such until we have enough hiring
+// history to calculate them.
+const illustrativeStats = [
   { icon: CalendarCheck, value: "9 days", label: "Median time to hire" },
   { icon: BadgeCheck, value: "94%", label: "Offer acceptance rate" },
 ];
+
 
 const steps = [
   {
