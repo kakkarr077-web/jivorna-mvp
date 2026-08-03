@@ -17,6 +17,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ForSchoolsRouteImport } from './routes/for-schools'
 import { Route as ForTeachersRouteImport } from './routes/for-teachers'
 import { Route as JobsRouteImport } from './routes/jobs'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -77,6 +78,11 @@ const ForTeachersRoute = ForTeachersRouteImport.update({
 const JobsRoute = JobsRouteImport.update({
   id: '/jobs',
   path: '/jobs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -210,6 +216,7 @@ export interface FileRoutesByFullPath {
   '/for-schools': typeof ForSchoolsRoute
   '/for-teachers': typeof ForTeachersRoute
   '/jobs': typeof JobsRoute
+  '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -241,6 +248,7 @@ export interface FileRoutesByTo {
   '/for-schools': typeof ForSchoolsRoute
   '/for-teachers': typeof ForTeachersRoute
   '/jobs': typeof JobsRoute
+  '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
@@ -271,6 +279,7 @@ export interface FileRoutesById {
   '/for-schools': typeof ForSchoolsRoute
   '/for-teachers': typeof ForTeachersRoute
   '/jobs': typeof JobsRoute
+  '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -304,6 +313,7 @@ export interface FileRouteTypes {
     | '/for-schools'
     | '/for-teachers'
     | '/jobs'
+    | '/privacy'
     | '/reset-password'
     | '/admin'
     | '/dashboard'
@@ -335,6 +345,7 @@ export interface FileRouteTypes {
     | '/for-schools'
     | '/for-teachers'
     | '/jobs'
+    | '/privacy'
     | '/reset-password'
     | '/dashboard'
     | '/notifications'
@@ -364,6 +375,7 @@ export interface FileRouteTypes {
     | '/for-schools'
     | '/for-teachers'
     | '/jobs'
+    | '/privacy'
     | '/reset-password'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
@@ -397,6 +409,7 @@ export interface RootRouteChildren {
   ForSchoolsRoute: typeof ForSchoolsRoute
   ForTeachersRoute: typeof ForTeachersRoute
   JobsRoute: typeof JobsRoute
+  PrivacyRoute: typeof PrivacyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
@@ -456,6 +469,13 @@ declare module '@tanstack/react-router' {
       path: '/jobs'
       fullPath: '/jobs'
       preLoaderRoute: typeof JobsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -702,8 +722,19 @@ const rootRouteChildren: RootRouteChildren = {
   ForSchoolsRoute: ForSchoolsRoute,
   ForTeachersRoute: ForTeachersRoute,
   JobsRoute: JobsRoute,
+  PrivacyRoute: PrivacyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

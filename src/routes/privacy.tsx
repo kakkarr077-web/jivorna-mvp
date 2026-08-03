@@ -55,7 +55,7 @@ function PrivacyPage() {
           <SectionHeading
             eyebrow="Legal"
             title="Privacy Policy"
-            body="This policy explains what information Jivorna holds about you, why we hold it and how you stay in control of it."
+            description="This policy explains what information Jivorna holds about you, why we hold it and how you stay in control of it."
           />
           <div className="mt-12 space-y-8">
             {sections.map((s) => (
