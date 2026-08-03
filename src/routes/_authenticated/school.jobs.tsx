@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { JobForm, emptyJob, salaryLabel, type JobFormValues } from "@/components/school/JobForm";
 import { Plus, Pencil } from "lucide-react";
+import { jobStatusLabel, jobStatusTone, type JobStatus } from "@/lib/jobStatus";
 
 export const Route = createFileRoute("/_authenticated/school/jobs")({
   component: SchoolJobs,
@@ -28,7 +29,7 @@ type JobRow = {
   description: string | null;
   benefits: string | null;
   required_skills: string[] | null;
-  status: "draft" | "published" | "closed";
+  status: JobStatus;
 };
 
 const toValues = (j: JobRow): JobFormValues => ({
