@@ -839,6 +839,7 @@ export type Database = {
           teacher_count: number
         }[]
       }
+      school_owner_for_job: { Args: { _job_id: string }; Returns: string }
     }
     Enums: {
       app_role: "teacher" | "school" | "admin"
@@ -862,7 +863,12 @@ export type Database = {
         | "video"
         | "other"
       interview_mode: "in_person" | "video" | "phone"
-      interview_status: "scheduled" | "completed" | "cancelled" | "no_show"
+      interview_status:
+        | "scheduled"
+        | "completed"
+        | "cancelled"
+        | "no_show"
+        | "confirmed"
       invoice_status: "draft" | "sent" | "paid" | "overdue" | "void"
       job_status: "draft" | "published" | "closed" | "pending_review"
       subscription_status: "trial" | "active" | "past_due" | "cancelled"
@@ -1017,7 +1023,13 @@ export const Constants = {
         "other",
       ],
       interview_mode: ["in_person", "video", "phone"],
-      interview_status: ["scheduled", "completed", "cancelled", "no_show"],
+      interview_status: [
+        "scheduled",
+        "completed",
+        "cancelled",
+        "no_show",
+        "confirmed",
+      ],
       invoice_status: ["draft", "sent", "paid", "overdue", "void"],
       job_status: ["draft", "published", "closed", "pending_review"],
       subscription_status: ["trial", "active", "past_due", "cancelled"],

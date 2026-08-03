@@ -1,12 +1,18 @@
 import { Link } from "@tanstack/react-router";
-import { Bell, BellRing, Briefcase, CalendarClock, CheckCheck, FileCheck2, UserRound } from "lucide-react";
+import { BadgeCheck, Bell, BellRing, Briefcase, CalendarCheck, CalendarClock, CheckCheck, Eye, FileCheck2, Inbox, UserRound, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useNotifications, type AppNotification } from "@/hooks/useNotifications";
 
-export function notificationIcon(type: string) {
+export function notificationIcon(type: string, title?: string) {
+  const t = (title ?? "").toLowerCase();
+  if (t.includes("job approved")) return BadgeCheck;
+  if (t.includes("sent back") || t.includes("not approved") || t.includes("not successful")) return XCircle;
+  if (t.includes("viewed")) return Eye;
+  if (t.includes("received") && t.includes("application")) return Inbox;
+  if (t.includes("interview accepted")) return CalendarCheck;
   switch (type) {
     case "interview":
       return CalendarClock;
@@ -42,7 +48,7 @@ export function NotificationRow({
   onOpen?: (item: AppNotification) => void;
   compact?: boolean;
 }) {
-  const Icon = notificationIcon(item.type);
+  const Icon = notificationIcon(item.type, item.title);
   const content = (
     <div
       className={cn(
