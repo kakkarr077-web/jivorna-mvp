@@ -5,13 +5,14 @@ import {
   BadgeCheck,
   Building2,
   CalendarCheck,
+  CheckCircle2,
   ClipboardCheck,
   GraduationCap,
   Quote,
   Search,
   ShieldCheck,
   Sparkles,
-  Star,
+
   Users,
 } from "lucide-react";
 import { PublicLayout } from "@/components/layouts/PublicLayout";
