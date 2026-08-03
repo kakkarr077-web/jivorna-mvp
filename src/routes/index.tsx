@@ -58,6 +58,13 @@ const illustrativeStats = [
   { icon: BadgeCheck, value: "94%", label: "Offer acceptance rate" },
 ];
 
+const trustBadges = [
+  { icon: CheckCircle2, label: "Verified Schools" },
+  { icon: CheckCircle2, label: "Verified Teachers" },
+  { icon: CheckCircle2, label: "Secure Applications" },
+  { icon: CheckCircle2, label: "Human Reviewed Jobs" },
+];
+
 
 const steps = [
   {
@@ -172,12 +179,12 @@ function Index() {
               <Sparkles className="h-3.5 w-3.5" /> Teacher recruitment, refined
             </p>
             <h1 className="text-display mt-6 text-4xl sm:text-5xl lg:text-[3.6rem]">
-              Helping Schools Hire{" "}
-              <span className="text-gold">Exceptional Teachers</span> Faster.
+              India's Recruitment Platform Built{" "}
+              <span className="text-gold">Exclusively for Schools</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              Jivorna connects schools with verified, qualified educators through a streamlined
-              recruitment process.
+              Helping schools hire verified teachers faster while helping teachers discover
+              trusted opportunities across India.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Button asChild size="lg" className="rounded-full shadow-soft">
@@ -189,16 +196,20 @@ function Index() {
                 <Link to="/jobs">Find Teaching Jobs</Link>
               </Button>
             </div>
-            <p className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
-              <span className="flex text-gold">
-                {[0, 1, 2, 3, 4].map((i) => (
-                  <Star key={i} className="h-4 w-4 fill-current" />
-                ))}
-              </span>
-              {stats?.school_count
-                ? `Trusted by ${stats.school_count.toLocaleString("en-IN")} schools on Jivorna`
-                : "Trusted by schools across India"}
-            </p>
+            <ul className="mt-8 grid max-w-xl grid-cols-2 gap-3 sm:gap-4">
+              {trustBadges.map((b) => (
+                <li
+                  key={b.label}
+                  className="flex items-center gap-2.5 rounded-full border border-border bg-card/70 px-3.5 py-2 text-sm text-foreground shadow-soft"
+                >
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gold-soft text-gold">
+                    <b.icon className="h-3.5 w-3.5" />
+                  </span>
+                  <span className="truncate">{b.label}</span>
+                </li>
+              ))}
+            </ul>
+
           </Reveal>
 
           <Reveal delay={120} className="relative">
