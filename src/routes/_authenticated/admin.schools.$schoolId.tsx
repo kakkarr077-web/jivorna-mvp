@@ -73,7 +73,7 @@ function AdminSchoolDetail() {
 
       <PageHeader
         title={school.name}
-        description={school.tagline || [school.board, school.city].filter(Boolean).join(" · ") || undefined}
+        description={school.tagline || [school.board, school.city].filter(Boolean).join(" · ")}
         action={
           <Badge variant={verificationVariant(school.subscription_status)}>
             {VERIFICATION_LABEL[school.subscription_status]}
