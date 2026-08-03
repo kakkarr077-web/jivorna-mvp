@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, stripSearchParams } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Bookmark } from "lucide-react";
@@ -25,6 +25,7 @@ import {
 
 export const Route = createFileRoute("/_authenticated/teacher/jobs")({
   validateSearch: validateJobSearch,
+  search: { middlewares: [stripSearchParams(defaultJobSearch)] },
   component: TeacherJobs,
 });
 

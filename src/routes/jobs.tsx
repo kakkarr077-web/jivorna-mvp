@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, stripSearchParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { PublicLayout } from "@/components/layouts/PublicLayout";
 import { JobCard } from "@/components/shared/JobCard";
@@ -21,6 +21,7 @@ import {
 
 export const Route = createFileRoute("/jobs")({
   validateSearch: validateJobSearch,
+  search: { middlewares: [stripSearchParams(defaultJobSearch)] },
   head: () => ({
     meta: [
       { title: "Teaching Jobs — Jivorna" },
