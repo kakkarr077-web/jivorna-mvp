@@ -46,9 +46,19 @@ function TeacherJobs() {
 
   const apply = useMutation({
     mutationFn: async (jobId: string) => {
-      const { error } = await supabase.from("applications").insert({ job_id: jobId, teacher_id: user!.id });
+      const { data, error } = await supabase
+        .from("applications")
+        .insert({ job_id: jobId, teacher_id: user!.id })
+        .select("id")
+        .single();
       if (error) throw error;
+      try {
+        await notifyApplicationSubmitted({ data: { id: data.id } });
+      } catch {
+        // Email delivery must never block the application itself.
+      }
     },
+
     onSuccess: () => {
       toast.success("Application sent.");
       void qc.invalidateQueries({ queryKey: ["teacher-applied-ids"] });

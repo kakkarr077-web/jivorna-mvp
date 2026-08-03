@@ -71,7 +71,15 @@ function SchoolApplicants() {
         to_status: to,
         summary: `Moved to ${PIPELINE_STAGES.find((s) => s.id === to)?.label}`,
       });
+      if (to === "offer") {
+        try {
+          await notifyOfferExtended({ data: { id: card.id } });
+        } catch {
+          // Email delivery must never block the pipeline move.
+        }
+      }
     },
+
     onSuccess: () => {
       toast.success("Candidate moved.");
       void qc.invalidateQueries({ queryKey: ["school-applicants"] });
