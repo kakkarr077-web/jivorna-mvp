@@ -232,6 +232,46 @@ function Index() {
         </div>
       </section>
 
+      {/* Choose Your Journey */}
+      <section className="border-b border-border py-20 lg:py-24">
+        <div className="mx-auto max-w-6xl px-5 lg:px-8">
+          <SectionHeading
+            eyebrow="Get started"
+            title="Choose Your Journey"
+            align="center"
+          />
+          <div className="mt-12 grid gap-6 md:grid-cols-2">
+            {journeys.map((j, i) => (
+              <Reveal key={j.title} delay={i * 110}>
+                <div className="card-premium group h-full p-8 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lift sm:p-10">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-soft text-primary transition-colors duration-300 group-hover:bg-gold-soft group-hover:text-gold">
+                    <j.icon className="h-6 w-6" />
+                  </span>
+                  <h3 className="mt-6 font-serif text-2xl text-primary sm:text-3xl">{j.title}</h3>
+                  <p className="mt-2 text-muted-foreground">{j.subtitle}</p>
+                  <ul className="mt-6 space-y-3">
+                    {j.features.map((f) => (
+                      <li key={f} className="flex items-center gap-3 text-sm text-foreground">
+                        <CheckCircle2 className="h-4 w-4 shrink-0 text-gold" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <Button asChild size="lg" variant={j.variant} className="mt-8 w-full sm:w-auto">
+                    <Link to={j.to}>
+                      {j.cta}
+                      <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                    </Link>
+                  </Button>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
+
       {/* Statistics */}
       <section className="border-b border-border bg-surface py-16">
         <div className="mx-auto max-w-6xl px-5 lg:px-8">
