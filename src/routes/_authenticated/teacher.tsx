@@ -14,17 +14,20 @@ const nav: NavItem[] = [
   { to: "/notifications", label: "Notifications", icon: Bell },
 ];
 
-function TeacherPortal() {
+/** Only mounted once RoleGate has confirmed the visitor is a teacher. */
+function TeacherShell() {
   useProfileIncompleteNotice();
   return (
-    <RoleGate allow="teacher">
-      <DashboardLayout portal="Teacher portal" nav={nav}>
-        <Outlet />
-      </DashboardLayout>
-    </RoleGate>
+    <DashboardLayout portal="Teacher portal" nav={nav}>
+      <Outlet />
+    </DashboardLayout>
   );
 }
 
 export const Route = createFileRoute("/_authenticated/teacher")({
-  component: TeacherPortal,
+  component: () => (
+    <RoleGate allow="teacher">
+      <TeacherShell />
+    </RoleGate>
+  ),
 });

@@ -23,6 +23,10 @@ const AuthContext = createContext<AuthContextValue>({
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [role, setRole] = useState<AppRole | null>(null);
+  // Which user id the current `role` value belongs to. Used so callers keep
+  // seeing a loading state while the role for a newly signed-in user is
+  // still being fetched, instead of briefly acting on a stale role.
+  const [roleUserId, setRoleUserId] = useState<string | null | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -30,7 +34,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const loadRole = async (userId: string | undefined) => {
       if (!userId) {
-        if (active) setRole(null);
+        if (active) {
+          setRole(null);
+          setRoleUserId(null);
+        }
         return;
       }
       const { data } = await supabase.from("user_roles").select("role").eq("user_id", userId);
@@ -45,6 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               ? "teacher"
               : null,
       );
+      setRoleUserId(userId);
     };
 
     supabase.auth.getSession().then(({ data }) => {
@@ -64,14 +72,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  const currentUserId = session?.user.id ?? null;
+  const roleResolved = roleUserId === currentUserId;
+
   const value: AuthContextValue = {
     user: session?.user ?? null,
     session,
     role,
-    loading,
+    loading: loading || !roleResolved,
     signOut: async () => {
       await supabase.auth.signOut();
       setRole(null);
+      setRoleUserId(null);
     },
   };
 
