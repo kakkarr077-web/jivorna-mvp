@@ -525,6 +525,15 @@ function Index() {
         </div>
       </section>
 
+      {/* Trust banner */}
+      <section className="py-16">
+        <div className="mx-auto max-w-6xl px-5 lg:px-8">
+          <Reveal>
+            <TrustBanner />
+          </Reveal>
+        </div>
+      </section>
+
       {/* Call To Action */}
       <section className="pb-20 lg:pb-24">
         <div className="mx-auto max-w-6xl px-5 lg:px-8">
