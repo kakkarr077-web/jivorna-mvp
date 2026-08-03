@@ -831,6 +831,14 @@ export type Database = {
         Args: { _application_id: string; _user_id: string }
         Returns: boolean
       }
+      platform_stats: {
+        Args: never
+        Returns: {
+          live_job_count: number
+          school_count: number
+          teacher_count: number
+        }[]
+      }
     }
     Enums: {
       app_role: "teacher" | "school" | "admin"

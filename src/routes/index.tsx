@@ -44,12 +44,20 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const stats = [
-  { icon: Users, value: "4,800+", label: "Verified teachers" },
-  { icon: Building2, value: "620", label: "Partner schools" },
+type PlatformStats = {
+  teacher_count: number;
+  school_count: number;
+  live_job_count: number;
+};
+
+// Live counts come from the database; the two benchmark figures below are
+// illustrative targets and are labelled as such until we have enough hiring
+// history to calculate them.
+const illustrativeStats = [
   { icon: CalendarCheck, value: "9 days", label: "Median time to hire" },
   { icon: BadgeCheck, value: "94%", label: "Offer acceptance rate" },
 ];
+
 
 const steps = [
   {
@@ -109,6 +117,15 @@ const testimonials = [
 ];
 
 function Index() {
+  const { data: stats } = useQuery({
+    queryKey: ["platform-stats"],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("platform_stats");
+      if (error) throw error;
+      return (data?.[0] ?? null) as PlatformStats | null;
+    },
+  });
+
   const { data: jobs } = useQuery({
     queryKey: ["featured-jobs"],
     queryFn: async () => {
@@ -122,6 +139,20 @@ function Index() {
       return (data ?? []) as unknown as JobCardData[];
     },
   });
+
+  const liveStats = [
+    {
+      icon: Users,
+      value: stats ? stats.teacher_count.toLocaleString("en-IN") : "—",
+      label: "Verified teachers",
+    },
+    {
+      icon: Building2,
+      value: stats ? stats.school_count.toLocaleString("en-IN") : "—",
+      label: "Partner schools",
+    },
+  ];
+
 
   return (
     <PublicLayout>
@@ -164,7 +195,9 @@ function Index() {
                   <Star key={i} className="h-4 w-4 fill-current" />
                 ))}
               </span>
-              Trusted by 620+ schools across 14 states
+              {stats?.school_count
+                ? `Trusted by ${stats.school_count.toLocaleString("en-IN")} schools on Jivorna`
+                : "Trusted by schools across India"}
             </p>
           </Reveal>
 
@@ -178,7 +211,9 @@ function Index() {
             />
             <div className="card-premium absolute -bottom-6 -left-4 hidden w-56 p-4 sm:block">
               <p className="eyebrow text-gold">Now hiring</p>
-              <p className="mt-2 font-serif text-2xl text-primary">128 live roles</p>
+              <p className="mt-2 font-serif text-2xl text-primary">
+                {stats ? `${stats.live_job_count} live roles` : "Live roles"}
+              </p>
               <p className="mt-1 text-xs text-muted-foreground">Across IB, CBSE, ICSE & Cambridge</p>
             </div>
           </Reveal>
@@ -187,20 +222,42 @@ function Index() {
 
       {/* Statistics */}
       <section className="border-b border-border bg-surface py-16">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-5 px-5 lg:grid-cols-4 lg:px-8">
-          {stats.map((s, i) => (
-            <Reveal key={s.label} delay={i * 90}>
-              <div className="card-premium card-premium-hover h-full p-6">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-soft text-primary">
-                  <s.icon className="h-5 w-5" />
-                </span>
-                <p className="mt-5 font-serif text-3xl text-primary sm:text-4xl">{s.value}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{s.label}</p>
-              </div>
-            </Reveal>
-          ))}
+        <div className="mx-auto max-w-6xl px-5 lg:px-8">
+          <div className="grid grid-cols-2 gap-5 lg:grid-cols-4">
+            {liveStats.map((s, i) => (
+              <Reveal key={s.label} delay={i * 90}>
+                <div className="card-premium card-premium-hover h-full p-6">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-soft text-primary">
+                    <s.icon className="h-5 w-5" />
+                  </span>
+                  <p className="mt-5 font-serif text-3xl text-primary sm:text-4xl">{s.value}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{s.label}</p>
+                </div>
+              </Reveal>
+            ))}
+            {illustrativeStats.map((s, i) => (
+              <Reveal key={s.label} delay={(i + 2) * 90}>
+                <div className="card-premium h-full p-6">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface text-muted-foreground">
+                    <s.icon className="h-5 w-5" />
+                  </span>
+                  <p className="mt-5 font-serif text-3xl text-muted-foreground sm:text-4xl">
+                    {s.value}
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">{s.label}</p>
+                  <p className="eyebrow mt-3 text-muted-foreground">Illustrative target</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+          <p className="mt-6 text-xs text-muted-foreground">
+            Teacher and school counts are live platform figures. Median time to hire and offer
+            acceptance rate are illustrative targets, not measured results — we will publish
+            verified figures once we have enough completed hires to calculate them.
+          </p>
         </div>
       </section>
+
 
       {/* How It Works */}
       <section className="py-20 lg:py-24">
