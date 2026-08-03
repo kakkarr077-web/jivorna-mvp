@@ -594,6 +594,44 @@ export type Database = {
         }
         Relationships: []
       }
+      school_notes: {
+        Row: {
+          author_id: string
+          body: string
+          created_at: string
+          id: string
+          pinned: boolean
+          school_id: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          body: string
+          created_at?: string
+          id?: string
+          pinned?: boolean
+          school_id: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          body?: string
+          created_at?: string
+          id?: string
+          pinned?: boolean
+          school_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "school_notes_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       schools: {
         Row: {
           board: string | null
