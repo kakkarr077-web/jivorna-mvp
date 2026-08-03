@@ -316,10 +316,14 @@ export function JobForm({
           <SelectTrigger><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="draft">Draft</SelectItem>
-            <SelectItem value="published">Published</SelectItem>
+            <SelectItem value="pending_review">In review</SelectItem>
+            {values.status === "published" && <SelectItem value="published">Live</SelectItem>}
             <SelectItem value="closed">Closed</SelectItem>
           </SelectContent>
         </Select>
+        <p className="text-xs text-muted-foreground">
+          Roles go live once our admin team has reviewed them.
+        </p>
       </Field>
 
       <div className="flex flex-wrap gap-2">
@@ -329,7 +333,12 @@ export function JobForm({
         <Button type="button" variant="ghost" disabled={pending} onClick={() => attempt("draft")}>
           Save draft
         </Button>
-        <Button type="button" variant="gold" disabled={pending} onClick={() => attempt(values.status)}>
+        <Button
+          type="button"
+          variant="gold"
+          disabled={pending}
+          onClick={() => attempt(values.status === "draft" ? "pending_review" : values.status)}
+        >
           {pending ? "Saving…" : submitLabel}
         </Button>
         {onCancel && (
