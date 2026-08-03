@@ -14,7 +14,7 @@ import {
   UserRound,
   Video,
 } from "lucide-react";
-import { PageHeader, EmptyState } from "@/components/shared/Primitives";
+import { EmptyState } from "@/components/shared/Primitives";
 import { JobCard, type JobCardData } from "@/components/shared/JobCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
