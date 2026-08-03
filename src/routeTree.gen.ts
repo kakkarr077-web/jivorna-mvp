@@ -42,6 +42,7 @@ import { Route as AuthenticatedTeacherApplicationsRouteImport } from './routes/_
 import { Route as AuthenticatedTeacherJobsRouteImport } from './routes/_authenticated/teacher.jobs'
 import { Route as AuthenticatedTeacherOnboardingRouteImport } from './routes/_authenticated/teacher.onboarding'
 import { Route as AuthenticatedTeacherProfileRouteImport } from './routes/_authenticated/teacher.profile'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -219,6 +220,12 @@ const AuthenticatedTeacherProfileRoute =
     path: '/profile',
     getParentRoute: () => AuthenticatedTeacherRoute,
   } as any)
+const LovableEmailTransactionalPreviewRoute =
+  LovableEmailTransactionalPreviewRouteImport.update({
+    id: '/lovable/email/transactional/preview',
+    path: '/lovable/email/transactional/preview',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -253,6 +260,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/school/': typeof AuthenticatedSchoolIndexRoute
   '/teacher/': typeof AuthenticatedTeacherIndexRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -284,6 +292,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/school': typeof AuthenticatedSchoolIndexRoute
   '/teacher': typeof AuthenticatedTeacherIndexRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -320,6 +329,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/school/': typeof AuthenticatedSchoolIndexRoute
   '/_authenticated/teacher/': typeof AuthenticatedTeacherIndexRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -356,6 +366,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/school/'
     | '/teacher/'
+    | '/lovable/email/transactional/preview'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -387,6 +398,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/school'
     | '/teacher'
+    | '/lovable/email/transactional/preview'
   id:
     | '__root__'
     | '/'
@@ -422,6 +434,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/'
     | '/_authenticated/school/'
     | '/_authenticated/teacher/'
+    | '/lovable/email/transactional/preview'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -437,6 +450,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
+  LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -672,6 +686,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTeacherProfileRouteImport
       parentRoute: typeof AuthenticatedTeacherRoute
     }
+    '/lovable/email/transactional/preview': {
+      id: '/lovable/email/transactional/preview'
+      path: '/lovable/email/transactional/preview'
+      fullPath: '/lovable/email/transactional/preview'
+      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -766,6 +787,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
+  LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

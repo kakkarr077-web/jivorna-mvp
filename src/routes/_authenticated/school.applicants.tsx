@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { PIPELINE_STAGES, normalizeStage, relativeTime, type StageId } from "@/lib/pipeline";
 import { ApplicationDetail, type PipelineCard } from "@/components/school/ApplicationDetail";
+import { notifyOfferExtended } from "@/lib/hiring-emails.functions";
 import { cn } from "@/lib/utils";
 import { GripVertical } from "lucide-react";
 
@@ -71,7 +72,15 @@ function SchoolApplicants() {
         to_status: to,
         summary: `Moved to ${PIPELINE_STAGES.find((s) => s.id === to)?.label}`,
       });
+      if (to === "offer") {
+        try {
+          await notifyOfferExtended({ data: { id: card.id } });
+        } catch {
+          // Email delivery must never block the pipeline move.
+        }
+      }
     },
+
     onSuccess: () => {
       toast.success("Candidate moved.");
       void qc.invalidateQueries({ queryKey: ["school-applicants"] });

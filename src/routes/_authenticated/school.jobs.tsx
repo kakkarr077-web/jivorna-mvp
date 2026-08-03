@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { JobForm, emptyJob, salaryLabel, type JobFormValues } from "@/components/school/JobForm";
 import { Plus, Pencil } from "lucide-react";
 import { jobStatusLabel, jobStatusTone, type JobStatus } from "@/lib/jobStatus";
+import { notifyJobPendingApproval } from "@/lib/hiring-emails.functions";
 
 export const Route = createFileRoute("/_authenticated/school/jobs")({
   component: SchoolJobs,
@@ -100,14 +101,24 @@ function SchoolJobs() {
         required_skills: values.required_skills,
         status,
       };
+      let jobId = editingId;
       if (editingId) {
         const { error } = await supabase.from("jobs").update(payload).eq("id", editingId);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("jobs").insert(payload);
+        const { data, error } = await supabase.from("jobs").insert(payload).select("id").single();
         if (error) throw error;
+        jobId = data.id;
+      }
+      if (status === "pending_review" && jobId) {
+        try {
+          await notifyJobPendingApproval({ data: { id: jobId } });
+        } catch {
+          // Email delivery must never block the vacancy submission.
+        }
       }
       return status;
+
     },
     onSuccess: (status) => {
       toast.success(
