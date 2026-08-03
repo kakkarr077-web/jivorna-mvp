@@ -66,6 +66,29 @@ const trustBadges = [
   { icon: CheckCircle2, label: "Human Reviewed Jobs" },
 ];
 
+const journeys = [
+  {
+    icon: Building2,
+    title: "I'm Hiring",
+    subtitle: "Find qualified teachers faster.",
+    features: ["Post vacancies", "Review applicants", "Hire confidently"],
+    cta: "For Schools",
+    to: "/for-schools",
+    variant: "default" as const,
+  },
+  {
+    icon: GraduationCap,
+    title: "I'm Looking for a Job",
+    subtitle: "Find verified teaching opportunities.",
+    features: ["Apply quickly", "Track applications", "Connect with schools"],
+    cta: "For Teachers",
+    to: "/jobs",
+    variant: "outline" as const,
+  },
+];
+
+
+
 
 const steps = [
   {
