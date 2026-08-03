@@ -14,7 +14,7 @@ export function ComingSoon({
 }) {
   return (
     <div>
-      <PageHeader title={title} description={description} />
+      <PageHeader title={title} {...(description ? { description } : {})} />
       <div className="rounded-xl border border-dashed border-border bg-card/60 px-6 py-20 text-center">
         {Icon && (
           <span className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-lg bg-primary-soft text-primary">
