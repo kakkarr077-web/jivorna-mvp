@@ -482,7 +482,7 @@ function TeacherOverview() {
       <section className="mt-12">
         <SectionTitle title="Profile completion" />
         <div className="grid gap-6 lg:grid-cols-3">
-          <ProfileCompletionWidget profile={profile} loading={profileLoading} />
+          <ProfileCompletionWidget profile={profile ?? null} loading={profileLoading} />
           <div className="card-premium p-6 lg:col-span-2">
             <div className="flex items-center gap-3">
               <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-soft text-primary">
