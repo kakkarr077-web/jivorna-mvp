@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Eye, Pencil, X } from "lucide-react";
+import { jobStatusLabel, type JobStatus } from "@/lib/jobStatus";
 
 export type JobFormValues = {
   title: string;
@@ -26,7 +27,7 @@ export type JobFormValues = {
   description: string;
   benefits: string;
   required_skills: string[];
-  status: "draft" | "published" | "closed";
+  status: JobStatus;
 };
 
 export const emptyJob: JobFormValues = {
@@ -61,8 +62,8 @@ export function validateJob(v: JobFormValues) {
   if (v.salary_min && (Number.isNaN(min) || min < 0)) errors.salary_min = "Enter a valid amount.";
   if (v.salary_max && (Number.isNaN(max) || max < 0)) errors.salary_max = "Enter a valid amount.";
   if (v.salary_min && v.salary_max && max < min) errors.salary_max = "Maximum must be above the minimum.";
-  if (v.status === "published" && v.description.trim().length < 40)
-    errors.description = "Published roles need a description of at least 40 characters.";
+  if ((v.status === "published" || v.status === "pending_review") && v.description.trim().length < 40)
+    errors.description = "Roles submitted for review need a description of at least 40 characters.";
   return errors;
 }
 
@@ -103,9 +104,7 @@ export function JobPreview({ values, schoolName }: { values: JobFormValues; scho
             {[schoolName, values.location].filter(Boolean).join(" · ") || "Your school"}
           </p>
         </div>
-        <Badge variant="secondary" className="capitalize">
-          {values.status}
-        </Badge>
+        <Badge variant="secondary">{jobStatusLabel(values.status)}</Badge>
       </div>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -202,8 +201,12 @@ export function JobForm({
           <Button variant="ghost" disabled={pending} onClick={() => attempt("draft")}>
             Save draft
           </Button>
-          <Button variant="gold" disabled={pending} onClick={() => attempt("published")}>
-            Publish vacancy
+          <Button
+            variant="gold"
+            disabled={pending}
+            onClick={() => attempt(values.status === "published" ? "published" : "pending_review")}
+          >
+            {values.status === "published" ? "Save changes" : "Submit for review"}
           </Button>
         </div>
       </div>
@@ -215,7 +218,7 @@ export function JobForm({
       className="grid gap-5"
       onSubmit={(e) => {
         e.preventDefault();
-        attempt(values.status === "closed" ? "closed" : "published");
+        attempt(values.status === "closed" || values.status === "published" ? values.status : "pending_review");
       }}
     >
       <Field label="Role title" htmlFor="title" error={errors.title}>
@@ -313,10 +316,14 @@ export function JobForm({
           <SelectTrigger><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="draft">Draft</SelectItem>
-            <SelectItem value="published">Published</SelectItem>
+            <SelectItem value="pending_review">In review</SelectItem>
+            {values.status === "published" && <SelectItem value="published">Live</SelectItem>}
             <SelectItem value="closed">Closed</SelectItem>
           </SelectContent>
         </Select>
+        <p className="text-xs text-muted-foreground">
+          Roles go live once our admin team has reviewed them.
+        </p>
       </Field>
 
       <div className="flex flex-wrap gap-2">
@@ -326,7 +333,12 @@ export function JobForm({
         <Button type="button" variant="ghost" disabled={pending} onClick={() => attempt("draft")}>
           Save draft
         </Button>
-        <Button type="button" variant="gold" disabled={pending} onClick={() => attempt(values.status)}>
+        <Button
+          type="button"
+          variant="gold"
+          disabled={pending}
+          onClick={() => attempt(values.status === "draft" ? "pending_review" : values.status)}
+        >
           {pending ? "Saving…" : submitLabel}
         </Button>
         {onCancel && (
