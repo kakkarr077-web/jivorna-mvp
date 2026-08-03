@@ -1,4 +1,11 @@
 import type { ComponentType } from 'react'
+import { template as applicationReceived } from './application-received'
+import { template as newApplication } from './new-application'
+import { template as interviewInvitation } from './interview-invitation'
+import { template as interviewAccepted } from './interview-accepted'
+import { template as offerExtended } from './offer-extended'
+import { template as jobPendingApproval } from './job-pending-approval'
+
 
 export interface TemplateEntry {
   component: ComponentType<any>
