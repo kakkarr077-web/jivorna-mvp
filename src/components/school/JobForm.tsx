@@ -26,7 +26,7 @@ export type JobFormValues = {
   description: string;
   benefits: string;
   required_skills: string[];
-  status: "draft" | "published" | "closed";
+  status: JobStatus;
 };
 
 export const emptyJob: JobFormValues = {
