@@ -100,21 +100,22 @@ function TeacherJobs() {
   });
 
 
-  const q = query.trim().toLowerCase();
-  const list = (jobs ?? []).filter((j) =>
-    !q ? true : [j.title, j.subject, j.location, j.schools?.name].filter(Boolean).join(" ").toLowerCase().includes(q),
-  );
+  const facets = useMemo(() => jobFacets(jobs ?? []), [jobs]);
+  const list = useMemo(() => filterAndSortJobs(jobs ?? [], search), [jobs, search]);
 
   return (
     <div>
       <PageHeader title="Find jobs" description="Live vacancies published by verified schools." />
 
-      <Input
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search roles, subjects or cities"
-        className="mb-8 h-11 max-w-md bg-card"
-      />
+      <div className="mb-8">
+        <JobFilters
+          value={search}
+          facets={facets}
+          resultCount={list.length}
+          onChange={setSearch}
+          onReset={() => setSearch(defaultJobSearch)}
+        />
+      </div>
 
       {isLoading ? (
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -123,8 +124,9 @@ function TeacherJobs() {
           ))}
         </div>
       ) : list.length === 0 ? (
-        <EmptyState title="No roles found" description="Check back soon — schools publish new vacancies weekly." />
+        <EmptyState title="No roles found" description="Try clearing a filter — schools publish new vacancies weekly." />
       ) : (
+
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {list.map((job) => {
             const done = applied?.has(job.id);
