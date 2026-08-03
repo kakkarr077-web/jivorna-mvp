@@ -48,11 +48,6 @@ const toValues = (j: JobRow): JobFormValues => ({
   status: j.status,
 });
 
-const statusTone: Record<JobRow["status"], "default" | "secondary" | "outline"> = {
-  published: "default",
-  draft: "secondary",
-  closed: "outline",
-};
 
 function SchoolJobs() {
   const { user } = useAuth();
