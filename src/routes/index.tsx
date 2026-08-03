@@ -117,6 +117,15 @@ const testimonials = [
 ];
 
 function Index() {
+  const { data: stats } = useQuery({
+    queryKey: ["platform-stats"],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("platform_stats");
+      if (error) throw error;
+      return (data?.[0] ?? null) as PlatformStats | null;
+    },
+  });
+
   const { data: jobs } = useQuery({
     queryKey: ["featured-jobs"],
     queryFn: async () => {
@@ -130,6 +139,20 @@ function Index() {
       return (data ?? []) as unknown as JobCardData[];
     },
   });
+
+  const liveStats = [
+    {
+      icon: Users,
+      value: stats ? stats.teacher_count.toLocaleString("en-IN") : "—",
+      label: "Verified teachers",
+    },
+    {
+      icon: Building2,
+      value: stats ? stats.school_count.toLocaleString("en-IN") : "—",
+      label: "Partner schools",
+    },
+  ];
+
 
   return (
     <PublicLayout>
