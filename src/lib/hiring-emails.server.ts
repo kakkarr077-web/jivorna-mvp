@@ -2,10 +2,6 @@
 // through the managed email API. Never import from client components.
 import { sendTemplateEmail } from './email-templates/send-email'
 
-type Admin = Awaited<
-  ReturnType<typeof import('@/integrations/supabase/client.server')['supabaseAdmin']['from']>
->
-
 async function admin() {
   const { supabaseAdmin } = await import('@/integrations/supabase/client.server')
   return supabaseAdmin
@@ -199,5 +195,3 @@ export async function sendJobPendingApprovalEmails(jobId: string) {
     })
   }
 }
-
-export type { Admin }
