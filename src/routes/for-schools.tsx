@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Gauge, ShieldCheck, Timer, Users } from "lucide-react";
 import { PublicLayout } from "@/components/layouts/PublicLayout";
-import { PageHero } from "@/components/site/PageHero";
 import { SectionHeading } from "@/components/shared/Primitives";
 import { Button } from "@/components/ui/button";
 
@@ -34,35 +33,37 @@ const benefits = [
 function ForSchools() {
   return (
     <PublicLayout>
-      <PageHero
-        eyebrow="For schools"
-        title={
-          <>
-            Hire teachers you'd have <span className="italic text-gold">fought to keep.</span>
-          </>
-        }
-        description="Publish a vacancy, review structured teacher profiles and run your entire shortlist from a single dashboard built for school leadership teams."
-      >
-        <div className="flex flex-wrap gap-3">
-          <Button asChild size="lg" variant="gold" className="rounded-none px-8">
-            <Link to="/auth" search={{ mode: "signup" }}>
-              Create a school account
-            </Link>
-          </Button>
-          <Button asChild size="lg" variant="onDark" className="rounded-none px-8">
-            <Link to="/contact">Book a walkthrough</Link>
-          </Button>
+      <section className="border-b border-border bg-gradient-navy">
+        <div className="mx-auto max-w-6xl px-5 py-20 lg:px-8 lg:py-24">
+          <p className="eyebrow text-gold">For schools</p>
+          <h1 className="text-display mt-4 max-w-3xl text-4xl text-primary-foreground sm:text-5xl">
+            Hire teachers you'd have fought to keep.
+          </h1>
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-primary-foreground/80">
+            Publish a vacancy, review structured teacher profiles and run your entire shortlist from
+            a single dashboard built for school leadership teams.
+          </p>
+          <div className="mt-9 flex flex-wrap gap-3">
+            <Button asChild size="lg" variant="gold">
+              <Link to="/auth" search={{ mode: "signup" }}>
+                Create a school account
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="onDark">
+              <Link to="/contact">Book a walkthrough</Link>
+            </Button>
+          </div>
         </div>
-      </PageHero>
+      </section>
 
-      <section className="bg-background py-24 lg:py-32">
-        <div className="mx-auto max-w-7xl px-5 lg:px-10">
+      <section className="py-20 lg:py-24">
+        <div className="mx-auto max-w-6xl px-5 lg:px-8">
           <SectionHeading eyebrow="Why leadership teams switch" title="Recruitment without the mark-up" />
-          <div className="mt-14 grid gap-px border border-border bg-border sm:grid-cols-2">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2">
             {benefits.map((b) => (
-              <div key={b.title} className="h-full bg-card p-8 transition-colors hover:bg-surface lg:p-10">
+              <div key={b.title} className="rounded-xl border border-border bg-card p-7 shadow-soft">
                 <b.icon className="h-5 w-5 text-gold" />
-                <h3 className="mt-8 font-serif text-2xl">{b.title}</h3>
+                <h3 className="mt-5 font-serif text-xl">{b.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{b.body}</p>
               </div>
             ))}
@@ -72,4 +73,3 @@ function ForSchools() {
     </PublicLayout>
   );
 }
-

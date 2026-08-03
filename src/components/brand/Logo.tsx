@@ -27,13 +27,12 @@ export function Logo({
       />
       <span
         className={cn(
-          "font-serif text-xl tracking-[0.22em] uppercase",
-          tone === "dark" ? "text-foreground" : "text-ink-foreground",
+          "font-serif text-xl tracking-[0.12em] uppercase",
+          tone === "dark" ? "text-foreground" : "text-primary-foreground",
         )}
       >
         Jivorna
       </span>
-
     </Link>
   );
 }

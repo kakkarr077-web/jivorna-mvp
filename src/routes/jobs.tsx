@@ -3,7 +3,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import { PublicLayout } from "@/components/layouts/PublicLayout";
-import { PageHero } from "@/components/site/PageHero";
 import { JobCard, type JobCardData } from "@/components/shared/JobCard";
 import { EmptyState } from "@/components/shared/Primitives";
 import { Button } from "@/components/ui/button";
@@ -56,44 +55,44 @@ function JobsPage() {
 
   return (
     <PublicLayout>
-      <PageHero
-        eyebrow="Open roles"
-        title={
-          <>
-            Teaching <span className="italic text-gold">vacancies</span>
-          </>
-        }
-        description="Every role is posted directly by a verified school. Apply in one click once your teacher profile is complete."
-      >
-        <div className="flex max-w-xl items-center gap-2">
-          <div className="relative flex-1">
-            <Search className="absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-ink-muted" />
-            <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by subject, school or city"
-              className="h-12 rounded-none border-ink-border bg-transparent pl-11 text-ink-foreground placeholder:text-ink-muted"
-              aria-label="Search jobs"
-            />
-          </div>
-          <Button asChild size="lg" variant="gold" className="hidden rounded-none px-8 sm:inline-flex">
-            <Link to="/auth" search={{ mode: "signup" }}>
-              Apply now
-            </Link>
-          </Button>
-        </div>
-      </PageHero>
+      <section className="border-b border-border bg-surface">
+        <div className="mx-auto max-w-6xl px-5 py-16 lg:px-8 lg:py-20">
+          <p className="eyebrow text-gold">Open roles</p>
+          <h1 className="text-display mt-4 text-4xl sm:text-5xl">Teaching vacancies</h1>
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
+            Every role is posted directly by a verified school. Apply in one click once your teacher
+            profile is complete.
+          </p>
 
-      <section className="bg-background py-20 lg:py-24">
-        <div className="mx-auto max-w-7xl px-5 lg:px-10">
+          <div className="mt-8 flex max-w-xl items-center gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search by subject, school or city"
+                className="h-11 bg-card pl-9"
+                aria-label="Search jobs"
+              />
+            </div>
+            <Button asChild size="lg" className="hidden sm:inline-flex">
+              <Link to="/auth" search={{ mode: "signup" }}>
+                Apply now
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 lg:py-20">
+        <div className="mx-auto max-w-6xl px-5 lg:px-8">
           {isLoading ? (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {[0, 1, 2].map((i) => (
-                <Skeleton key={i} className="h-52 w-full rounded-none" />
+                <Skeleton key={i} className="h-52 w-full rounded-xl" />
               ))}
             </div>
           ) : filtered.length === 0 ? (
-
             <EmptyState
               title="No roles match your search"
               description="Try a different subject or city — new vacancies are published every week."

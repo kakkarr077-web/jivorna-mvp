@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
 import { useAuth, dashboardPathForRole } from "@/hooks/useAuth";
-import { cn } from "@/lib/utils";
 
 const links = [
   { to: "/jobs", label: "Browse Jobs" },
@@ -16,56 +15,37 @@ const links = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const { user, role } = useAuth();
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-40 band-ink transition-shadow duration-300",
-        scrolled ? "shadow-ink" : "",
-      )}
-    >
-      <div className="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between gap-6 px-5 lg:px-10">
-        <Logo tone="light" />
+    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-5 lg:px-8">
+        <Logo />
 
-        <nav className="hidden items-center gap-8 lg:flex">
+        <nav className="hidden items-center gap-7 lg:flex">
           {links.map((l) => (
             <Link
               key={l.to}
               to={l.to}
-              className="relative py-1 text-[0.82rem] tracking-wide text-ink-muted transition-colors hover:text-ink-foreground"
-              activeProps={{
-                className:
-                  "text-ink-foreground after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-full after:bg-gold",
-              }}
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+              activeProps={{ className: "text-foreground font-medium" }}
             >
               {l.label}
             </Link>
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 lg:flex">
+        <div className="hidden items-center gap-2 lg:flex">
           {user ? (
-            <Button asChild size="sm" variant="gold" className="rounded-none px-5">
+            <Button asChild size="sm">
               <Link to={dashboardPathForRole(role)}>Dashboard</Link>
             </Button>
           ) : (
             <>
-              <Link
-                to="/auth"
-                className="text-[0.82rem] tracking-wide text-ink-muted transition-colors hover:text-ink-foreground"
-              >
-                Sign in
-              </Link>
-              <Button asChild size="sm" variant="gold" className="rounded-none px-5">
+              <Button asChild variant="ghost" size="sm">
+                <Link to="/auth">Sign in</Link>
+              </Button>
+              <Button asChild size="sm">
                 <Link to="/auth" search={{ mode: "signup" }}>
                   Get started
                 </Link>
@@ -77,7 +57,7 @@ export function SiteHeader() {
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="inline-flex h-10 w-10 items-center justify-center border border-ink-border text-ink-foreground lg:hidden"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border lg:hidden"
           aria-label="Toggle navigation"
         >
           {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -85,30 +65,29 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <div className="border-t border-ink-border lg:hidden">
-          <nav className="mx-auto flex max-w-7xl flex-col px-5 py-3">
+        <div className="border-t border-border bg-background lg:hidden">
+          <nav className="mx-auto flex max-w-6xl flex-col gap-1 px-5 py-4">
             {links.map((l) => (
               <Link
                 key={l.to}
                 to={l.to}
                 onClick={() => setOpen(false)}
-                className="border-b border-ink-border py-3 text-sm text-ink-muted transition-colors hover:text-ink-foreground"
-                activeProps={{ className: "text-ink-foreground" }}
+                className="rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
               >
                 {l.label}
               </Link>
             ))}
-            <div className="mt-4 flex flex-col gap-2 pb-4">
+            <div className="mt-3 flex flex-col gap-2">
               {user ? (
-                <Button asChild variant="gold" className="rounded-none" onClick={() => setOpen(false)}>
+                <Button asChild onClick={() => setOpen(false)}>
                   <Link to={dashboardPathForRole(role)}>Dashboard</Link>
                 </Button>
               ) : (
                 <>
-                  <Button asChild variant="onDark" className="rounded-none" onClick={() => setOpen(false)}>
+                  <Button asChild variant="outline" onClick={() => setOpen(false)}>
                     <Link to="/auth">Sign in</Link>
                   </Button>
-                  <Button asChild variant="gold" className="rounded-none" onClick={() => setOpen(false)}>
+                  <Button asChild onClick={() => setOpen(false)}>
                     <Link to="/auth" search={{ mode: "signup" }}>
                       Get started
                     </Link>
