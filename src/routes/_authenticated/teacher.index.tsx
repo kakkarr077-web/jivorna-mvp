@@ -2,17 +2,20 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
+  ArrowRight,
   Bell,
   Bookmark,
   CalendarClock,
   CheckCircle2,
   FileText,
   Send,
+  Sparkle,
   UploadCloud,
   UserRound,
   Video,
 } from "lucide-react";
 import { PageHeader, EmptyState } from "@/components/shared/Primitives";
+import { JobCard, type JobCardData } from "@/components/shared/JobCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
@@ -111,6 +114,30 @@ function WidgetCard({
   );
 }
 
+function SectionTitle({
+  title,
+  to,
+  linkLabel,
+}: {
+  title: string;
+  to?: string;
+  linkLabel?: string;
+}) {
+  return (
+    <div className="mb-4 flex items-end justify-between gap-4">
+      <h2 className="font-serif text-xl">{title}</h2>
+      {to && (
+        <Link
+          to={to}
+          className="inline-flex items-center gap-1 text-sm text-primary hover:text-gold"
+        >
+          {linkLabel ?? "View all"} <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      )}
+    </div>
+  );
+}
+
 function TeacherOverview() {
   const { user } = useAuth();
   const qc = useQueryClient();
@@ -188,6 +215,29 @@ function TeacherOverview() {
     },
   });
 
+  const { data: openJobs, isLoading: jobsLoading } = useQuery({
+    queryKey: ["teacher-open-jobs"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("jobs")
+        .select("id,title,subject,location,employment_type,salary_range,description,schools(name,city)")
+        .eq("status", "published")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as unknown as JobCardData[];
+    },
+  });
+
+  const { data: appliedIds } = useQuery({
+    queryKey: ["teacher-applied-ids", uid],
+    enabled: !!uid,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("applications").select("job_id").eq("teacher_id", uid!);
+      if (error) throw error;
+      return new Set((data ?? []).map((r) => r.job_id));
+    },
+  });
+
   const toggleAvailability = useMutation({
     mutationFn: async (next: boolean) => {
       const { error } = await supabase
@@ -232,6 +282,22 @@ function TeacherOverview() {
   };
   const completion = profile ? completionPercent(values) : 0;
   const available = profile?.available ?? true;
+  const firstName = profile?.full_name ? profile.full_name.split(" ")[0] : null;
+
+  const mySubjects = (profile?.subjects ?? []).map((s: string) => s.toLowerCase());
+  const myCity = (profile?.city ?? "").toLowerCase();
+  const recommended = (openJobs ?? [])
+    .filter((j) => !appliedIds?.has(j.id))
+    .map((j) => {
+      const subject = (j.subject ?? "").toLowerCase();
+      const location = (j.location ?? "").toLowerCase();
+      let score = 0;
+      if (subject && mySubjects.some((s) => subject.includes(s) || s.includes(subject))) score += 2;
+      if (myCity && location.includes(myCity)) score += 1;
+      return { job: j, score };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3);
 
   const activity = [
     ...rows.slice(0, 5).map((a) => ({
@@ -261,45 +327,212 @@ function TeacherOverview() {
 
   return (
     <div>
-      <PageHeader
-        title={profile?.full_name ? `Welcome back, ${profile.full_name.split(" ")[0]}` : "Your teaching search"}
-        description="Your profile, applications and interviews at a glance."
-        action={
-          <Button asChild>
-            <Link to="/teacher/jobs">Find new roles</Link>
-          </Button>
-        }
-      />
-
-      {/* Widgets */}
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <div className="card-premium p-5 sm:col-span-2 xl:col-span-1">
-          <div className="flex items-start justify-between gap-3">
-            <p className="text-sm text-muted-foreground">Profile completion</p>
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-soft text-primary">
-              <CheckCircle2 className="h-4 w-4" />
-            </span>
+      {/* Action-first welcome */}
+      <div className="card-premium mb-12 flex flex-col gap-6 bg-primary-soft/40 p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between">
+        <div className="min-w-0">
+          <p className="eyebrow text-gold">Teacher portal</p>
+          <h1 className="mt-2 font-serif text-3xl sm:text-4xl">
+            {firstName ? `Welcome back, ${firstName}` : "Welcome back"}
+          </h1>
+          <p className="mt-2 max-w-xl text-sm text-muted-foreground">
+            Pick up where you left off — new roles, live applications and upcoming interviews.
+          </p>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Button asChild size="lg">
+              <Link to="/teacher/jobs">Browse new jobs</Link>
+            </Button>
+            <Button asChild size="lg" variant="outline">
+              <Link to="/teacher/onboarding">Complete profile</Link>
+            </Button>
           </div>
-          {profileLoading ? (
-            <Skeleton className="mt-4 h-10" />
-          ) : (
-            <>
-              <p className="mt-3 font-serif text-3xl leading-none">{completion}%</p>
-              <Progress value={completion} className="mt-4 h-2" />
-              <p className="mt-2 text-xs text-muted-foreground">
-                {completion === 100
-                  ? "Your profile is complete and visible to verified schools."
-                  : "Finish your registration to appear higher in school searches."}
+        </div>
+        <div className="shrink-0 rounded-2xl border border-border bg-card p-5 lg:w-64">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-sm text-muted-foreground">Availability</p>
+              <p className="mt-2 font-serif text-xl leading-none">
+                {available ? "Open to roles" : "Not looking"}
               </p>
+            </div>
+            <Switch
+              checked={available}
+              disabled={toggleAvailability.isPending}
+              onCheckedChange={(v) => toggleAvailability.mutate(v)}
+              aria-label="Toggle availability"
+            />
+          </div>
+          <p className="mt-3 text-xs text-muted-foreground">
+            Schools only see teachers who are open to roles.
+          </p>
+        </div>
+      </div>
+
+      {/* Recommended jobs */}
+      <section>
+        <SectionTitle title="Recommended jobs" to="/teacher/jobs" linkLabel="See all jobs" />
+        {jobsLoading ? (
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {[0, 1, 2].map((i) => (
+              <Skeleton key={i} className="h-52 rounded-xl" />
+            ))}
+          </div>
+        ) : recommended.length === 0 ? (
+          <EmptyState
+            title="No new matches right now"
+            description="Add your subjects and city to your profile so we can match you faster."
+            action={
+              <Button asChild>
+                <Link to="/teacher/jobs">Browse all jobs</Link>
+              </Button>
+            }
+          />
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {recommended.map(({ job, score }) => (
+              <JobCard
+                key={job.id}
+                job={job}
+                action={
+                  <div className="flex items-center gap-2">
+                    {score > 0 && (
+                      <Badge variant="secondary" className="gap-1">
+                        <Sparkle className="h-3 w-3" /> Match
+                      </Badge>
+                    )}
+                    <Button asChild size="sm">
+                      <Link to="/teacher/jobs">View & apply</Link>
+                    </Button>
+                  </div>
+                }
+              />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Recent applications + interview schedule */}
+      <div className="mt-12 grid gap-6 lg:grid-cols-3">
+        <section className="lg:col-span-2">
+          <SectionTitle title="Recent applications" to="/teacher/applications" />
+          {rows.length === 0 ? (
+            <EmptyState
+              title="No applications yet"
+              description="Apply to a role and track its progress right here."
+              action={
+                <Button asChild>
+                  <Link to="/teacher/jobs">Browse roles</Link>
+                </Button>
+              }
+            />
+          ) : (
+            <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
+              {rows.slice(0, 5).map((a) => (
+                <li key={a.id} className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
+                  <div className="min-w-0">
+                    <p className="truncate font-medium">{a.jobs?.title ?? "Role"}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {a.jobs?.schools?.name ?? "School"} · Applied {fmtDate(a.created_at)}
+                    </p>
+                  </div>
+                  <Badge variant="secondary" className="capitalize">
+                    {a.status.replace("_", " ")}
+                  </Badge>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <section>
+          <SectionTitle title="Interview schedule" />
+          {upcoming.length === 0 ? (
+            <div className="card-premium p-6 text-sm text-muted-foreground">
+              No interviews scheduled. When a school invites you, the details appear here.
+            </div>
+          ) : (
+            <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
+              {upcoming.map((i) => (
+                <li key={i.id} className="px-5 py-4">
+                  <p className="truncate font-medium">{i.applications?.jobs?.title ?? "Interview"}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {i.applications?.jobs?.schools?.name ?? "School"} · {fmtDateTime(i.scheduled_at)} ·{" "}
+                    {i.duration_minutes} min
+                  </p>
+                  <div className="mt-3 flex items-center gap-2">
+                    <Badge variant="secondary" className="capitalize">
+                      {i.mode.replace("_", " ")}
+                    </Badge>
+                    {i.meeting_url && (
+                      <Button asChild size="sm" variant="outline">
+                        <a href={i.meeting_url} target="_blank" rel="noreferrer">
+                          <Video className="mr-1 h-3.5 w-3.5" /> Join
+                        </a>
+                      </Button>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
+
+      {/* Profile completion */}
+      <section className="mt-12">
+        <SectionTitle title="Profile completion" />
+        <div className="card-premium p-6">
+          {profileLoading ? (
+            <Skeleton className="h-16" />
+          ) : (
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-soft text-primary">
+                    <CheckCircle2 className="h-4 w-4" />
+                  </span>
+                  <p className="font-serif text-2xl leading-none">{completion}%</p>
+                </div>
+                <Progress value={completion} className="mt-4 h-2" />
+                <p className="mt-2 text-xs text-muted-foreground">
+                  {completion === 100
+                    ? "Your profile is complete and visible to verified schools."
+                    : "Finish your registration to appear higher in school searches."}
+                </p>
+              </div>
               {completion < 100 && (
-                <Button asChild variant="outline" size="sm" className="mt-4">
+                <Button asChild variant="outline">
                   <Link to="/teacher/onboarding">Complete profile</Link>
                 </Button>
               )}
-            </>
+            </div>
           )}
         </div>
+      </section>
 
+      {/* Quick actions */}
+      <h2 className="mt-12 mb-4 font-serif text-xl">Quick actions</h2>
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {[
+          { to: "/teacher/profile", label: "Edit profile", icon: UserRound, blurb: "Keep your details current" },
+          { to: "/teacher/jobs", label: "Apply to jobs", icon: Send, blurb: "Browse live vacancies" },
+          { to: "/teacher/onboarding", label: "Upload resume", icon: UploadCloud, blurb: "Refresh your CV & certificates" },
+          { to: "/teacher/applications", label: "Track applications", icon: FileText, blurb: "See where you stand" },
+        ].map((a) => (
+          <Link key={a.to + a.label} to={a.to} className="card-premium card-premium-hover flex items-start gap-3 p-5">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gold/10 text-gold">
+              <a.icon className="h-4 w-4" />
+            </span>
+            <span>
+              <span className="block font-medium">{a.label}</span>
+              <span className="mt-1 block text-xs text-muted-foreground">{a.blurb}</span>
+            </span>
+          </Link>
+        ))}
+      </div>
+
+      {/* Statistics */}
+      <h2 className="mt-12 mb-4 font-serif text-xl">Your statistics</h2>
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <WidgetCard
           label="Applications"
           value={rows.length}
@@ -327,110 +560,28 @@ function TeacherOverview() {
           icon={Bell}
           accent={unread > 0}
         />
-        <div className="card-premium flex flex-col justify-between p-5">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="text-sm text-muted-foreground">Availability</p>
-              <p className="mt-3 font-serif text-2xl leading-none">
-                {available ? "Open to roles" : "Not looking"}
-              </p>
-            </div>
-            <Switch
-              checked={available}
-              disabled={toggleAvailability.isPending}
-              onCheckedChange={(v) => toggleAvailability.mutate(v)}
-              aria-label="Toggle availability"
-            />
-          </div>
-          <p className="mt-2 text-xs text-muted-foreground">
-            Schools only see teachers who are open to roles.
-          </p>
-        </div>
       </div>
 
-      {/* Quick actions */}
-      <h2 className="mt-12 mb-4 font-serif text-xl">Quick actions</h2>
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {[
-          { to: "/teacher/profile", label: "Edit profile", icon: UserRound, blurb: "Keep your details current" },
-          { to: "/teacher/jobs", label: "Apply to jobs", icon: Send, blurb: "Browse live vacancies" },
-          { to: "/teacher/onboarding", label: "Upload resume", icon: UploadCloud, blurb: "Refresh your CV & certificates" },
-          { to: "/teacher/applications", label: "Track applications", icon: FileText, blurb: "See where you stand" },
-        ].map((a) => (
-          <Link key={a.to + a.label} to={a.to} className="card-premium card-premium-hover flex items-start gap-3 p-5">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gold/10 text-gold">
-              <a.icon className="h-4 w-4" />
-            </span>
-            <span>
-              <span className="block font-medium">{a.label}</span>
-              <span className="mt-1 block text-xs text-muted-foreground">{a.blurb}</span>
-            </span>
-          </Link>
-        ))}
-      </div>
-
-      {/* Upcoming interviews + notifications */}
-      <div className="mt-12 grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <h2 className="mb-4 font-serif text-xl">Upcoming interviews</h2>
-          {upcoming.length === 0 ? (
-            <EmptyState
-              title="No interviews scheduled"
-              description="When a school invites you to interview, the details appear here."
-            />
-          ) : (
-            <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
-              {upcoming.map((i) => (
-                <li key={i.id} className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
-                  <div className="min-w-0">
-                    <p className="truncate font-medium">{i.applications?.jobs?.title ?? "Interview"}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {i.applications?.jobs?.schools?.name ?? "School"} · {fmtDateTime(i.scheduled_at)} ·{" "}
-                      {i.duration_minutes} min
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="capitalize">
-                      {i.mode.replace("_", " ")}
-                    </Badge>
-                    {i.meeting_url && (
-                      <Button asChild size="sm" variant="outline">
-                        <a href={i.meeting_url} target="_blank" rel="noreferrer">
-                          <Video className="mr-1 h-3.5 w-3.5" /> Join
-                        </a>
-                      </Button>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        <div>
-          <h2 className="mb-4 font-serif text-xl">Notifications</h2>
-          {(notifications ?? []).length === 0 ? (
-            <div className="card-premium p-6 text-sm text-muted-foreground">
-              No notifications yet.
-            </div>
-          ) : (
-            <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
-              {(notifications ?? []).map((n) => (
-                <li key={n.id} className="px-5 py-4">
-                  <div className="flex items-start gap-2">
-                    {!n.read && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-gold" />}
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium">{n.title}</p>
-                      {n.body && <p className="mt-1 text-xs text-muted-foreground">{n.body}</p>}
-                      <p className="mt-1 text-[11px] text-muted-foreground">{fmtDate(n.created_at)}</p>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
+      {/* Notifications */}
+      <h2 className="mt-12 mb-4 font-serif text-xl">Notifications</h2>
+      {(notifications ?? []).length === 0 ? (
+        <div className="card-premium p-6 text-sm text-muted-foreground">No notifications yet.</div>
+      ) : (
+        <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
+          {(notifications ?? []).map((n) => (
+            <li key={n.id} className="px-5 py-4">
+              <div className="flex items-start gap-2">
+                {!n.read && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-gold" />}
+                <div className="min-w-0">
+                  <p className="text-sm font-medium">{n.title}</p>
+                  {n.body && <p className="mt-1 text-xs text-muted-foreground">{n.body}</p>}
+                  <p className="mt-1 text-[11px] text-muted-foreground">{fmtDate(n.created_at)}</p>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
 
       {/* Recent activity */}
       <h2 className="mt-12 mb-4 font-serif text-xl">Recent activity</h2>
