@@ -110,7 +110,11 @@ function SchoolJobs() {
       return status;
     },
     onSuccess: (status) => {
-      toast.success(status === "published" ? "Vacancy published." : "Vacancy saved as " + status + ".");
+      toast.success(
+        status === "pending_review"
+          ? "Submitted for review — our admin team will publish it once approved."
+          : `Vacancy saved as ${jobStatusLabel(status).toLowerCase()}.`,
+      );
       setOpen(false);
       setEditingId(null);
       setValues(emptyJob);
@@ -149,7 +153,7 @@ function SchoolJobs() {
       <div className="mx-auto max-w-3xl">
         <PageHeader
           title={editingId ? "Edit vacancy" : "Post a vacancy"}
-          description="Fill in the details, preview how candidates will see it, then save as a draft or publish."
+          description="Fill in the details, preview how candidates will see it, then save a draft or submit it for admin review."
         />
         <div className="rounded-2xl border border-border bg-card p-6 shadow-soft sm:p-8">
           <JobForm
@@ -163,7 +167,7 @@ function SchoolJobs() {
             }}
             schoolName={school?.name}
             pending={save.isPending}
-            submitLabel={editingId ? "Save changes" : "Publish vacancy"}
+            submitLabel={editingId ? "Save changes" : "Submit for review"}
           />
         </div>
       </div>
@@ -201,9 +205,7 @@ function SchoolJobs() {
                       .join(" · ")}
                   </p>
                 </div>
-                <Badge variant={statusTone[j.status]} className="capitalize">
-                  {j.status}
-                </Badge>
+                <Badge variant={jobStatusTone(j.status)}>{jobStatusLabel(j.status)}</Badge>
               </div>
               <div className="mt-4 flex flex-wrap gap-2">
                 <Button
@@ -217,10 +219,19 @@ function SchoolJobs() {
                 >
                   <Pencil /> Edit
                 </Button>
-                {j.status !== "published" && (
-                  <Button size="sm" variant="ghost" onClick={() => setStatus.mutate({ id: j.id, status: "published" })}>
-                    Publish
+                {(j.status === "draft" || j.status === "closed") && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setStatus.mutate({ id: j.id, status: "pending_review" })}
+                  >
+                    Submit for review
                   </Button>
+                )}
+                {j.status === "pending_review" && (
+                  <span className="self-center text-xs text-muted-foreground">
+                    Awaiting admin approval
+                  </span>
                 )}
                 {j.status !== "closed" && (
                   <Button size="sm" variant="ghost" onClick={() => setStatus.mutate({ id: j.id, status: "closed" })}>
