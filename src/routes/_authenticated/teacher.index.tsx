@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { EmptyState } from "@/components/shared/Primitives";
 import { JobCard, type JobCardData } from "@/components/shared/JobCard";
+import { ProfileCompletionWidget } from "@/components/shared/ProfileCompletionWidget";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
