@@ -19,6 +19,7 @@ import { PublicLayout } from "@/components/layouts/PublicLayout";
 import { SectionHeading } from "@/components/shared/Primitives";
 import { Reveal } from "@/components/shared/Reveal";
 import { JobCard, type JobCardData } from "@/components/shared/JobCard";
+import { TrustBanner } from "@/components/shared/TrustBanner";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import heroImage from "@/assets/hero-teacher.jpg";
