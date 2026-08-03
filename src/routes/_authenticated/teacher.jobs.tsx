@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { notifyApplicationSubmitted } from "@/lib/hiring-emails.functions";
 
 
 export const Route = createFileRoute("/_authenticated/teacher/jobs")({

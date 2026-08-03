@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { JobForm, emptyJob, salaryLabel, type JobFormValues } from "@/components/school/JobForm";
 import { Plus, Pencil } from "lucide-react";
 import { jobStatusLabel, jobStatusTone, type JobStatus } from "@/lib/jobStatus";
+import { notifyJobPendingApproval } from "@/lib/hiring-emails.functions";
 
 export const Route = createFileRoute("/_authenticated/school/jobs")({
   component: SchoolJobs,

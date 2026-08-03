@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { PIPELINE_STAGES, normalizeStage, relativeTime, type StageId } from "@/lib/pipeline";
 import { ApplicationDetail, type PipelineCard } from "@/components/school/ApplicationDetail";
+import { notifyOfferExtended } from "@/lib/hiring-emails.functions";
 import { cn } from "@/lib/utils";
 import { GripVertical } from "lucide-react";
 
