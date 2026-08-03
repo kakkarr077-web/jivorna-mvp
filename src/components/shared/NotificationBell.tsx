@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Bell, BellRing, Briefcase, CalendarClock, CheckCheck, FileCheck2, UserRound } from "lucide-react";
+import { BadgeCheck, Bell, BellRing, Briefcase, CalendarCheck, CalendarClock, CheckCheck, Eye, FileCheck2, Inbox, UserRound, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
