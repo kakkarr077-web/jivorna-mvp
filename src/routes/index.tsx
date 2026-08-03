@@ -46,11 +46,8 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-type PlatformStats = {
-  teacher_count: number;
-  school_count: number;
-  live_job_count: number;
-};
+type PlatformStats = PlatformStatsResult;
+
 
 // Live counts come from the database; the two benchmark figures below are
 // illustrative targets and are labelled as such until we have enough hiring
