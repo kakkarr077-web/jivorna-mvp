@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Eye, Pencil, X } from "lucide-react";
+import { jobStatusLabel, type JobStatus } from "@/lib/jobStatus";
 
 export type JobFormValues = {
   title: string;
@@ -61,8 +62,8 @@ export function validateJob(v: JobFormValues) {
   if (v.salary_min && (Number.isNaN(min) || min < 0)) errors.salary_min = "Enter a valid amount.";
   if (v.salary_max && (Number.isNaN(max) || max < 0)) errors.salary_max = "Enter a valid amount.";
   if (v.salary_min && v.salary_max && max < min) errors.salary_max = "Maximum must be above the minimum.";
-  if (v.status === "published" && v.description.trim().length < 40)
-    errors.description = "Published roles need a description of at least 40 characters.";
+  if ((v.status === "published" || v.status === "pending_review") && v.description.trim().length < 40)
+    errors.description = "Roles submitted for review need a description of at least 40 characters.";
   return errors;
 }
 
