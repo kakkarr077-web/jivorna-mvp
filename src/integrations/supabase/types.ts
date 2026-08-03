@@ -856,7 +856,7 @@ export type Database = {
       interview_mode: "in_person" | "video" | "phone"
       interview_status: "scheduled" | "completed" | "cancelled" | "no_show"
       invoice_status: "draft" | "sent" | "paid" | "overdue" | "void"
-      job_status: "draft" | "published" | "closed"
+      job_status: "draft" | "published" | "closed" | "pending_review"
       subscription_status: "trial" | "active" | "past_due" | "cancelled"
       teacher_status: "draft" | "active" | "placed" | "inactive"
     }
@@ -1011,7 +1011,7 @@ export const Constants = {
       interview_mode: ["in_person", "video", "phone"],
       interview_status: ["scheduled", "completed", "cancelled", "no_show"],
       invoice_status: ["draft", "sent", "paid", "overdue", "void"],
-      job_status: ["draft", "published", "closed"],
+      job_status: ["draft", "published", "closed", "pending_review"],
       subscription_status: ["trial", "active", "past_due", "cancelled"],
       teacher_status: ["draft", "active", "placed", "inactive"],
     },
