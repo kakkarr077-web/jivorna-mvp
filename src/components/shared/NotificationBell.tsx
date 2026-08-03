@@ -48,7 +48,7 @@ export function NotificationRow({
   onOpen?: (item: AppNotification) => void;
   compact?: boolean;
 }) {
-  const Icon = notificationIcon(item.type);
+  const Icon = notificationIcon(item.type, item.title);
   const content = (
     <div
       className={cn(
