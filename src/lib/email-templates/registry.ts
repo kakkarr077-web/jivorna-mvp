@@ -12,12 +12,13 @@ export interface TemplateEntry {
 /**
  * Template registry — maps template names to their React Email components.
  * Import and register new templates here after creating them in this directory.
- *
- * Example:
- *   import { template as welcomeTemplate } from './welcome'
- *   // then add to TEMPLATES: 'welcome': welcomeTemplate
  */
 export const TEMPLATES: Record<string, TemplateEntry> = {
-  // Add templates here as they are created, e.g.:
-  // 'welcome': welcomeTemplate,
+  'application-received': applicationReceived,
+  'new-application': newApplication,
+  'interview-invitation': interviewInvitation,
+  'interview-accepted': interviewAccepted,
+  'offer-extended': offerExtended,
+  'job-pending-approval': jobPendingApproval,
 }
+
