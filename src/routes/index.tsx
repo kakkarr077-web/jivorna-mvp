@@ -87,6 +87,31 @@ const journeys = [
   },
 ];
 
+const schoolBenefits = [
+  {
+    icon: CalendarCheck,
+    title: "Hire Faster",
+    body: "Shortlists reach your desk in days, not months, because every role is matched against an active pool of educators. Interview scheduling and offers stay in one pipeline so nothing stalls.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Verified Teachers",
+    body: "Qualifications, experience and documents are checked before a profile is visible to schools. You review candidates knowing the essentials have already been confirmed.",
+  },
+  {
+    icon: ClipboardCheck,
+    title: "Transparent Hiring",
+    body: "Every application moves through a clear pipeline with timeline history, notes and activity logs. Your leadership team always knows exactly where each candidate stands.",
+  },
+  {
+    icon: Users,
+    title: "Dedicated Support",
+    body: "A named partner manager helps you frame roles, calibrate salary bands and keep the process moving. Reach us over email or a call whenever a hire needs attention.",
+  },
+];
+
+
+
 
 
 
