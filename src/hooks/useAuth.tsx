@@ -79,10 +79,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     user: session?.user ?? null,
     session,
     role,
-    loading,
+    loading: loading || !roleResolved,
     signOut: async () => {
       await supabase.auth.signOut();
       setRole(null);
+      setRoleUserId(null);
     },
   };
 
