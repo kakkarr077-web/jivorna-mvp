@@ -17,6 +17,8 @@ import {
 import { EmptyState } from "@/components/shared/Primitives";
 import { JobCard, type JobCardData } from "@/components/shared/JobCard";
 import { ProfileCompletionWidget } from "@/components/shared/ProfileCompletionWidget";
+import { HiringTimeline, timelineStageLabel } from "@/components/shared/HiringTimeline";
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
@@ -435,10 +437,14 @@ function TeacherOverview() {
                       {a.jobs?.schools?.name ?? "School"} · Applied {fmtDate(a.created_at)}
                     </p>
                   </div>
-                  <Badge variant="secondary" className="capitalize">
-                    {a.status.replace("_", " ")}
-                  </Badge>
+                  <div className="flex items-center gap-3">
+                    <HiringTimeline status={a.status} compact />
+                    <span className="text-xs font-medium text-muted-foreground">
+                      {timelineStageLabel(a.status)}
+                    </span>
+                  </div>
                 </li>
+
               ))}
             </ul>
           )}
