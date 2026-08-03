@@ -22,6 +22,8 @@ import { JobCard, type JobCardData } from "@/components/shared/JobCard";
 import { TrustBanner } from "@/components/shared/TrustBanner";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { getPlatformStats, type PlatformStatsResult } from "@/lib/platform-stats.functions";
 import heroImage from "@/assets/hero-teacher.jpg";
 
 export const Route = createFileRoute("/")({
