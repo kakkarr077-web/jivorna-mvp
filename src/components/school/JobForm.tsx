@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Eye, Pencil, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { jobStatusLabel, type JobStatus } from "@/lib/jobStatus";
 
 export type JobFormValues = {
