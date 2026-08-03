@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { PageHeader, EmptyState } from "@/components/shared/Primitives";
-import { Badge } from "@/components/ui/badge";
+import { HiringTimeline, timelineStageLabel } from "@/components/shared/HiringTimeline";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -59,7 +59,7 @@ function TeacherApplications() {
                 <TableHead>School</TableHead>
                 <TableHead>Location</TableHead>
                 <TableHead>Applied</TableHead>
-                <TableHead className="text-right">Status</TableHead>
+                <TableHead className="min-w-[280px]">Hiring progress</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -69,10 +69,11 @@ function TeacherApplications() {
                   <TableCell>{r.jobs?.schools?.name ?? "—"}</TableCell>
                   <TableCell>{r.jobs?.location ?? "—"}</TableCell>
                   <TableCell>{new Date(r.created_at).toLocaleDateString()}</TableCell>
-                  <TableCell className="text-right">
-                    <Badge variant="secondary" className="capitalize">
-                      {r.status}
-                    </Badge>
+                  <TableCell>
+                    <div className="flex flex-col gap-1">
+                      <HiringTimeline status={r.status} />
+                      <span className="sr-only">{timelineStageLabel(r.status)}</span>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
