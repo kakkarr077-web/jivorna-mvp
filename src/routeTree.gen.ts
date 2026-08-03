@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ForSchoolsRouteImport } from './routes/for-schools'
 import { Route as ForTeachersRouteImport } from './routes/for-teachers'
 import { Route as JobsRouteImport } from './routes/jobs'
@@ -64,6 +65,11 @@ const AuthRoute = AuthRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForSchoolsRoute = ForSchoolsRouteImport.update({
@@ -219,6 +225,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/for-schools': typeof ForSchoolsRoute
   '/for-teachers': typeof ForTeachersRoute
   '/jobs': typeof JobsRoute
@@ -252,6 +259,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/for-schools': typeof ForSchoolsRoute
   '/for-teachers': typeof ForTeachersRoute
   '/jobs': typeof JobsRoute
@@ -284,6 +292,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/for-schools': typeof ForSchoolsRoute
   '/for-teachers': typeof ForTeachersRoute
   '/jobs': typeof JobsRoute
@@ -319,6 +328,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
+    | '/faq'
     | '/for-schools'
     | '/for-teachers'
     | '/jobs'
@@ -352,6 +362,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
+    | '/faq'
     | '/for-schools'
     | '/for-teachers'
     | '/jobs'
@@ -383,6 +394,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
+    | '/faq'
     | '/for-schools'
     | '/for-teachers'
     | '/jobs'
@@ -418,6 +430,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
+  FaqRoute: typeof FaqRoute
   ForSchoolsRoute: typeof ForSchoolsRoute
   ForTeachersRoute: typeof ForTeachersRoute
   JobsRoute: typeof JobsRoute
@@ -461,6 +474,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/for-schools': {
@@ -739,6 +759,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
+  FaqRoute: FaqRoute,
   ForSchoolsRoute: ForSchoolsRoute,
   ForTeachersRoute: ForTeachersRoute,
   JobsRoute: JobsRoute,
