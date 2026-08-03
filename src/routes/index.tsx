@@ -171,14 +171,12 @@ const testimonials = [
 ];
 
 function Index() {
+  const fetchStats = useServerFn(getPlatformStats);
   const { data: stats } = useQuery({
     queryKey: ["platform-stats"],
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc("platform_stats");
-      if (error) throw error;
-      return (data?.[0] ?? null) as PlatformStats | null;
-    },
+    queryFn: async () => (await fetchStats()) as PlatformStats | null,
   });
+
 
   const { data: jobs } = useQuery({
     queryKey: ["featured-jobs"],
