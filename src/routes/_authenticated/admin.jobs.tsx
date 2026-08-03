@@ -109,9 +109,10 @@ function AdminJobs() {
           description={
             filter === "pending_review"
               ? "Roles submitted by schools will appear here for approval."
-              : undefined
+              : "Try another filter."
           }
         />
+
       ) : (
         <div className="overflow-hidden rounded-xl border border-border bg-card">
           <Table>
