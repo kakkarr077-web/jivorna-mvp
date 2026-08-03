@@ -19,6 +19,7 @@ import { PublicLayout } from "@/components/layouts/PublicLayout";
 import { SectionHeading } from "@/components/shared/Primitives";
 import { Reveal } from "@/components/shared/Reveal";
 import { JobCard, type JobCardData } from "@/components/shared/JobCard";
+import { TrustBanner } from "@/components/shared/TrustBanner";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import heroImage from "@/assets/hero-teacher.jpg";
@@ -522,6 +523,15 @@ function Index() {
               </div>
             )}
           </div>
+        </div>
+      </section>
+
+      {/* Trust banner */}
+      <section className="py-16">
+        <div className="mx-auto max-w-6xl px-5 lg:px-8">
+          <Reveal>
+            <TrustBanner />
+          </Reveal>
         </div>
       </section>
 
