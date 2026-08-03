@@ -1,25 +1,39 @@
-import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { useMemo } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Bookmark } from "lucide-react";
 import { PageHeader, EmptyState } from "@/components/shared/Primitives";
-import { JobCard, type JobCardData } from "@/components/shared/JobCard";
+import { JobCard } from "@/components/shared/JobCard";
+import { JobFilters } from "@/components/shared/JobFilters";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { notifyApplicationSubmitted } from "@/lib/hiring-emails.functions";
+import {
+  JOB_SELECT,
+  cleanJobSearch,
+  defaultJobSearch,
+  filterAndSortJobs,
+  jobFacets,
+  validateJobSearch,
+  type JobSearchState,
+  type SearchableJob,
+} from "@/lib/job-search";
 
 
 export const Route = createFileRoute("/_authenticated/teacher/jobs")({
+  validateSearch: validateJobSearch,
   component: TeacherJobs,
 });
 
 function TeacherJobs() {
   const { user } = useAuth();
-  const [query, setQuery] = useState("");
+  const search = Route.useSearch();
+  const navigate = useNavigate({ from: "/teacher/jobs" });
+  const setSearch = (patch: Partial<JobSearchState>) =>
+    void navigate({ search: cleanJobSearch({ ...search, ...patch }) as never, replace: true });
   const qc = useQueryClient();
 
   const { data: jobs, isLoading } = useQuery({
@@ -27,13 +41,14 @@ function TeacherJobs() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("jobs")
-        .select("id,title,subject,location,employment_type,salary_range,description,schools(name,city)")
+        .select(JOB_SELECT)
         .eq("status", "published")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return (data ?? []) as unknown as JobCardData[];
+      return (data ?? []) as unknown as SearchableJob[];
     },
   });
+
 
   const { data: applied } = useQuery({
     queryKey: ["teacher-applied-ids", user?.id],
