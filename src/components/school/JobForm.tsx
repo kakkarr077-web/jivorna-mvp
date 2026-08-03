@@ -153,6 +153,49 @@ export function JobPreview({ values, schoolName }: { values: JobFormValues; scho
   );
 }
 
+const STEPS = [
+  { title: "Role basics", hint: "Subject, board and grades" },
+  { title: "Package", hint: "Salary, location and experience" },
+  { title: "Details", hint: "Description, benefits and requirements" },
+  { title: "Review", hint: "Preview and submit" },
+] as const;
+
+const STEP_FIELDS: Array<Array<keyof JobFormValues>> = [
+  ["title", "subject", "grade", "board"],
+  ["salary_min", "salary_max", "location", "min_experience_years", "employment_type"],
+  ["description", "benefits", "required_skills"],
+  [],
+];
+
+function StepIndicator({ step, onJump }: { step: number; onJump: (i: number) => void }) {
+  const pct = Math.round(((step + 1) / STEPS.length) * 100);
+  return (
+    <div className="rounded-2xl border border-border bg-muted/40 p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="text-sm font-medium">
+          Step {step + 1} of {STEPS.length} · {STEPS[step]!.title}
+        </p>
+        <p className="text-xs text-muted-foreground">{pct}% complete</p>
+      </div>
+      <div className="mt-3 flex gap-2">
+        {STEPS.map((s, i) => (
+          <button
+            key={s.title}
+            type="button"
+            aria-label={s.title}
+            aria-current={i === step ? "step" : undefined}
+            onClick={() => i < step && onJump(i)}
+            className={`h-1.5 flex-1 rounded-full transition-colors ${
+              i <= step ? "bg-primary" : "bg-border"
+            } ${i < step ? "cursor-pointer" : "cursor-default"}`}
+          />
+        ))}
+      </div>
+      <p className="mt-2 text-xs text-muted-foreground">{STEPS[step]!.hint}</p>
+    </div>
+  );
+}
+
 export function JobForm({
   values,
   onChange,
@@ -171,7 +214,7 @@ export function JobForm({
   submitLabel?: string;
 }) {
   const [errors, setErrors] = useState<Partial<Record<keyof JobFormValues, string>>>({});
-  const [preview, setPreview] = useState(false);
+  const [step, setStep] = useState(0);
   const [skill, setSkill] = useState("");
   const set = <K extends keyof JobFormValues>(k: K, v: JobFormValues[K]) => onChange({ ...values, [k]: v });
 
@@ -179,8 +222,23 @@ export function JobForm({
     const next = { ...values, status };
     const errs = validateJob(next);
     setErrors(errs);
-    if (Object.keys(errs).length > 0) return;
+    if (Object.keys(errs).length > 0) {
+      const firstBad = STEP_FIELDS.findIndex((fields) => fields.some((f) => errs[f]));
+      if (firstBad >= 0) setStep(firstBad);
+      return;
+    }
     onSubmit(status);
+  };
+
+  const goNext = () => {
+    const target = values.status === "draft" ? "pending_review" : values.status;
+    const errs = validateJob({ ...values, status: target });
+    const stepErrs = Object.fromEntries(
+      Object.entries(errs).filter(([k]) => STEP_FIELDS[step]!.includes(k as keyof JobFormValues)),
+    );
+    setErrors(stepErrs);
+    if (Object.keys(stepErrs).length > 0) return;
+    setStep((s) => Math.min(s + 1, STEPS.length - 1));
   };
 
   const addSkill = () => {
@@ -190,156 +248,168 @@ export function JobForm({
     setSkill("");
   };
 
-  if (preview) {
-    return (
-      <div className="grid gap-4">
-        <JobPreview values={values} schoolName={schoolName} />
-        <div className="flex flex-wrap gap-2">
-          <Button variant="outline" onClick={() => setPreview(false)}>
-            <Pencil /> Back to editing
-          </Button>
-          <Button variant="ghost" disabled={pending} onClick={() => attempt("draft")}>
-            Save draft
-          </Button>
-          <Button
-            variant="gold"
-            disabled={pending}
-            onClick={() => attempt(values.status === "published" ? "published" : "pending_review")}
-          >
-            {values.status === "published" ? "Save changes" : "Submit for review"}
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <form
       className="grid gap-5"
       onSubmit={(e) => {
         e.preventDefault();
-        attempt(values.status === "closed" || values.status === "published" ? values.status : "pending_review");
+        if (step < STEPS.length - 1) goNext();
+        else attempt(values.status === "closed" || values.status === "published" ? values.status : "pending_review");
       }}
     >
-      <Field label="Role title" htmlFor="title" error={errors.title}>
-        <Input id="title" value={values.title} onChange={(e) => set("title", e.target.value)} placeholder="Teacher of Physics" />
-      </Field>
+      <StepIndicator step={step} onJump={setStep} />
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Subject" htmlFor="subject" error={errors.subject}>
-          <Input id="subject" value={values.subject} onChange={(e) => set("subject", e.target.value)} placeholder="Physics" />
-        </Field>
-        <Field label="Grade" error={errors.grade}>
-          <Select value={values.grade} onValueChange={(v) => set("grade", v)}>
-            <SelectTrigger><SelectValue placeholder="Select grade level" /></SelectTrigger>
-            <SelectContent>
-              {GRADES.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
-            </SelectContent>
-          </Select>
-        </Field>
-        <Field label="Board / curriculum">
-          <Select value={values.board} onValueChange={(v) => set("board", v)}>
-            <SelectTrigger><SelectValue placeholder="Select board" /></SelectTrigger>
-            <SelectContent>
-              {BOARDS.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
-            </SelectContent>
-          </Select>
-        </Field>
-        <Field label="Job type">
-          <Select value={values.employment_type} onValueChange={(v) => set("employment_type", v)}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
-              {JOB_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
-            </SelectContent>
-          </Select>
-        </Field>
-        <Field label="Minimum experience (years)" htmlFor="exp" error={errors.min_experience_years}>
-          <Input
-            id="exp"
-            type="number"
-            min={0}
-            max={50}
-            value={values.min_experience_years}
-            onChange={(e) => set("min_experience_years", Number(e.target.value))}
-          />
-        </Field>
-        <Field label="Location" htmlFor="location" error={errors.location}>
-          <Input id="location" value={values.location} onChange={(e) => set("location", e.target.value)} placeholder="Bengaluru, KA" />
-        </Field>
-        <Field label="Salary from" htmlFor="smin" error={errors.salary_min}>
-          <Input id="smin" inputMode="numeric" value={values.salary_min} onChange={(e) => set("salary_min", e.target.value)} placeholder="45000" />
-        </Field>
-        <Field label="Salary to" htmlFor="smax" error={errors.salary_max}>
-          <Input id="smax" inputMode="numeric" value={values.salary_max} onChange={(e) => set("salary_max", e.target.value)} placeholder="65000" />
-        </Field>
-      </div>
-
-      <Field label="Job description" htmlFor="description" error={errors.description}>
-        <Textarea id="description" rows={6} value={values.description} onChange={(e) => set("description", e.target.value)} placeholder="Responsibilities, class sizes, reporting line…" />
-      </Field>
-
-      <Field label="Benefits" htmlFor="benefits">
-        <Textarea id="benefits" rows={3} value={values.benefits} onChange={(e) => set("benefits", e.target.value)} placeholder="Accommodation, health cover, CPD budget…" />
-      </Field>
-
-      <Field label="Required skills">
-        <div className="flex gap-2">
-          <Input
-            value={skill}
-            onChange={(e) => setSkill(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                addSkill();
-              }
-            }}
-            placeholder="Type a skill and press Enter"
-          />
-          <Button type="button" variant="outline" onClick={addSkill}>Add</Button>
-        </div>
-        {values.required_skills.length > 0 && (
-          <div className="mt-2 flex flex-wrap gap-2">
-            {values.required_skills.map((s) => (
-              <Badge key={s} variant="secondary" className="gap-1">
-                {s}
-                <button type="button" aria-label={`Remove ${s}`} onClick={() => set("required_skills", values.required_skills.filter((x) => x !== s))}>
-                  <X className="size-3" />
-                </button>
-              </Badge>
-            ))}
+      {step === 0 && (
+        <div className="grid gap-5">
+          <Field label="Role title" htmlFor="title" error={errors.title}>
+            <Input id="title" value={values.title} onChange={(e) => set("title", e.target.value)} placeholder="Teacher of Physics" />
+          </Field>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <Field label="Subject" htmlFor="subject" error={errors.subject}>
+              <Input id="subject" value={values.subject} onChange={(e) => set("subject", e.target.value)} placeholder="Physics" />
+            </Field>
+            <Field label="Board / curriculum">
+              <Select value={values.board} onValueChange={(v) => set("board", v)}>
+                <SelectTrigger><SelectValue placeholder="Select board" /></SelectTrigger>
+                <SelectContent>
+                  {BOARDS.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </Field>
+            <Field label="Grades" error={errors.grade}>
+              <Select value={values.grade} onValueChange={(v) => set("grade", v)}>
+                <SelectTrigger><SelectValue placeholder="Select grade level" /></SelectTrigger>
+                <SelectContent>
+                  {GRADES.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </Field>
           </div>
-        )}
-      </Field>
+        </div>
+      )}
 
-      <Field label="Status">
-        <Select value={values.status} onValueChange={(v) => set("status", v as JobFormValues["status"])}>
-          <SelectTrigger><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="draft">Draft</SelectItem>
-            <SelectItem value="pending_review">In review</SelectItem>
-            {values.status === "published" && <SelectItem value="published">Live</SelectItem>}
-            <SelectItem value="closed">Closed</SelectItem>
-          </SelectContent>
-        </Select>
-        <p className="text-xs text-muted-foreground">
-          Roles go live once our admin team has reviewed them.
-        </p>
-      </Field>
+      {step === 1 && (
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field label="Salary from" htmlFor="smin" error={errors.salary_min}>
+            <Input id="smin" inputMode="numeric" value={values.salary_min} onChange={(e) => set("salary_min", e.target.value)} placeholder="45000" />
+          </Field>
+          <Field label="Salary to" htmlFor="smax" error={errors.salary_max}>
+            <Input id="smax" inputMode="numeric" value={values.salary_max} onChange={(e) => set("salary_max", e.target.value)} placeholder="65000" />
+          </Field>
+          <Field label="Location" htmlFor="location" error={errors.location}>
+            <Input id="location" value={values.location} onChange={(e) => set("location", e.target.value)} placeholder="Bengaluru, KA" />
+          </Field>
+          <Field label="Job type">
+            <Select value={values.employment_type} onValueChange={(v) => set("employment_type", v)}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {JOB_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </Field>
+          <Field label="Minimum experience (years)" htmlFor="exp" error={errors.min_experience_years}>
+            <Input
+              id="exp"
+              type="number"
+              min={0}
+              max={50}
+              value={values.min_experience_years}
+              onChange={(e) => set("min_experience_years", Number(e.target.value))}
+            />
+          </Field>
+        </div>
+      )}
+
+      {step === 2 && (
+        <div className="grid gap-5">
+          <Field label="Job description" htmlFor="description" error={errors.description}>
+            <Textarea id="description" rows={6} value={values.description} onChange={(e) => set("description", e.target.value)} placeholder="Responsibilities, class sizes, reporting line…" />
+          </Field>
+
+          <Field label="Benefits" htmlFor="benefits">
+            <Textarea id="benefits" rows={3} value={values.benefits} onChange={(e) => set("benefits", e.target.value)} placeholder="Accommodation, health cover, CPD budget…" />
+          </Field>
+
+          <Field label="Requirements / required skills">
+            <div className="flex gap-2">
+              <Input
+                value={skill}
+                onChange={(e) => setSkill(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addSkill();
+                  }
+                }}
+                placeholder="Type a requirement and press Enter"
+              />
+              <Button type="button" variant="outline" onClick={addSkill}>Add</Button>
+            </div>
+            {values.required_skills.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {values.required_skills.map((s) => (
+                  <Badge key={s} variant="secondary" className="gap-1">
+                    {s}
+                    <button type="button" aria-label={`Remove ${s}`} onClick={() => set("required_skills", values.required_skills.filter((x) => x !== s))}>
+                      <X className="size-3" />
+                    </button>
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </Field>
+        </div>
+      )}
+
+      {step === 3 && (
+        <div className="grid gap-5">
+          <JobPreview values={values} schoolName={schoolName} />
+
+          <Field label="Status">
+            <Select value={values.status} onValueChange={(v) => set("status", v as JobFormValues["status"])}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="draft">Draft</SelectItem>
+                <SelectItem value="pending_review">In review</SelectItem>
+                {values.status === "published" && <SelectItem value="published">Live</SelectItem>}
+                <SelectItem value="closed">Closed</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Roles go live once our admin team has reviewed them.
+            </p>
+          </Field>
+
+          {Object.keys(errors).length > 0 && (
+            <p className="text-xs text-destructive">
+              Some details need attention — use Back to fix the highlighted fields.
+            </p>
+          )}
+        </div>
+      )}
 
       <div className="flex flex-wrap gap-2">
-        <Button type="button" variant="outline" onClick={() => setPreview(true)}>
-          <Eye /> Preview
-        </Button>
+        {step > 0 && (
+          <Button type="button" variant="outline" onClick={() => setStep((s) => s - 1)}>
+            <ChevronLeft /> Back
+          </Button>
+        )}
+        {step < STEPS.length - 1 ? (
+          <Button type="button" variant="gold" onClick={goNext}>
+            Continue <ChevronRight />
+          </Button>
+        ) : (
+          <Button
+            type="button"
+            variant="gold"
+            disabled={pending}
+            onClick={() => attempt(values.status === "draft" ? "pending_review" : values.status)}
+          >
+            {pending ? "Saving…" : values.status === "published" ? submitLabel : "Submit for review"}
+          </Button>
+        )}
         <Button type="button" variant="ghost" disabled={pending} onClick={() => attempt("draft")}>
           Save draft
-        </Button>
-        <Button
-          type="button"
-          variant="gold"
-          disabled={pending}
-          onClick={() => attempt(values.status === "draft" ? "pending_review" : values.status)}
-        >
-          {pending ? "Saving…" : submitLabel}
         </Button>
         {onCancel && (
           <Button type="button" variant="ghost" onClick={onCancel}>
