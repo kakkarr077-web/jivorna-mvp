@@ -22,6 +22,8 @@ import { JobCard, type JobCardData } from "@/components/shared/JobCard";
 import { TrustBanner } from "@/components/shared/TrustBanner";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { getPlatformStats, type PlatformStatsResult } from "@/lib/platform-stats.functions";
 import heroImage from "@/assets/hero-teacher.jpg";
 
 export const Route = createFileRoute("/")({
@@ -46,11 +48,8 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-type PlatformStats = {
-  teacher_count: number;
-  school_count: number;
-  live_job_count: number;
-};
+type PlatformStats = PlatformStatsResult;
+
 
 // Live counts come from the database; the two benchmark figures below are
 // illustrative targets and are labelled as such until we have enough hiring
@@ -174,14 +173,12 @@ const testimonials = [
 ];
 
 function Index() {
+  const fetchStats = useServerFn(getPlatformStats);
   const { data: stats } = useQuery({
     queryKey: ["platform-stats"],
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc("platform_stats");
-      if (error) throw error;
-      return (data?.[0] ?? null) as PlatformStats | null;
-    },
+    queryFn: async () => (await fetchStats()) as PlatformStats | null,
   });
+
 
   const { data: jobs } = useQuery({
     queryKey: ["featured-jobs"],
