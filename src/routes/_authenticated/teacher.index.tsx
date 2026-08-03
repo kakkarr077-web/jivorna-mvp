@@ -435,10 +435,14 @@ function TeacherOverview() {
                       {a.jobs?.schools?.name ?? "School"} · Applied {fmtDate(a.created_at)}
                     </p>
                   </div>
-                  <Badge variant="secondary" className="capitalize">
-                    {a.status.replace("_", " ")}
-                  </Badge>
+                  <div className="flex items-center gap-3">
+                    <HiringTimeline status={a.status} compact />
+                    <span className="text-xs font-medium text-muted-foreground">
+                      {timelineStageLabel(a.status)}
+                    </span>
+                  </div>
                 </li>
+
               ))}
             </ul>
           )}
