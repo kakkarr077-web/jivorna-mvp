@@ -104,9 +104,7 @@ export function JobPreview({ values, schoolName }: { values: JobFormValues; scho
             {[schoolName, values.location].filter(Boolean).join(" · ") || "Your school"}
           </p>
         </div>
-        <Badge variant="secondary" className="capitalize">
-          {values.status}
-        </Badge>
+        <Badge variant="secondary">{jobStatusLabel(values.status)}</Badge>
       </div>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -203,8 +201,12 @@ export function JobForm({
           <Button variant="ghost" disabled={pending} onClick={() => attempt("draft")}>
             Save draft
           </Button>
-          <Button variant="gold" disabled={pending} onClick={() => attempt("published")}>
-            Publish vacancy
+          <Button
+            variant="gold"
+            disabled={pending}
+            onClick={() => attempt(values.status === "published" ? "published" : "pending_review")}
+          >
+            {values.status === "published" ? "Save changes" : "Submit for review"}
           </Button>
         </div>
       </div>
@@ -216,7 +218,7 @@ export function JobForm({
       className="grid gap-5"
       onSubmit={(e) => {
         e.preventDefault();
-        attempt(values.status === "closed" ? "closed" : "published");
+        attempt(values.status === "closed" || values.status === "published" ? values.status : "pending_review");
       }}
     >
       <Field label="Role title" htmlFor="title" error={errors.title}>
