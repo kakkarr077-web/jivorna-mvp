@@ -480,34 +480,30 @@ function TeacherOverview() {
       {/* Profile completion */}
       <section className="mt-12">
         <SectionTitle title="Profile completion" />
-        <div className="card-premium p-6">
-          {profileLoading ? (
-            <Skeleton className="h-16" />
-          ) : (
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-soft text-primary">
-                    <CheckCircle2 className="h-4 w-4" />
-                  </span>
-                  <p className="font-serif text-2xl leading-none">{completion}%</p>
-                </div>
-                <Progress value={completion} className="mt-4 h-2" />
-                <p className="mt-2 text-xs text-muted-foreground">
-                  {completion === 100
-                    ? "Your profile is complete and visible to verified schools."
-                    : "Finish your registration to appear higher in school searches."}
-                </p>
-              </div>
-              {completion < 100 && (
-                <Button asChild variant="outline">
-                  <Link to="/teacher/onboarding">Complete profile</Link>
-                </Button>
-              )}
+        <div className="grid gap-6 lg:grid-cols-3">
+          <ProfileCompletionWidget profile={profile} loading={profileLoading} />
+          <div className="card-premium p-6 lg:col-span-2">
+            <div className="flex items-center gap-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-soft text-primary">
+                <CheckCircle2 className="h-4 w-4" />
+              </span>
+              <p className="font-serif text-2xl leading-none">{completion}% registration complete</p>
             </div>
-          )}
+            <Progress value={completion} className="mt-4 h-2" />
+            <p className="mt-2 text-sm text-muted-foreground">
+              {completion === 100
+                ? "Your profile is complete and visible to verified schools."
+                : "Finish your registration to appear higher in school searches."}
+            </p>
+            {completion < 100 && (
+              <Button asChild variant="outline" className="mt-4">
+                <Link to="/teacher/onboarding">Continue registration</Link>
+              </Button>
+            )}
+          </div>
         </div>
       </section>
+
 
       {/* Quick actions */}
       <h2 className="mt-12 mb-4 font-serif text-xl">Quick actions</h2>
