@@ -87,6 +87,31 @@ const journeys = [
   },
 ];
 
+const schoolBenefits = [
+  {
+    icon: CalendarCheck,
+    title: "Hire Faster",
+    body: "Shortlists reach your desk in days, not months, because every role is matched against an active pool of educators. Interview scheduling and offers stay in one pipeline so nothing stalls.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Verified Teachers",
+    body: "Qualifications, experience and documents are checked before a profile is visible to schools. You review candidates knowing the essentials have already been confirmed.",
+  },
+  {
+    icon: ClipboardCheck,
+    title: "Transparent Hiring",
+    body: "Every application moves through a clear pipeline with timeline history, notes and activity logs. Your leadership team always knows exactly where each candidate stands.",
+  },
+  {
+    icon: Users,
+    title: "Dedicated Support",
+    body: "A named partner manager helps you frame roles, calibrate salary bands and keep the process moving. Reach us over email or a call whenever a hire needs attention.",
+  },
+];
+
+
+
 
 
 
@@ -292,6 +317,32 @@ function Index() {
           </div>
         </div>
       </section>
+
+      {/* Why Schools Choose Jivorna */}
+      <section className="border-b border-border bg-surface py-20 lg:py-24">
+        <div className="mx-auto max-w-6xl px-5 lg:px-8">
+          <SectionHeading
+            eyebrow="Why Jivorna"
+            title="Why Schools Choose Jivorna"
+            align="center"
+          />
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {schoolBenefits.map((b, i) => (
+              <Reveal key={b.title} delay={i * 90}>
+                <div className="card-premium card-premium-hover h-full p-6">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-soft text-primary">
+                    <b.icon className="h-5 w-5" />
+                  </span>
+                  <h3 className="mt-5 font-serif text-xl text-primary">{b.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{b.body}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
 
 
 
