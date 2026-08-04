@@ -189,7 +189,7 @@ function AdminJobs() {
   const paged = sorted.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   const counts = useMemo(() => {
-    const c = { total: rows.length, published: 0, pending_review: 0, draft: 0, closed: 0 } as Record<string, number>;
+    const c: Record<string, number> = { total: rows.length, published: 0, pending_review: 0, draft: 0, closed: 0 };
     for (const r of rows) c[r.status] = (c[r.status] ?? 0) + 1;
     return c;
   }, [rows]);
@@ -273,11 +273,11 @@ function AdminJobs() {
       />
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        <StatCard label="Total jobs" value={jobsQuery.isLoading ? "—" : counts.total} />
-        <StatCard label="Published" value={jobsQuery.isLoading ? "—" : (counts.published ?? 0)} />
-        <StatCard label="Pending review" value={jobsQuery.isLoading ? "—" : (counts.pending_review ?? 0)} />
-        <StatCard label="Drafts" value={jobsQuery.isLoading ? "—" : (counts.draft ?? 0)} />
-        <StatCard label="Closed / archived" value={jobsQuery.isLoading ? "—" : (counts.closed ?? 0)} />
+        <StatCard label="Total jobs" value={jobsQuery.isLoading ? "—" : counts['total']} />
+        <StatCard label="Published" value={jobsQuery.isLoading ? "—" : (counts['published'] ?? 0)} />
+        <StatCard label="Pending review" value={jobsQuery.isLoading ? "—" : (counts['pending_review'] ?? 0)} />
+        <StatCard label="Drafts" value={jobsQuery.isLoading ? "—" : (counts['draft'] ?? 0)} />
+        <StatCard label="Closed / archived" value={jobsQuery.isLoading ? "—" : (counts['closed'] ?? 0)} />
       </div>
 
       <div className="mb-6 rounded-xl border border-border bg-surface p-5 shadow-soft">
@@ -504,7 +504,7 @@ function AdminJobs() {
                             </DropdownMenuItem>
                           )}
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem variant="destructive" onSelect={() => setDeleting(j)}>
+                          <DropdownMenuItem className="text-destructive focus:text-destructive" onSelect={() => setDeleting(j)}>
                             <Trash2 /> Delete
                           </DropdownMenuItem>
                         </DropdownMenuContent>
