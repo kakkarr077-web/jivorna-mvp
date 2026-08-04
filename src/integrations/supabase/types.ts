@@ -424,6 +424,118 @@ export type Database = {
           },
         ]
       }
+      lead_activities: {
+        Row: {
+          activity_type: string
+          author_id: string | null
+          body: string
+          completed: boolean
+          created_at: string
+          due_at: string | null
+          id: string
+          lead_id: string
+          updated_at: string
+        }
+        Insert: {
+          activity_type?: string
+          author_id?: string | null
+          body: string
+          completed?: boolean
+          created_at?: string
+          due_at?: string | null
+          id?: string
+          lead_id: string
+          updated_at?: string
+        }
+        Update: {
+          activity_type?: string
+          author_id?: string | null
+          body?: string
+          completed?: boolean
+          created_at?: string
+          due_at?: string | null
+          id?: string
+          lead_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_activities_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          assigned_to: string | null
+          board: string | null
+          city: string | null
+          contact_person: string | null
+          converted_school_id: string | null
+          created_at: string
+          created_by: string | null
+          email: string | null
+          id: string
+          next_follow_up: string | null
+          notes: string | null
+          phone: string | null
+          priority: Database["public"]["Enums"]["lead_priority"]
+          school_name: string
+          source: string | null
+          status: Database["public"]["Enums"]["lead_status"]
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          board?: string | null
+          city?: string | null
+          contact_person?: string | null
+          converted_school_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          next_follow_up?: string | null
+          notes?: string | null
+          phone?: string | null
+          priority?: Database["public"]["Enums"]["lead_priority"]
+          school_name: string
+          source?: string | null
+          status?: Database["public"]["Enums"]["lead_status"]
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          board?: string | null
+          city?: string | null
+          contact_person?: string | null
+          converted_school_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          next_follow_up?: string | null
+          notes?: string | null
+          phone?: string | null
+          priority?: Database["public"]["Enums"]["lead_priority"]
+          school_name?: string
+          source?: string | null
+          status?: Database["public"]["Enums"]["lead_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_converted_school_id_fkey"
+            columns: ["converted_school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notification_preferences: {
         Row: {
           created_at: string
@@ -909,6 +1021,15 @@ export type Database = {
         | "confirmed"
       invoice_status: "draft" | "sent" | "paid" | "overdue" | "void"
       job_status: "draft" | "published" | "closed" | "pending_review"
+      lead_priority: "low" | "medium" | "high"
+      lead_status:
+        | "new"
+        | "contacted"
+        | "qualified"
+        | "proposal"
+        | "negotiation"
+        | "won"
+        | "lost"
       subscription_status: "trial" | "active" | "past_due" | "cancelled"
       teacher_status: "draft" | "active" | "placed" | "inactive"
     }
@@ -1070,6 +1191,16 @@ export const Constants = {
       ],
       invoice_status: ["draft", "sent", "paid", "overdue", "void"],
       job_status: ["draft", "published", "closed", "pending_review"],
+      lead_priority: ["low", "medium", "high"],
+      lead_status: [
+        "new",
+        "contacted",
+        "qualified",
+        "proposal",
+        "negotiation",
+        "won",
+        "lost",
+      ],
       subscription_status: ["trial", "active", "past_due", "cancelled"],
       teacher_status: ["draft", "active", "placed", "inactive"],
     },
