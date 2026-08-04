@@ -9,8 +9,8 @@ import { cn } from "@/lib/utils";
 export type CrmNote = {
   id: string;
   body: string;
-  pinned?: boolean;
-  author?: string | null;
+  pinned?: boolean | undefined;
+  author?: string | null | undefined;
   created_at: string;
 };
 
