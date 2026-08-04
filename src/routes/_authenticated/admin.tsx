@@ -1,13 +1,34 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { Bell, Briefcase, Building2, LayoutDashboard, Receipt, Settings, Users } from "lucide-react";
+import {
+  Activity,
+  BarChart3,
+  Bell,
+  Briefcase,
+  Building2,
+  CalendarClock,
+  LayoutDashboard,
+  Receipt,
+  Send,
+  Settings,
+  Target,
+  Users,
+  GraduationCap,
+} from "lucide-react";
 import { DashboardLayout, type NavItem } from "@/components/layouts/DashboardLayout";
 import { RoleGate } from "@/components/auth/RoleGate";
+import { GlobalSearch } from "@/components/admin/GlobalSearch";
 
 const nav: NavItem[] = [
-  { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
+  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { to: "/admin/leads", label: "Leads", icon: Target },
   { to: "/admin/schools", label: "Schools", icon: Building2 },
+  { to: "/admin/teachers", label: "Teachers", icon: GraduationCap },
+  { to: "/admin/jobs", label: "Jobs", icon: Briefcase },
+  { to: "/admin/applications", label: "Applications", icon: Send },
+  { to: "/admin/interviews", label: "Interviews", icon: CalendarClock },
+  { to: "/admin/activity", label: "Activity", icon: Activity },
+  { to: "/admin/reports", label: "Reports", icon: BarChart3 },
   { to: "/admin/users", label: "Users", icon: Users },
-  { to: "/admin/jobs", label: "All vacancies", icon: Briefcase },
   { to: "/admin/invoices", label: "Invoices", icon: Receipt },
   { to: "/settings", label: "Settings", icon: Settings },
   { to: "/notifications", label: "Notifications", icon: Bell },
@@ -16,7 +37,8 @@ const nav: NavItem[] = [
 export const Route = createFileRoute("/_authenticated/admin")({
   component: () => (
     <RoleGate allow="admin">
-      <DashboardLayout portal="Admin portal" nav={nav}>
+      <DashboardLayout portal="Operations CRM" nav={nav}>
+        <GlobalSearch />
         <Outlet />
       </DashboardLayout>
     </RoleGate>
