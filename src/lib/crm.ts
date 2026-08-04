@@ -43,8 +43,9 @@ export const titleCase = (v: string) =>
 
 export const initialsOf = (name: string | null | undefined, fallback = "?") => {
   const parts = (name ?? "").trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return fallback;
-  return (parts[0][0] + (parts[1]?.[0] ?? "")).toUpperCase();
+  const first = parts[0];
+  if (!first) return fallback;
+  return (first.charAt(0) + (parts[1]?.charAt(0) ?? "")).toUpperCase();
 };
 
 /** Case-insensitive "does any field contain the term" search. */
