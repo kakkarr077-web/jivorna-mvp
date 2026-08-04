@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
-import { PIPELINE_STAGES, normalizeStage, type StageId } from "@/lib/pipeline";
+import { ATS_STAGES, atsStage, type AtsStageId, statusForStage } from "@/lib/ats";
+import { assignRecruiter } from "@/lib/recruiters";
 
 export type ApplicationStatus = Database["public"]["Enums"]["application_status"];
 
@@ -13,17 +14,25 @@ export type AdminApplicationRow = {
   teacher_id: string;
   teacher_name: string;
   teacher_email: string | null;
+  teacher_subjects: string[];
+  teacher_city: string | null;
+  teacher_experience_years: number | null;
   job_id: string;
   job_title: string;
   school_id: string;
   school_name: string;
+  assigned_recruiter: string | null;
+  expected_salary: number | null;
+  archived: boolean;
 };
 
 /** Fetch every application with joined teacher / job / school info for the admin CRM. */
 export async function fetchAdminApplications(): Promise<AdminApplicationRow[]> {
   const { data: apps, error } = await supabase
     .from("applications")
-    .select("id,status,created_at,updated_at,cover_letter,teacher_id,job_id")
+    .select(
+      "id,status,created_at,updated_at,cover_letter,teacher_id,job_id,assigned_recruiter,expected_salary,archived",
+    )
     .order("created_at", { ascending: false });
   if (error) throw error;
   const rows = apps ?? [];
@@ -34,7 +43,10 @@ export async function fetchAdminApplications(): Promise<AdminApplicationRow[]> {
 
   const [{ data: jobs, error: jobsErr }, { data: profiles, error: profilesErr }] = await Promise.all([
     supabase.from("jobs").select("id,title,school_id").in("id", jobIds),
-    supabase.from("teacher_profiles").select("user_id,full_name,email").in("user_id", teacherIds),
+    supabase
+      .from("teacher_profiles")
+      .select("user_id,full_name,email,subjects,city,experience_years")
+      .in("user_id", teacherIds),
   ]);
   if (jobsErr) throw jobsErr;
   if (profilesErr) throw profilesErr;
@@ -62,10 +74,16 @@ export async function fetchAdminApplications(): Promise<AdminApplicationRow[]> {
       teacher_id: a.teacher_id,
       teacher_name: profile?.full_name ?? "Candidate",
       teacher_email: profile?.email ?? null,
+      teacher_subjects: profile?.subjects ?? [],
+      teacher_city: profile?.city ?? null,
+      teacher_experience_years: profile?.experience_years ?? null,
       job_id: a.job_id,
       job_title: job?.title ?? "Vacancy",
       school_id: job?.school_id ?? "",
       school_name: schoolMap.get(job?.school_id ?? "") ?? "—",
+      assigned_recruiter: a.assigned_recruiter,
+      expected_salary: a.expected_salary,
+      archived: a.archived ?? false,
     };
   });
 }
@@ -77,11 +95,11 @@ export async function fetchAdminApplication(id: string): Promise<AdminApplicatio
   return all.find((a) => a.id === id) ?? null;
 }
 
-/** Group applications by normalized pipeline stage — used by the Kanban view. */
-export function groupByStage(rows: AdminApplicationRow[]): Map<StageId, AdminApplicationRow[]> {
-  const map = new Map<StageId, AdminApplicationRow[]>(PIPELINE_STAGES.map((s) => [s.id, []]));
+/** Group applications by their ATS stage — used by the Kanban view. */
+export function groupByStage(rows: AdminApplicationRow[]): Map<AtsStageId, AdminApplicationRow[]> {
+  const map = new Map<AtsStageId, AdminApplicationRow[]>(ATS_STAGES.map((s) => [s.id, []]));
   for (const row of rows) {
-    const stage = normalizeStage(row.status);
+    const stage = atsStage(row.status);
     map.get(stage)?.push(row);
   }
   return map;
@@ -92,12 +110,14 @@ export const APPLICATION_CSV_COLUMNS = [
   { header: "Email", value: (r: AdminApplicationRow) => r.teacher_email ?? "" },
   { header: "Job", value: (r: AdminApplicationRow) => r.job_title },
   { header: "School", value: (r: AdminApplicationRow) => r.school_name },
-  { header: "Stage", value: (r: AdminApplicationRow) => normalizeStage(r.status) },
+  { header: "Stage", value: (r: AdminApplicationRow) => atsStage(r.status) },
+  { header: "Recruiter", value: (r: AdminApplicationRow) => r.assigned_recruiter ?? "" },
+  { header: "Expected salary", value: (r: AdminApplicationRow) => r.expected_salary ?? "" },
   { header: "Applied on", value: (r: AdminApplicationRow) => r.created_at },
   { header: "Last updated", value: (r: AdminApplicationRow) => r.updated_at },
 ];
 
-/** Update an application's stage and insert an audit event, mirroring the school pipeline behaviour. */
+/** Update an application's stage and insert an audit event. A DB trigger logs the communications entry. */
 export async function updateApplicationStage({
   applicationId,
   from,
@@ -106,20 +126,54 @@ export async function updateApplicationStage({
 }: {
   applicationId: string;
   from: string;
-  to: StageId;
+  to: AtsStageId;
   actorId: string | undefined;
 }) {
-  if (normalizeStage(from) === to) return;
-  const { error } = await supabase.from("applications").update({ status: to }).eq("id", applicationId);
+  if (atsStage(from) === to) return;
+  const nextStatus = statusForStage(to);
+  const { error } = await supabase.from("applications").update({ status: nextStatus }).eq("id", applicationId);
   if (error) throw error;
-  const label = PIPELINE_STAGES.find((s) => s.id === to)?.label ?? to;
+  const label = ATS_STAGES.find((s) => s.id === to)?.label ?? to;
   const { error: eventErr } = await supabase.from("application_events").insert({
     application_id: applicationId,
     actor_id: actorId ?? null,
     event_type: "stage_change",
-    from_status: normalizeStage(from),
+    from_status: atsStage(from),
     to_status: to,
     summary: `Moved to ${label}`,
   });
   if (eventErr) throw eventErr;
+}
+
+/** Batched status update + one audit event per application. */
+export async function bulkUpdateStage(ids: string[], stage: AtsStageId, actorId: string | undefined) {
+  if (ids.length === 0) return;
+  const nextStatus = statusForStage(stage);
+  const { error } = await supabase.from("applications").update({ status: nextStatus }).in("id", ids);
+  if (error) throw error;
+  const label = ATS_STAGES.find((s) => s.id === stage)?.label ?? stage;
+  const { error: eventErr } = await supabase.from("application_events").insert(
+    ids.map((id) => ({
+      application_id: id,
+      actor_id: actorId ?? null,
+      event_type: "stage_change",
+      to_status: stage,
+      summary: `Moved to ${label}`,
+    })),
+  );
+  if (eventErr) throw eventErr;
+}
+
+export async function bulkAssignRecruiter(ids: string[], recruiterId: string | null) {
+  await assignRecruiter("applications", ids, recruiterId);
+}
+
+export async function bulkArchive(ids: string[], archived: boolean) {
+  if (ids.length === 0) return;
+  const { error } = await supabase.from("applications").update({ archived }).in("id", ids);
+  if (error) throw error;
+}
+
+export async function bulkReject(ids: string[], actorId: string | undefined) {
+  await bulkUpdateStage(ids, "rejected", actorId);
 }
