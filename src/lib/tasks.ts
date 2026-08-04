@@ -89,9 +89,13 @@ export async function createTask(input: TaskInput & { created_by: string | null 
 }
 
 export async function updateTask(id: string, patch: Partial<TaskInput>) {
-  const next: Record<string, unknown> = { ...patch };
-  if (patch.status) next['completed_at'] = patch.status === "done" ? new Date().toISOString() : null;
-  const { error } = await supabase.from("tasks").update(next).eq("id", id);
+  const completed = patch.status
+    ? { completed_at: patch.status === "done" ? new Date().toISOString() : null }
+    : {};
+  const { error } = await supabase
+    .from("tasks")
+    .update({ ...patch, ...completed })
+    .eq("id", id);
   if (error) throw error;
 }
 
