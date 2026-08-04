@@ -36,7 +36,7 @@ const nav: NavItem[] = [
 
 export const Route = createFileRoute("/_authenticated/admin")({
   component: () => (
-    <RoleGate allow="admin">
+    <RoleGate allow={["admin", "recruiter"]}>
       <DashboardLayout portal="Operations CRM" nav={nav}>
         <GlobalSearch />
         <Outlet />
