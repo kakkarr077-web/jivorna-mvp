@@ -19,7 +19,7 @@ import { fetchAdminTeachers } from "@/lib/admin-teachers";
 import { fetchAdminJobs } from "@/lib/admin-jobs";
 import { fetchLeads } from "@/lib/admin-leads";
 import { fetchTasks, isOverdue, isDueToday, updateTask, TASK_PRIORITIES, taskPriorityTone } from "@/lib/tasks";
-import { normalizeStage, PIPELINE_STAGES } from "@/lib/pipeline";
+import { atsStage, ATS_STAGES } from "@/lib/ats";
 import { formatDate, formatDateTime } from "@/lib/crm";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -86,18 +86,18 @@ function RecruiterWorkspace() {
 
   const allApplications = applicationsQ.data ?? [];
   const applicationsNeedingAction = allApplications.filter((a) =>
-    ["applied", "application_reviewed"].includes(normalizeStage(a.status)),
+    ["applied", "application_reviewed"].includes(atsStage(a.status)),
   );
-  const offersAwaiting = allApplications.filter((a) => normalizeStage(a.status) === "offered");
+  const offersAwaiting = allApplications.filter((a) => atsStage(a.status) === "offer_sent");
 
   const myPipeline = useMemo(() => {
     const scoped = effectiveScope === "mine" ? allApplications.filter(() => true) : allApplications;
     const counts = new Map<string, number>();
     for (const a of scoped) {
-      const stage = normalizeStage(a.status);
+      const stage = atsStage(a.status);
       counts.set(stage, (counts.get(stage) ?? 0) + 1);
     }
-    return PIPELINE_STAGES.map((s) => ({ ...s, count: counts.get(s.id) ?? 0 }));
+    return ATS_STAGES.map((s) => ({ ...s, count: counts.get(s.id) ?? 0 }));
   }, [allApplications, effectiveScope]);
 
   const recentlyAssigned = useMemo(() => {
