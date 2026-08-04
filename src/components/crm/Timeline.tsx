@@ -8,10 +8,10 @@ import { EmptyState } from "@/components/crm/CrmPrimitives";
 export type TimelineItem = {
   id: string;
   title: string;
-  description?: string | null;
+  description?: string | null | undefined;
   at: string;
-  icon?: LucideIcon;
-  meta?: ReactNode;
+  icon?: LucideIcon | undefined;
+  meta?: ReactNode | undefined;
 };
 
 export function Timeline({
@@ -20,8 +20,8 @@ export function Timeline({
   emptyDescription = "Actions will appear here as they happen.",
 }: {
   items: TimelineItem[];
-  emptyTitle?: string;
-  emptyDescription?: string;
+  emptyTitle?: string | undefined;
+  emptyDescription?: string | undefined;
 }) {
   if (items.length === 0) return <EmptyState title={emptyTitle} description={emptyDescription} />;
   return (
@@ -57,11 +57,11 @@ export function ActivityCard({
   className,
 }: {
   title: string;
-  description?: string | null;
-  at?: string;
-  icon?: LucideIcon;
-  action?: ReactNode;
-  className?: string;
+  description?: string | null | undefined;
+  at?: string | undefined;
+  icon?: LucideIcon | undefined;
+  action?: ReactNode | undefined;
+  className?: string | undefined;
 }) {
   return (
     <div

@@ -28,14 +28,14 @@ export function NotesPanel({
   onTogglePin,
   isBusy,
 }: {
-  title?: string;
-  description?: string;
+  title?: string | undefined;
+  description?: string | undefined;
   notes: CrmNote[];
   onAdd: (body: string) => Promise<void> | void;
-  onUpdate?: (id: string, body: string) => Promise<void> | void;
-  onDelete?: (id: string) => Promise<void> | void;
-  onTogglePin?: (id: string, pinned: boolean) => Promise<void> | void;
-  isBusy?: boolean;
+  onUpdate?: (id: string, body: string) => Promise<void> | void | undefined;
+  onDelete?: (id: string) => Promise<void> | void | undefined;
+  onTogglePin?: (id: string, pinned: boolean) => Promise<void> | void | undefined;
+  isBusy?: boolean | undefined;
 }) {
   const [draft, setDraft] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);

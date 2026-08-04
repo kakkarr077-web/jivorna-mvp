@@ -60,10 +60,7 @@ function useRecruiters() {
   return useQuery({
     queryKey: ["admin-recruiters"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id,full_name,email,role")
-        .in("role", ["admin"]);
+      const { data, error } = await supabase.from("profiles").select("id,full_name,email");
       if (error) throw error;
       return (data ?? []) as { id: string; full_name: string | null; email: string | null }[];
     },
@@ -352,7 +349,7 @@ export function ConvertLeadDialog({ lead, trigger, onConverted }: { lead: LeadRo
   );
 }
 
-function Field({ label, children, error, className }: { label: string; children: ReactNode; error?: string; className?: string }) {
+function Field({ label, children, error, className }: { label: string; children: ReactNode; error?: string | undefined; className?: string }) {
   return (
     <div className={className}>
       <Label className="mb-1.5 block text-sm">{label}</Label>

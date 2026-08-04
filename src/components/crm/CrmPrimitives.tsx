@@ -30,10 +30,10 @@ export function MetricCard({
 }: {
   label: string;
   value: ReactNode;
-  icon?: LucideIcon;
-  hint?: string;
-  tone?: "default" | "gold" | "muted";
-  onClick?: () => void;
+  icon?: LucideIcon | undefined;
+  hint?: string | undefined;
+  tone?: "default" | "gold" | "muted" | undefined;
+  onClick?: () => void | undefined;
 }) {
   const Wrapper = onClick ? "button" : "div";
   return (
@@ -71,8 +71,8 @@ export function StatusBadge({
   className,
 }: {
   label: string;
-  tone?: BadgeTone;
-  className?: string;
+  tone?: BadgeTone | undefined;
+  className?: string | undefined;
 }) {
   return (
     <Badge variant={tone} className={cn("whitespace-nowrap", className)}>
@@ -88,9 +88,9 @@ export function SectionHeader({
   className,
 }: {
   title: string;
-  description?: string;
-  action?: ReactNode;
-  className?: string;
+  description?: string | undefined;
+  action?: ReactNode | undefined;
+  className?: string | undefined;
 }) {
   return (
     <div className={cn("mb-4 flex flex-wrap items-end justify-between gap-3", className)}>
@@ -110,11 +110,11 @@ export function InfoCard({
   children,
   className,
 }: {
-  title?: string;
-  description?: string;
-  action?: ReactNode;
+  title?: string | undefined;
+  description?: string | undefined;
+  action?: ReactNode | undefined;
   children: ReactNode;
-  className?: string;
+  className?: string | undefined;
 }) {
   return (
     <section className={cn("rounded-xl border border-border bg-card p-5 shadow-soft sm:p-6", className)}>
@@ -149,8 +149,8 @@ export function SearchInput({
 }: {
   value: string;
   onChange: (v: string) => void;
-  placeholder?: string;
-  className?: string;
+  placeholder?: string | undefined;
+  className?: string | undefined;
 }) {
   return (
     <div className={cn("relative", className)}>
@@ -181,8 +181,8 @@ export function FilterToolbar({
   right,
 }: {
   children: ReactNode;
-  onReset?: () => void;
-  right?: ReactNode;
+  onReset?: () => void | undefined;
+  right?: ReactNode | undefined;
 }) {
   return (
     <div className="mb-6 space-y-3">
@@ -229,9 +229,9 @@ export function LoadingSkeleton({
   rows = 6,
   className,
 }: {
-  variant?: "table" | "cards" | "profile" | "lines";
-  rows?: number;
-  className?: string;
+  variant?: "table" | "cards" | "profile" | "lines" | undefined;
+  rows?: number | undefined;
+  className?: string | undefined;
 }) {
   if (variant === "cards") {
     return (
@@ -286,9 +286,9 @@ export function ConfirmDialog({
   open: boolean;
   onOpenChange: (v: boolean) => void;
   title: string;
-  description?: string;
-  confirmLabel?: string;
-  destructive?: boolean;
+  description?: string | undefined;
+  confirmLabel?: string | undefined;
+  destructive?: boolean | undefined;
   onConfirm: () => void;
 }) {
   return (
