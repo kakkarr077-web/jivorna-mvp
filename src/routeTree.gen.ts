@@ -42,6 +42,7 @@ import { Route as AuthenticatedTeacherApplicationsRouteImport } from './routes/_
 import { Route as AuthenticatedTeacherJobsRouteImport } from './routes/_authenticated/teacher.jobs'
 import { Route as AuthenticatedTeacherOnboardingRouteImport } from './routes/_authenticated/teacher.onboarding'
 import { Route as AuthenticatedTeacherProfileRouteImport } from './routes/_authenticated/teacher.profile'
+import { Route as AuthenticatedAdminApplicationsIndexRouteImport } from './routes/_authenticated/admin.applications.index'
 import { Route as AuthenticatedAdminSchoolsIndexRouteImport } from './routes/_authenticated/admin.schools.index'
 import { Route as AuthenticatedAdminSchoolsSchoolIdRouteImport } from './routes/_authenticated/admin.schools.$schoolId'
 import { Route as AuthenticatedAdminTeachersIndexRouteImport } from './routes/_authenticated/admin.teachers.index'
@@ -223,6 +224,12 @@ const AuthenticatedTeacherProfileRoute =
     path: '/profile',
     getParentRoute: () => AuthenticatedTeacherRoute,
   } as any)
+const AuthenticatedAdminApplicationsIndexRoute =
+  AuthenticatedAdminApplicationsIndexRouteImport.update({
+    id: '/applications/',
+    path: '/applications/',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminSchoolsIndexRoute =
   AuthenticatedAdminSchoolsIndexRouteImport.update({
     id: '/schools/',
@@ -283,6 +290,7 @@ export interface FileRoutesByFullPath {
   '/teacher/': typeof AuthenticatedTeacherIndexRoute
   '/admin/schools/$schoolId': typeof AuthenticatedAdminSchoolsSchoolIdRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/admin/applications/': typeof AuthenticatedAdminApplicationsIndexRoute
   '/admin/schools/': typeof AuthenticatedAdminSchoolsIndexRoute
   '/admin/teachers/': typeof AuthenticatedAdminTeachersIndexRoute
 }
@@ -318,6 +326,7 @@ export interface FileRoutesByTo {
   '/teacher': typeof AuthenticatedTeacherIndexRoute
   '/admin/schools/$schoolId': typeof AuthenticatedAdminSchoolsSchoolIdRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/admin/applications': typeof AuthenticatedAdminApplicationsIndexRoute
   '/admin/schools': typeof AuthenticatedAdminSchoolsIndexRoute
   '/admin/teachers': typeof AuthenticatedAdminTeachersIndexRoute
 }
@@ -358,6 +367,7 @@ export interface FileRoutesById {
   '/_authenticated/teacher/': typeof AuthenticatedTeacherIndexRoute
   '/_authenticated/admin/schools/$schoolId': typeof AuthenticatedAdminSchoolsSchoolIdRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/_authenticated/admin/applications/': typeof AuthenticatedAdminApplicationsIndexRoute
   '/_authenticated/admin/schools/': typeof AuthenticatedAdminSchoolsIndexRoute
   '/_authenticated/admin/teachers/': typeof AuthenticatedAdminTeachersIndexRoute
 }
@@ -398,6 +408,7 @@ export interface FileRouteTypes {
     | '/teacher/'
     | '/admin/schools/$schoolId'
     | '/lovable/email/transactional/preview'
+    | '/admin/applications/'
     | '/admin/schools/'
     | '/admin/teachers/'
   fileRoutesByTo: FileRoutesByTo
@@ -433,6 +444,7 @@ export interface FileRouteTypes {
     | '/teacher'
     | '/admin/schools/$schoolId'
     | '/lovable/email/transactional/preview'
+    | '/admin/applications'
     | '/admin/schools'
     | '/admin/teachers'
   id:
@@ -472,6 +484,7 @@ export interface FileRouteTypes {
     | '/_authenticated/teacher/'
     | '/_authenticated/admin/schools/$schoolId'
     | '/lovable/email/transactional/preview'
+    | '/_authenticated/admin/applications/'
     | '/_authenticated/admin/schools/'
     | '/_authenticated/admin/teachers/'
   fileRoutesById: FileRoutesById
@@ -725,6 +738,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTeacherProfileRouteImport
       parentRoute: typeof AuthenticatedTeacherRoute
     }
+    '/_authenticated/admin/applications/': {
+      id: '/_authenticated/admin/applications/'
+      path: '/applications'
+      fullPath: '/admin/applications/'
+      preLoaderRoute: typeof AuthenticatedAdminApplicationsIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/schools/': {
       id: '/_authenticated/admin/schools/'
       path: '/schools'
@@ -762,6 +782,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedAdminSchoolsSchoolIdRoute: typeof AuthenticatedAdminSchoolsSchoolIdRoute
+  AuthenticatedAdminApplicationsIndexRoute: typeof AuthenticatedAdminApplicationsIndexRoute
   AuthenticatedAdminSchoolsIndexRoute: typeof AuthenticatedAdminSchoolsIndexRoute
   AuthenticatedAdminTeachersIndexRoute: typeof AuthenticatedAdminTeachersIndexRoute
 }
@@ -773,6 +794,8 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   AuthenticatedAdminSchoolsSchoolIdRoute:
     AuthenticatedAdminSchoolsSchoolIdRoute,
+  AuthenticatedAdminApplicationsIndexRoute:
+    AuthenticatedAdminApplicationsIndexRoute,
   AuthenticatedAdminSchoolsIndexRoute: AuthenticatedAdminSchoolsIndexRoute,
   AuthenticatedAdminTeachersIndexRoute: AuthenticatedAdminTeachersIndexRoute,
 }
