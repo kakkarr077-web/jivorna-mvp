@@ -111,19 +111,19 @@ export async function fetchReportsData(period: ReportPeriod): Promise<ReportsDat
 
   for (const s of schoolsInWindow) {
     const idx = bucketIndex.get(bucketKey(s.created_at, granularity));
-    if (idx !== undefined) growth[idx].schools += 1;
+    if (idx !== undefined) growth[idx]!.schools += 1;
   }
   for (const t of teachersInWindow) {
     const idx = bucketIndex.get(bucketKey(t.created_at, granularity));
-    if (idx !== undefined) growth[idx].teachers += 1;
+    if (idx !== undefined) growth[idx]!.teachers += 1;
   }
   for (const j of jobsInWindow) {
     const idx = bucketIndex.get(bucketKey(j.created_at, granularity));
-    if (idx !== undefined) growth[idx].jobs += 1;
+    if (idx !== undefined) growth[idx]!.jobs += 1;
   }
   for (const a of applicationsInWindow) {
     const idx = bucketIndex.get(bucketKey(a.created_at, granularity));
-    if (idx !== undefined) growth[idx].applications += 1;
+    if (idx !== undefined) growth[idx]!.applications += 1;
   }
 
   const stageOrder = [

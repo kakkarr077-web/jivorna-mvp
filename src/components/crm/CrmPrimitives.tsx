@@ -33,7 +33,7 @@ export function MetricCard({
   icon?: LucideIcon | undefined;
   hint?: string | undefined;
   tone?: "default" | "gold" | "muted" | undefined;
-  onClick?: () => void | undefined;
+  onClick?: (() => void) | undefined;
 }) {
   const Wrapper = onClick ? "button" : "div";
   return (
@@ -181,7 +181,7 @@ export function FilterToolbar({
   right,
 }: {
   children: ReactNode;
-  onReset?: () => void | undefined;
+  onReset?: (() => void) | undefined;
   right?: ReactNode | undefined;
 }) {
   return (

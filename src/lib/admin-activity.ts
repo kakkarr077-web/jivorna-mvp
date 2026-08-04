@@ -7,7 +7,7 @@ export type ActivityItem = {
   id: string;
   entity: ActivityEntity;
   title: string;
-  description?: string | null;
+  description?: string;
   at: string;
   icon: LucideIcon;
   href?: string;

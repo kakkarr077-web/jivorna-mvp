@@ -18,7 +18,7 @@ export type DataTableColumn<T> = {
   header: ReactNode;
   cell: (row: T) => ReactNode;
   /** Value used for client-side sorting; omit to disable sorting on this column. */
-  sortValue?: (row: T) => string | number | undefined;
+  sortValue?: ((row: T) => string | number) | undefined;
   align?: "left" | "right" | undefined;
   className?: string | undefined;
   headClassName?: string | undefined;
@@ -67,18 +67,18 @@ export function DataTable<T>({
   columns: DataTableColumn<T>[];
   getRowId: (row: T) => string;
   isLoading?: boolean | undefined;
-  onRowClick?: (row: T) => void | undefined;
+  onRowClick?: ((row: T) => void) | undefined;
   sort?: SortState | undefined;
-  onSortChange?: (s: SortState) => void | undefined;
+  onSortChange?: ((s: SortState) => void) | undefined;
   selectedIds?: string[] | undefined;
-  onSelectionChange?: (ids: string[]) => void | undefined;
+  onSelectionChange?: ((ids: string[]) => void) | undefined;
   emptyTitle?: string | undefined;
   emptyDescription?: string | undefined;
   emptyAction?: ReactNode | undefined;
   page?: number | undefined;
   pageSize?: number | undefined;
   totalCount?: number | undefined;
-  onPageChange?: (p: number) => void | undefined;
+  onPageChange?: ((p: number) => void) | undefined;
 }) {
   if (isLoading) return <LoadingSkeleton variant="table" rows={pageSize > 8 ? 8 : pageSize} />;
   if (rows.length === 0)

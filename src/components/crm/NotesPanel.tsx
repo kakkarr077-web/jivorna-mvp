@@ -32,9 +32,9 @@ export function NotesPanel({
   description?: string | undefined;
   notes: CrmNote[];
   onAdd: (body: string) => Promise<void> | void;
-  onUpdate?: (id: string, body: string) => Promise<void> | void | undefined;
-  onDelete?: (id: string) => Promise<void> | void | undefined;
-  onTogglePin?: (id: string, pinned: boolean) => Promise<void> | void | undefined;
+  onUpdate?: ((id: string, body: string) => Promise<void> | void) | undefined;
+  onDelete?: ((id: string) => Promise<void> | void) | undefined;
+  onTogglePin?: ((id: string, pinned: boolean) => Promise<void> | void) | undefined;
   isBusy?: boolean | undefined;
 }) {
   const [draft, setDraft] = useState("");
