@@ -1,5 +1,6 @@
 /** Per-user saved filter presets for any CRM module. */
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 
 export type SavedView = {
   id: string;
@@ -30,7 +31,7 @@ export async function createSavedView(input: {
     module: input.module,
     user_id: input.userId,
     name: input.name,
-    config: input.config,
+    config: input.config as Json,
   });
   if (error) throw error;
 }
