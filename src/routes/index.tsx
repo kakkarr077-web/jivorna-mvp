@@ -226,7 +226,7 @@ function Index() {
         <div className="mx-auto grid max-w-6xl items-center gap-14 px-5 py-20 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-28">
           <Reveal>
             <p className="eyebrow inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold-soft px-3 py-1.5 text-accent-foreground">
-              <Sparkles className="h-3.5 w-3.5" /> Teacher recruitment, refined
+              <Sparkles className="h-3.5 w-3.5" /> RECRUITMENT, REDEFINED
             </p>
             <h1 className="text-display mt-6 text-4xl sm:text-5xl lg:text-[3.6rem]">
               India's Recruitment Platform Built{" "}
