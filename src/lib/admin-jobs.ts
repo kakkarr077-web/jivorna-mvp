@@ -19,6 +19,7 @@ export type AdminJobRow = {
   benefits: string | null;
   required_skills: string[] | null;
   status: JobStatus;
+  assigned_recruiter: string | null;
   applications: number;
   createdBy: string;
   created_at: string;
@@ -28,7 +29,7 @@ export type AdminJobRow = {
 export type AdminSchoolOption = { id: string; name: string; board: string | null; city: string | null };
 
 const JOB_COLUMNS =
-  "id,title,school_id,board,subject,grade,location,employment_type,min_experience_years,salary_min,salary_max,salary_range,description,benefits,required_skills,status,created_at,updated_at";
+  "id,title,school_id,board,subject,grade,location,employment_type,min_experience_years,salary_min,salary_max,salary_range,description,benefits,required_skills,status,assigned_recruiter,created_at,updated_at";
 
 export async function fetchAdminJobs(): Promise<AdminJobRow[]> {
   const [{ data: jobs, error }, { data: schools }, { data: apps }] = await Promise.all([

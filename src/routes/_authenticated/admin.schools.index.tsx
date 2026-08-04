@@ -1,10 +1,14 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Search } from "lucide-react";
+import { toast } from "sonner";
 import { PageHeader, EmptyState } from "@/components/shared/Primitives";
+import { BulkActionsToolbar } from "@/components/crm/CrmPrimitives";
+import { RecruiterLabel, RecruiterSelect } from "@/components/crm/RecruiterSelect";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -22,6 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { assignRecruiter } from "@/lib/recruiters";
 import {
   fetchAdminSchools,
   formatDate,
@@ -35,20 +40,34 @@ export const Route = createFileRoute("/_authenticated/admin/schools/")({
 });
 
 const PAGE_SIZE = 10;
+const ANY_RECRUITER = "__any_recruiter__";
 type SortKey = "recent" | "name" | "jobs" | "applications";
 
 function AdminSchools() {
   const navigate = useNavigate();
+  const qc = useQueryClient();
   const [q, setQ] = useState("");
   const [board, setBoard] = useState("all");
   const [city, setCity] = useState("all");
   const [status, setStatus] = useState("all");
+  const [recruiter, setRecruiter] = useState(ANY_RECRUITER);
   const [sort, setSort] = useState<SortKey>("recent");
   const [page, setPage] = useState(0);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-schools"],
     queryFn: fetchAdminSchools,
+  });
+
+  const bulkAssign = useMutation({
+    mutationFn: (recruiterId: string | null) => assignRecruiter("schools", selectedIds, recruiterId),
+    onSuccess: () => {
+      toast.success("Recruiter assigned.");
+      setSelectedIds([]);
+      void qc.invalidateQueries({ queryKey: ["admin-schools"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not assign recruiter"),
   });
 
   const schools = data ?? [];
@@ -67,6 +86,7 @@ function AdminSchools() {
       if (board !== "all" && s.board !== board) return false;
       if (city !== "all" && s.city !== city) return false;
       if (status !== "all" && s.subscription_status !== status) return false;
+      if (recruiter !== ANY_RECRUITER && (s.assigned_recruiter ?? "") !== recruiter) return false;
       if (!term) return true;
       return [s.name, s.city, s.board, s.principal_name, s.hr_name, s.contact_email, s.phone]
         .filter(Boolean)
@@ -79,11 +99,13 @@ function AdminSchools() {
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     });
     return sorted;
-  }, [schools, q, board, city, status, sort]);
+  }, [schools, q, board, city, status, recruiter, sort]);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
   const current = Math.min(page, pageCount - 1);
   const pageRows = rows.slice(current * PAGE_SIZE, current * PAGE_SIZE + PAGE_SIZE);
+  const pageIds = pageRows.map((s) => s.id);
+  const allPageSelected = pageIds.length > 0 && pageIds.every((id) => selectedIds.includes(id));
 
   const openSchool = (s: SchoolListRow) =>
     void navigate({ to: "/admin/schools/$schoolId", params: { schoolId: s.id } });
@@ -92,7 +114,7 @@ function AdminSchools() {
     <div>
       <PageHeader title="Schools" description="Every school account on Jivorna, with live hiring activity." />
 
-      <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
         <div className="relative lg:col-span-2">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -107,6 +129,12 @@ function AdminSchools() {
         </div>
         <Filter value={board} onChange={setBoard} placeholder="All boards" options={boards} allLabel="All boards" />
         <Filter value={city} onChange={setCity} placeholder="All cities" options={cities} allLabel="All cities" />
+        <RecruiterSelect
+          value={recruiter === ANY_RECRUITER ? null : recruiter}
+          onChange={(v) => setRecruiter(v ?? ANY_RECRUITER)}
+          placeholder="Any recruiter"
+          includeUnassigned
+        />
         <Select
           value={sort}
           onValueChange={(v) => {
@@ -142,6 +170,15 @@ function AdminSchools() {
         ))}
       </div>
 
+      <BulkActionsToolbar count={selectedIds.length} onClear={() => setSelectedIds([])}>
+        <RecruiterSelect
+          value={null}
+          onChange={(v) => bulkAssign.mutate(v)}
+          placeholder="Assign recruiter"
+          className="h-9 w-52"
+        />
+      </BulkActionsToolbar>
+
       {isLoading ? (
         <Skeleton className="h-72 rounded-xl" />
       ) : rows.length === 0 ? (
@@ -152,6 +189,19 @@ function AdminSchools() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-10">
+                    <Checkbox
+                      checked={allPageSelected}
+                      aria-label="Select all rows"
+                      onCheckedChange={(v) =>
+                        setSelectedIds((prev) =>
+                          v
+                            ? Array.from(new Set([...prev, ...pageIds]))
+                            : prev.filter((id) => !pageIds.includes(id)),
+                        )
+                      }
+                    />
+                  </TableHead>
                   <TableHead>School</TableHead>
                   <TableHead>Board</TableHead>
                   <TableHead>City</TableHead>
@@ -159,6 +209,7 @@ function AdminSchools() {
                   <TableHead>Phone</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Verification</TableHead>
+                  <TableHead>Assigned recruiter</TableHead>
                   <TableHead className="text-right">Active jobs</TableHead>
                   <TableHead className="text-right">Applications</TableHead>
                   <TableHead>Joined</TableHead>
@@ -175,6 +226,15 @@ function AdminSchools() {
                       if (e.key === "Enter") openSchool(s);
                     }}
                   >
+                    <TableCell onClick={(e) => e.stopPropagation()}>
+                      <Checkbox
+                        checked={selectedIds.includes(s.id)}
+                        aria-label="Select row"
+                        onCheckedChange={(v) =>
+                          setSelectedIds((prev) => (v ? [...prev, s.id] : prev.filter((id) => id !== s.id)))
+                        }
+                      />
+                    </TableCell>
                     <TableCell className="font-medium">{s.name}</TableCell>
                     <TableCell>{s.board ?? "—"}</TableCell>
                     <TableCell>{s.city ?? "—"}</TableCell>
@@ -185,6 +245,9 @@ function AdminSchools() {
                       <Badge variant={VERIFICATION_TONES[s.subscription_status]}>
                         {VERIFICATION_LABELS[s.subscription_status]}
                       </Badge>
+                    </TableCell>
+                    <TableCell className="text-sm">
+                      <RecruiterLabel id={s.assigned_recruiter} />
                     </TableCell>
                     <TableCell className="text-right">{s.activeJobs}</TableCell>
                     <TableCell className="text-right">{s.applications}</TableCell>

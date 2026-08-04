@@ -116,7 +116,7 @@ export function TaskDialog({
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label>Priority</Label>
-              <Select value={form.priority} onValueChange={(v) => set("priority", v as TaskFormValues["priority"])}>
+              <Select value={form.priority ?? "medium"} onValueChange={(v) => set("priority", v as TaskFormValues["priority"])}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -131,7 +131,7 @@ export function TaskDialog({
             </div>
             <div className="space-y-1.5">
               <Label>Status</Label>
-              <Select value={form.status} onValueChange={(v) => set("status", v as TaskFormValues["status"])}>
+              <Select value={form.status ?? "todo"} onValueChange={(v) => set("status", v as TaskFormValues["status"])}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>

@@ -43,6 +43,10 @@ import { EmptyState } from "@/components/shared/Primitives";
 import { SchoolNotes } from "@/components/admin/SchoolNotes";
 import { SchoolTimeline, type TimelineEvent } from "@/components/admin/SchoolTimeline";
 import { SchoolCreateJobDialog, SchoolEditDialog } from "@/components/admin/SchoolDialogs";
+import { CommunicationTimeline } from "@/components/crm/CommunicationTimeline";
+import { TasksPanel } from "@/components/crm/TasksPanel";
+import { RecruiterSelect } from "@/components/crm/RecruiterSelect";
+import { assignRecruiter } from "@/lib/recruiters";
 import { jobStatusLabel, jobStatusTone } from "@/lib/jobStatus";
 import { stageLabel } from "@/lib/pipeline";
 import {
@@ -68,6 +72,16 @@ function AdminSchoolProfile() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["admin-school", schoolId],
     queryFn: () => fetchSchoolDetail(schoolId),
+  });
+
+  const setRecruiter = useMutation({
+    mutationFn: (recruiterId: string | null) => assignRecruiter("schools", [schoolId], recruiterId),
+    onSuccess: () => {
+      toast.success("Recruiter updated.");
+      void qc.invalidateQueries({ queryKey: ["admin-school", schoolId] });
+      void qc.invalidateQueries({ queryKey: ["admin-schools"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not assign recruiter"),
   });
 
   const setSubscription = useMutation({
@@ -219,7 +233,12 @@ function AdminSchoolProfile() {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <RecruiterSelect
+              value={school.assigned_recruiter}
+              onChange={(v) => setRecruiter.mutate(v)}
+              className="h-9 w-48"
+            />
             <SchoolEditDialog
               school={school}
               trigger={
@@ -451,6 +470,10 @@ function AdminSchoolProfile() {
               </div>
             )}
           </PanelCard>
+
+          <CommunicationTimeline entityType="school" entityId={school.id} />
+
+          <TasksPanel relatedType="school" relatedId={school.id} />
 
           <PanelCard title="Activity timeline">
             <SchoolTimeline events={timeline.slice(0, 25)} />

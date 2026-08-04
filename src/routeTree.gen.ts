@@ -29,10 +29,12 @@ import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedTeacherRouteImport } from './routes/_authenticated/teacher'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminActivityRouteImport } from './routes/_authenticated/admin.activity'
+import { Route as AuthenticatedAdminCalendarRouteImport } from './routes/_authenticated/admin.calendar'
 import { Route as AuthenticatedAdminInterviewsRouteImport } from './routes/_authenticated/admin.interviews'
 import { Route as AuthenticatedAdminInvoicesRouteImport } from './routes/_authenticated/admin.invoices'
 import { Route as AuthenticatedAdminJobsRouteImport } from './routes/_authenticated/admin.jobs'
 import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin.reports'
+import { Route as AuthenticatedAdminTasksRouteImport } from './routes/_authenticated/admin.tasks'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedSchoolIndexRouteImport } from './routes/_authenticated/school.index'
 import { Route as AuthenticatedSchoolApplicantsRouteImport } from './routes/_authenticated/school.applicants'
@@ -156,6 +158,12 @@ const AuthenticatedAdminActivityRoute =
     path: '/activity',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminCalendarRoute =
+  AuthenticatedAdminCalendarRouteImport.update({
+    id: '/calendar',
+    path: '/calendar',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminInterviewsRoute =
   AuthenticatedAdminInterviewsRouteImport.update({
     id: '/interviews',
@@ -179,6 +187,11 @@ const AuthenticatedAdminReportsRoute =
     path: '/reports',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminTasksRoute = AuthenticatedAdminTasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -323,10 +336,12 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/teacher': typeof AuthenticatedTeacherRouteWithChildren
   '/admin/activity': typeof AuthenticatedAdminActivityRoute
+  '/admin/calendar': typeof AuthenticatedAdminCalendarRoute
   '/admin/interviews': typeof AuthenticatedAdminInterviewsRoute
   '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/admin/jobs': typeof AuthenticatedAdminJobsRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/admin/tasks': typeof AuthenticatedAdminTasksRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/school/applicants': typeof AuthenticatedSchoolApplicantsRoute
   '/school/invoices': typeof AuthenticatedSchoolInvoicesRoute
@@ -366,10 +381,12 @@ export interface FileRoutesByTo {
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/admin/activity': typeof AuthenticatedAdminActivityRoute
+  '/admin/calendar': typeof AuthenticatedAdminCalendarRoute
   '/admin/interviews': typeof AuthenticatedAdminInterviewsRoute
   '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/admin/jobs': typeof AuthenticatedAdminJobsRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/admin/tasks': typeof AuthenticatedAdminTasksRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/school/applicants': typeof AuthenticatedSchoolApplicantsRoute
   '/school/invoices': typeof AuthenticatedSchoolInvoicesRoute
@@ -414,10 +431,12 @@ export interface FileRoutesById {
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/teacher': typeof AuthenticatedTeacherRouteWithChildren
   '/_authenticated/admin/activity': typeof AuthenticatedAdminActivityRoute
+  '/_authenticated/admin/calendar': typeof AuthenticatedAdminCalendarRoute
   '/_authenticated/admin/interviews': typeof AuthenticatedAdminInterviewsRoute
   '/_authenticated/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/_authenticated/admin/jobs': typeof AuthenticatedAdminJobsRoute
   '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/_authenticated/admin/tasks': typeof AuthenticatedAdminTasksRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/school/applicants': typeof AuthenticatedSchoolApplicantsRoute
   '/_authenticated/school/invoices': typeof AuthenticatedSchoolInvoicesRoute
@@ -462,10 +481,12 @@ export interface FileRouteTypes {
     | '/settings'
     | '/teacher'
     | '/admin/activity'
+    | '/admin/calendar'
     | '/admin/interviews'
     | '/admin/invoices'
     | '/admin/jobs'
     | '/admin/reports'
+    | '/admin/tasks'
     | '/admin/users'
     | '/school/applicants'
     | '/school/invoices'
@@ -505,10 +526,12 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/settings'
     | '/admin/activity'
+    | '/admin/calendar'
     | '/admin/interviews'
     | '/admin/invoices'
     | '/admin/jobs'
     | '/admin/reports'
+    | '/admin/tasks'
     | '/admin/users'
     | '/school/applicants'
     | '/school/invoices'
@@ -552,10 +575,12 @@ export interface FileRouteTypes {
     | '/_authenticated/settings'
     | '/_authenticated/teacher'
     | '/_authenticated/admin/activity'
+    | '/_authenticated/admin/calendar'
     | '/_authenticated/admin/interviews'
     | '/_authenticated/admin/invoices'
     | '/_authenticated/admin/jobs'
     | '/_authenticated/admin/reports'
+    | '/_authenticated/admin/tasks'
     | '/_authenticated/admin/users'
     | '/_authenticated/school/applicants'
     | '/_authenticated/school/invoices'
@@ -738,6 +763,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminActivityRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/calendar': {
+      id: '/_authenticated/admin/calendar'
+      path: '/calendar'
+      fullPath: '/admin/calendar'
+      preLoaderRoute: typeof AuthenticatedAdminCalendarRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/interviews': {
       id: '/_authenticated/admin/interviews'
       path: '/interviews'
@@ -764,6 +796,13 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/admin/reports'
       preLoaderRoute: typeof AuthenticatedAdminReportsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/tasks': {
+      id: '/_authenticated/admin/tasks'
+      path: '/tasks'
+      fullPath: '/admin/tasks'
+      preLoaderRoute: typeof AuthenticatedAdminTasksRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/users': {
@@ -918,10 +957,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminActivityRoute: typeof AuthenticatedAdminActivityRoute
+  AuthenticatedAdminCalendarRoute: typeof AuthenticatedAdminCalendarRoute
   AuthenticatedAdminInterviewsRoute: typeof AuthenticatedAdminInterviewsRoute
   AuthenticatedAdminInvoicesRoute: typeof AuthenticatedAdminInvoicesRoute
   AuthenticatedAdminJobsRoute: typeof AuthenticatedAdminJobsRoute
   AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
+  AuthenticatedAdminTasksRoute: typeof AuthenticatedAdminTasksRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedAdminApplicationsApplicationIdRoute: typeof AuthenticatedAdminApplicationsApplicationIdRoute
@@ -936,10 +977,12 @@ interface AuthenticatedAdminRouteChildren {
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminActivityRoute: AuthenticatedAdminActivityRoute,
+  AuthenticatedAdminCalendarRoute: AuthenticatedAdminCalendarRoute,
   AuthenticatedAdminInterviewsRoute: AuthenticatedAdminInterviewsRoute,
   AuthenticatedAdminInvoicesRoute: AuthenticatedAdminInvoicesRoute,
   AuthenticatedAdminJobsRoute: AuthenticatedAdminJobsRoute,
   AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
+  AuthenticatedAdminTasksRoute: AuthenticatedAdminTasksRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   AuthenticatedAdminApplicationsApplicationIdRoute:
@@ -1038,3 +1081,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
