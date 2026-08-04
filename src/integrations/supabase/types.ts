@@ -169,8 +169,11 @@ export type Database = {
       }
       applications: {
         Row: {
+          archived: boolean
+          assigned_recruiter: string | null
           cover_letter: string | null
           created_at: string
+          expected_salary: number | null
           id: string
           job_id: string
           status: Database["public"]["Enums"]["application_status"]
@@ -178,8 +181,11 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          archived?: boolean
+          assigned_recruiter?: string | null
           cover_letter?: string | null
           created_at?: string
+          expected_salary?: number | null
           id?: string
           job_id: string
           status?: Database["public"]["Enums"]["application_status"]
@@ -187,8 +193,11 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          archived?: boolean
+          assigned_recruiter?: string | null
           cover_letter?: string | null
           created_at?: string
+          expected_salary?: number | null
           id?: string
           job_id?: string
           status?: Database["public"]["Enums"]["application_status"]
@@ -204,6 +213,90 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      calendar_events: {
+        Row: {
+          assigned_to: string | null
+          created_at: string
+          end_at: string | null
+          event_type: Database["public"]["Enums"]["calendar_event_type"]
+          id: string
+          notes: string | null
+          related_id: string | null
+          related_type: string | null
+          start_at: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string
+          end_at?: string | null
+          event_type?: Database["public"]["Enums"]["calendar_event_type"]
+          id?: string
+          notes?: string | null
+          related_id?: string | null
+          related_type?: string | null
+          start_at: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string
+          end_at?: string | null
+          event_type?: Database["public"]["Enums"]["calendar_event_type"]
+          id?: string
+          notes?: string | null
+          related_id?: string | null
+          related_type?: string | null
+          start_at?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      communications: {
+        Row: {
+          attachment_url: string | null
+          body: string | null
+          channel: Database["public"]["Enums"]["comm_channel"]
+          created_at: string
+          entity_id: string
+          entity_type: string
+          id: string
+          occurred_at: string
+          recruiter_id: string | null
+          summary: string
+          updated_at: string
+        }
+        Insert: {
+          attachment_url?: string | null
+          body?: string | null
+          channel?: Database["public"]["Enums"]["comm_channel"]
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          id?: string
+          occurred_at?: string
+          recruiter_id?: string | null
+          summary: string
+          updated_at?: string
+        }
+        Update: {
+          attachment_url?: string | null
+          body?: string | null
+          channel?: Database["public"]["Enums"]["comm_channel"]
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          occurred_at?: string
+          recruiter_id?: string | null
+          summary?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       documents: {
         Row: {
@@ -246,6 +339,7 @@ export type Database = {
           application_id: string
           created_at: string
           duration_minutes: number
+          feedback: string | null
           id: string
           interviewer_name: string | null
           location: string | null
@@ -253,6 +347,8 @@ export type Database = {
           mode: Database["public"]["Enums"]["interview_mode"]
           notes: string | null
           outcome: string | null
+          rating: number | null
+          result: string | null
           scheduled_at: string
           status: Database["public"]["Enums"]["interview_status"]
           updated_at: string
@@ -261,6 +357,7 @@ export type Database = {
           application_id: string
           created_at?: string
           duration_minutes?: number
+          feedback?: string | null
           id?: string
           interviewer_name?: string | null
           location?: string | null
@@ -268,6 +365,8 @@ export type Database = {
           mode?: Database["public"]["Enums"]["interview_mode"]
           notes?: string | null
           outcome?: string | null
+          rating?: number | null
+          result?: string | null
           scheduled_at: string
           status?: Database["public"]["Enums"]["interview_status"]
           updated_at?: string
@@ -276,6 +375,7 @@ export type Database = {
           application_id?: string
           created_at?: string
           duration_minutes?: number
+          feedback?: string | null
           id?: string
           interviewer_name?: string | null
           location?: string | null
@@ -283,6 +383,8 @@ export type Database = {
           mode?: Database["public"]["Enums"]["interview_mode"]
           notes?: string | null
           outcome?: string | null
+          rating?: number | null
+          result?: string | null
           scheduled_at?: string
           status?: Database["public"]["Enums"]["interview_status"]
           updated_at?: string
@@ -352,6 +454,7 @@ export type Database = {
       }
       jobs: {
         Row: {
+          assigned_recruiter: string | null
           benefits: string | null
           board: string | null
           created_at: string
@@ -373,6 +476,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          assigned_recruiter?: string | null
           benefits?: string | null
           board?: string | null
           created_at?: string
@@ -394,6 +498,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          assigned_recruiter?: string | null
           benefits?: string | null
           board?: string | null
           created_at?: string
@@ -586,6 +691,7 @@ export type Database = {
       }
       notifications: {
         Row: {
+          archived: boolean
           body: string | null
           created_at: string
           id: string
@@ -597,6 +703,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          archived?: boolean
           body?: string | null
           created_at?: string
           id?: string
@@ -608,6 +715,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          archived?: boolean
           body?: string | null
           created_at?: string
           id?: string
@@ -706,6 +814,36 @@ export type Database = {
         }
         Relationships: []
       }
+      saved_views: {
+        Row: {
+          config: Json
+          created_at: string
+          id: string
+          module: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          id?: string
+          module: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          id?: string
+          module?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       school_notes: {
         Row: {
           author_id: string
@@ -746,6 +884,7 @@ export type Database = {
       }
       schools: {
         Row: {
+          assigned_recruiter: string | null
           board: string | null
           brand_color: string | null
           city: string | null
@@ -767,6 +906,7 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          assigned_recruiter?: string | null
           board?: string | null
           brand_color?: string | null
           city?: string | null
@@ -788,6 +928,7 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          assigned_recruiter?: string | null
           board?: string | null
           brand_color?: string | null
           city?: string | null
@@ -810,8 +951,57 @@ export type Database = {
         }
         Relationships: []
       }
+      tasks: {
+        Row: {
+          assigned_to: string | null
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          due_at: string | null
+          id: string
+          priority: Database["public"]["Enums"]["task_priority"]
+          related_id: string | null
+          related_type: string | null
+          status: Database["public"]["Enums"]["task_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_at?: string | null
+          id?: string
+          priority?: Database["public"]["Enums"]["task_priority"]
+          related_id?: string | null
+          related_type?: string | null
+          status?: Database["public"]["Enums"]["task_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_at?: string | null
+          id?: string
+          priority?: Database["public"]["Enums"]["task_priority"]
+          related_id?: string | null
+          related_type?: string | null
+          status?: Database["public"]["Enums"]["task_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       teacher_profiles: {
         Row: {
+          assigned_recruiter: string | null
           available: boolean
           available_from: string | null
           bio: string | null
@@ -841,6 +1031,7 @@ export type Database = {
           video_demo_url: string | null
         }
         Insert: {
+          assigned_recruiter?: string | null
           available?: boolean
           available_from?: string | null
           bio?: string | null
@@ -870,6 +1061,7 @@ export type Database = {
           video_demo_url?: string | null
         }
         Update: {
+          assigned_recruiter?: string | null
           available?: boolean
           available_from?: string | null
           bio?: string | null
@@ -967,6 +1159,17 @@ export type Database = {
         Args: { _application_id: string; _user_id: string }
         Returns: boolean
       }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
+      log_communication: {
+        Args: {
+          _body?: string
+          _channel: Database["public"]["Enums"]["comm_channel"]
+          _entity_id: string
+          _entity_type: string
+          _summary: string
+        }
+        Returns: undefined
+      }
       notify_user: {
         Args: {
           _body: string
@@ -992,7 +1195,7 @@ export type Database = {
       school_owner_for_job: { Args: { _job_id: string }; Returns: string }
     }
     Enums: {
-      app_role: "teacher" | "school" | "admin"
+      app_role: "teacher" | "school" | "admin" | "recruiter"
       application_status:
         | "submitted"
         | "reviewing"
@@ -1005,6 +1208,19 @@ export type Database = {
         | "school_review"
         | "offer"
         | "joined"
+        | "interview_completed"
+        | "offer_accepted"
+      calendar_event_type: "call" | "meeting" | "follow_up" | "other"
+      comm_channel:
+        | "call"
+        | "email"
+        | "meeting"
+        | "whatsapp"
+        | "note"
+        | "status_change"
+        | "interview"
+        | "offer"
+        | "system"
       document_type:
         | "resume"
         | "certificate"
@@ -1031,6 +1247,8 @@ export type Database = {
         | "won"
         | "lost"
       subscription_status: "trial" | "active" | "past_due" | "cancelled"
+      task_priority: "low" | "medium" | "high" | "urgent"
+      task_status: "todo" | "in_progress" | "blocked" | "done"
       teacher_status: "draft" | "active" | "placed" | "inactive"
     }
     CompositeTypes: {
@@ -1159,7 +1377,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["teacher", "school", "admin"],
+      app_role: ["teacher", "school", "admin", "recruiter"],
       application_status: [
         "submitted",
         "reviewing",
@@ -1172,6 +1390,20 @@ export const Constants = {
         "school_review",
         "offer",
         "joined",
+        "interview_completed",
+        "offer_accepted",
+      ],
+      calendar_event_type: ["call", "meeting", "follow_up", "other"],
+      comm_channel: [
+        "call",
+        "email",
+        "meeting",
+        "whatsapp",
+        "note",
+        "status_change",
+        "interview",
+        "offer",
+        "system",
       ],
       document_type: [
         "resume",
@@ -1202,6 +1434,8 @@ export const Constants = {
         "lost",
       ],
       subscription_status: ["trial", "active", "past_due", "cancelled"],
+      task_priority: ["low", "medium", "high", "urgent"],
+      task_status: ["todo", "in_progress", "blocked", "done"],
       teacher_status: ["draft", "active", "placed", "inactive"],
     },
   },

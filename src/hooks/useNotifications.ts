@@ -11,6 +11,7 @@ export type AppNotification = {
   body: string | null;
   link: string | null;
   read: boolean;
+  archived: boolean;
   created_at: string;
 };
 
@@ -49,7 +50,7 @@ export function useNotifications() {
         .from("notifications")
         .select("*")
         .order("created_at", { ascending: false })
-        .limit(50);
+        .limit(200);
       if (error) throw error;
       return (data ?? []) as AppNotification[];
     },
@@ -87,13 +88,28 @@ export function useNotifications() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["notifications", userId] }),
   });
 
-  const items = query.data ?? [];
+  const setArchived = useMutation({
+    mutationFn: async ({ ids, archived }: { ids: string[]; archived: boolean }) => {
+      if (!ids.length) return;
+      const { error } = await supabase.from("notifications").update({ archived }).in("id", ids);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["notifications", userId] }),
+  });
+
+  const allItems = query.data ?? [];
+  const items = allItems.filter((n) => !n.archived);
   return {
     items,
+    allItems,
+    archivedItems: allItems.filter((n) => n.archived),
     unreadCount: items.filter((n) => !n.read).length,
     isLoading: query.isLoading,
     markRead,
     remove,
+    archive: (ids: string[]) => setArchived.mutate({ ids, archived: true }),
+    unarchive: (ids: string[]) => setArchived.mutate({ ids, archived: false }),
+    setArchived,
   };
 }
 

@@ -36,12 +36,13 @@ export type SchoolRow = {
   student_count: number | null;
   subscription_status: SubscriptionStatus;
   owner_id: string;
+  assigned_recruiter: string | null;
   created_at: string;
   updated_at: string;
 };
 
 const SCHOOL_COLUMNS =
-  "id,name,board,city,school_type,principal_name,hr_name,phone,contact_email,website,description,tagline,logo_url,student_count,subscription_status,owner_id,created_at,updated_at";
+  "id,name,board,city,school_type,principal_name,hr_name,phone,contact_email,website,description,tagline,logo_url,student_count,subscription_status,owner_id,assigned_recruiter,created_at,updated_at";
 
 export type SchoolListRow = SchoolRow & { activeJobs: number; applications: number };
 

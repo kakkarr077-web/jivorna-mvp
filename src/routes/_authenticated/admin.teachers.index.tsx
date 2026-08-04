@@ -23,6 +23,8 @@ import {
   BulkActionsToolbar,
 } from "@/components/crm/CrmPrimitives";
 import { DataTable, type DataTableColumn } from "@/components/crm/DataTable";
+import { RecruiterLabel, RecruiterSelect } from "@/components/crm/RecruiterSelect";
+import { assignRecruiter } from "@/lib/recruiters";
 import { useCrmTable, useFacet, paginate } from "@/hooks/useCrmTable";
 import { toCsv, downloadCsvFile, formatDate, formatMoney, matchesTerm, initialsOf, dash } from "@/lib/crm";
 import {
@@ -44,9 +46,10 @@ type Filters = {
   city: string;
   board: string;
   availability: string;
+  recruiter: string;
 };
 
-const INITIAL_FILTERS: Filters = { subject: "all", experience: "all", city: "all", board: "all", availability: "all" };
+const INITIAL_FILTERS: Filters = { subject: "all", experience: "all", city: "all", board: "all", availability: "all", recruiter: "all" };
 
 const EXPERIENCE_BANDS: { id: string; label: string; test: (v: number) => boolean }[] = [
   { id: "0-2", label: "0–2 yrs", test: (v) => v <= 2 },
@@ -73,6 +76,17 @@ function AdminTeachers() {
     () => Array.from(new Set(teachers.flatMap((t) => t.boards))).sort(),
     [teachers],
   );
+
+  const bulkAssign = useMutation({
+    mutationFn: ({ ids, recruiterId }: { ids: string[]; recruiterId: string | null }) =>
+      assignRecruiter("teacher_profiles", ids, recruiterId),
+    onSuccess: () => {
+      toast.success("Recruiter assigned.");
+      table.setSelectedIds([]);
+      void qc.invalidateQueries({ queryKey: ["admin-teachers"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not assign recruiter"),
+  });
 
   const bulkStatus = useMutation({
     mutationFn: async ({ ids, status }: { ids: string[]; status: TeacherStatus }) => {
@@ -106,6 +120,7 @@ function AdminTeachers() {
       if (table.filters.board !== "all" && !t.boards.includes(table.filters.board)) return false;
       if (table.filters.availability === "available" && !t.available) return false;
       if (table.filters.availability === "unavailable" && t.available) return false;
+      if (table.filters.recruiter !== "all" && (t.assigned_recruiter ?? "") !== table.filters.recruiter) return false;
       if (table.filters.experience !== "all") {
         const band = EXPERIENCE_BANDS.find((b) => b.id === table.filters.experience);
         if (band && !band.test(t.experience_years)) return false;
@@ -216,6 +231,11 @@ function AdminTeachers() {
       cell: (t) => formatDate(t.created_at),
       sortValue: (t) => new Date(t.created_at).getTime(),
     },
+    {
+      id: "recruiter",
+      header: "Assigned recruiter",
+      cell: (t) => <RecruiterLabel id={t.assigned_recruiter} />,
+    },
   ];
 
   const sorted = useMemo(() => {
@@ -290,6 +310,12 @@ function AdminTeachers() {
           labels={{ available: "Available now", unavailable: "Not available" }}
           allLabel="Any availability"
         />
+        <RecruiterSelect
+          value={table.filters.recruiter === "all" ? null : table.filters.recruiter}
+          onChange={(v) => table.setFilter("recruiter", v ?? "all")}
+          placeholder="Any recruiter"
+          includeUnassigned
+        />
       </FilterToolbar>
 
       <BulkActionsToolbar count={table.selectedIds.length} onClear={() => table.setSelectedIds([])}>
@@ -298,6 +324,12 @@ function AdminTeachers() {
             Mark {VERIFICATION_LABELS[s]}
           </Button>
         ))}
+        <RecruiterSelect
+          value={null}
+          onChange={(v) => bulkAssign.mutate({ ids: table.selectedIds, recruiterId: v })}
+          placeholder="Assign recruiter"
+          className="h-9 w-52"
+        />
       </BulkActionsToolbar>
 
       <DataTable

@@ -1,17 +1,23 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { BellOff, CheckCheck, Trash2 } from "lucide-react";
+import { Archive, ArchiveRestore, BellOff, CheckCheck, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { NotificationRow } from "@/components/shared/NotificationBell";
 import {
   NOTIFICATION_CATEGORIES,
   useNotificationPrefs,
   useNotifications,
-  type NotificationPrefs,
 } from "@/hooks/useNotifications";
 
 export const Route = createFileRoute("/_authenticated/notifications")({
@@ -29,14 +35,20 @@ export const Route = createFileRoute("/_authenticated/notifications")({
 });
 
 function NotificationsPage() {
-  const { items, unreadCount, isLoading, markRead, remove } = useNotifications();
+  const { items, archivedItems, unreadCount, isLoading, markRead, remove, archive, unarchive } = useNotifications();
   const { prefs, update } = useNotificationPrefs();
-  const [filter, setFilter] = useState<"all" | "unread">("all");
+  const [tab, setTab] = useState<"all" | "unread" | "archived">("all");
+  const [type, setType] = useState("all");
 
-  const visible = useMemo(
-    () => (filter === "unread" ? items.filter((n) => !n.read) : items),
-    [items, filter],
+  const types = useMemo(
+    () => Array.from(new Set([...items, ...archivedItems].map((n) => n.type))).sort(),
+    [items, archivedItems],
   );
+
+  const visible = useMemo(() => {
+    const base = tab === "archived" ? archivedItems : tab === "unread" ? items.filter((n) => !n.read) : items;
+    return type === "all" ? base : base.filter((n) => n.type === type);
+  }, [tab, type, items, archivedItems]);
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-8">
@@ -65,18 +77,33 @@ function NotificationsPage() {
         </TabsList>
 
         <TabsContent value="inbox" className="mt-6 space-y-4">
-          <div className="flex gap-2">
-            {(["all", "unread"] as const).map((key) => (
-              <Button
-                key={key}
-                size="sm"
-                variant={filter === key ? "default" : "outline"}
-                onClick={() => setFilter(key)}
-                className="capitalize"
-              >
-                {key}
-              </Button>
-            ))}
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex gap-2">
+              {(["all", "unread", "archived"] as const).map((key) => (
+                <Button
+                  key={key}
+                  size="sm"
+                  variant={tab === key ? "default" : "outline"}
+                  onClick={() => setTab(key)}
+                  className="capitalize"
+                >
+                  {key}
+                </Button>
+              ))}
+            </div>
+            <Select value={type} onValueChange={setType}>
+              <SelectTrigger className="w-44">
+                <SelectValue placeholder="All types" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All types</SelectItem>
+                {types.map((t) => (
+                  <SelectItem key={t} value={t} className="capitalize">
+                    {t.replace(/_/g, " ")}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <Card className="card-premium">
@@ -98,6 +125,15 @@ function NotificationsPage() {
                       variant="ghost"
                       size="icon"
                       className="mt-2 h-8 w-8 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100"
+                      aria-label={item.archived ? "Unarchive notification" : "Archive notification"}
+                      onClick={() => (item.archived ? unarchive([item.id]) : archive([item.id]))}
+                    >
+                      {item.archived ? <ArchiveRestore className="h-4 w-4" /> : <Archive className="h-4 w-4" />}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="mt-2 h-8 w-8 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100"
                       aria-label="Delete notification"
                       onClick={() => remove.mutate(item.id)}
                     >
@@ -110,49 +146,33 @@ function NotificationsPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="settings" className="mt-6">
+        <TabsContent value="settings" className="mt-6 space-y-4">
           <Card className="card-premium">
-            <CardHeader>
-              <CardTitle className="font-serif text-xl">Notification settings</CardTitle>
-              <CardDescription>Choose how you want to hear from Jivorna for each type of update.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              <div className="hidden grid-cols-[1fr_5rem_5rem] items-center gap-3 border-b border-border pb-2 text-xs uppercase tracking-wide text-muted-foreground sm:grid">
-                <span>Type</span>
-                <span className="text-center">In-app</span>
-                <span className="text-center">Email</span>
-              </div>
-              {NOTIFICATION_CATEGORIES.map((cat) => {
-                const inappKey = `inapp_${cat.key}` as keyof NotificationPrefs;
-                const emailKey = `email_${cat.key}` as keyof NotificationPrefs;
-                return (
-                  <div
-                    key={cat.key}
-                    className="grid grid-cols-1 gap-3 border-b border-border/60 py-4 last:border-0 sm:grid-cols-[1fr_5rem_5rem] sm:items-center"
-                  >
-                    <div>
-                      <p className="text-sm font-medium">{cat.label}</p>
-                      <p className="text-xs text-muted-foreground">{cat.description}</p>
-                    </div>
-                    <div className="flex items-center gap-2 sm:justify-center">
-                      <span className="text-xs text-muted-foreground sm:hidden">In-app</span>
-                      <Switch
-                        checked={Boolean(prefs[inappKey])}
-                        onCheckedChange={(v) => update.mutate({ [inappKey]: v } as Partial<NotificationPrefs>)}
-                        aria-label={`${cat.label} in-app`}
-                      />
-                    </div>
-                    <div className="flex items-center gap-2 sm:justify-center">
-                      <span className="text-xs text-muted-foreground sm:hidden">Email</span>
-                      <Switch
-                        checked={Boolean(prefs[emailKey])}
-                        onCheckedChange={(v) => update.mutate({ [emailKey]: v } as Partial<NotificationPrefs>)}
-                        aria-label={`${cat.label} email`}
-                      />
-                    </div>
+            <CardContent className="divide-y divide-border p-0">
+              {NOTIFICATION_CATEGORIES.map((cat) => (
+                <div key={cat.key} className="flex flex-wrap items-center justify-between gap-4 p-5">
+                  <div>
+                    <p className="text-sm font-medium">{cat.label}</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">{cat.description}</p>
                   </div>
-                );
-              })}
+                  <div className="flex items-center gap-6">
+                    <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                      In-app
+                      <Switch
+                        checked={Boolean(prefs[`inapp_${cat.key}` as keyof typeof prefs])}
+                        onCheckedChange={(v) => update.mutate({ [`inapp_${cat.key}`]: v })}
+                      />
+                    </label>
+                    <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                      Email
+                      <Switch
+                        checked={Boolean(prefs[`email_${cat.key}` as keyof typeof prefs])}
+                        onCheckedChange={(v) => update.mutate({ [`email_${cat.key}`]: v })}
+                      />
+                    </label>
+                  </div>
+                </div>
+              ))}
             </CardContent>
           </Card>
         </TabsContent>

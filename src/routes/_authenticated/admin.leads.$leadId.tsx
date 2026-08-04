@@ -42,6 +42,8 @@ import {
 import { InfoCard, InfoRow, LoadingSkeleton, PageHeader, StatusBadge } from "@/components/crm/CrmPrimitives";
 import { Timeline, type TimelineItem } from "@/components/crm/Timeline";
 import { NotesPanel, type CrmNote } from "@/components/crm/NotesPanel";
+import { CommunicationTimeline } from "@/components/crm/CommunicationTimeline";
+import { TasksPanel } from "@/components/crm/TasksPanel";
 import { formatDate, formatDateTime, dash } from "@/lib/crm";
 import { cn } from "@/lib/utils";
 import {
@@ -292,6 +294,10 @@ function AdminLeadDetail() {
           <InfoCard title="Activity timeline" description="Every call, email and update logged for this lead.">
             <Timeline items={timelineItems} />
           </InfoCard>
+
+          <CommunicationTimeline entityType="lead" entityId={lead.id} />
+
+          <TasksPanel relatedType="lead" relatedId={lead.id} />
 
           <NotesPanel
             notes={notes}

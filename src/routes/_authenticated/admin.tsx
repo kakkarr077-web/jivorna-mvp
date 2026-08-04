@@ -6,6 +6,8 @@ import {
   Briefcase,
   Building2,
   CalendarClock,
+  CalendarDays,
+  CheckSquare,
   LayoutDashboard,
   Receipt,
   Send,
@@ -19,7 +21,9 @@ import { RoleGate } from "@/components/auth/RoleGate";
 import { GlobalSearch } from "@/components/admin/GlobalSearch";
 
 const nav: NavItem[] = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { to: "/admin", label: "Workspace", icon: LayoutDashboard, exact: true },
+  { to: "/admin/tasks", label: "Tasks", icon: CheckSquare },
+  { to: "/admin/calendar", label: "Calendar", icon: CalendarDays },
   { to: "/admin/leads", label: "Leads", icon: Target },
   { to: "/admin/schools", label: "Schools", icon: Building2 },
   { to: "/admin/teachers", label: "Teachers", icon: GraduationCap },
@@ -36,7 +40,7 @@ const nav: NavItem[] = [
 
 export const Route = createFileRoute("/_authenticated/admin")({
   component: () => (
-    <RoleGate allow="admin">
+    <RoleGate allow={["admin", "recruiter"]}>
       <DashboardLayout portal="Operations CRM" nav={nav}>
         <GlobalSearch />
         <Outlet />

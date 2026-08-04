@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
-export type AppRole = "teacher" | "school" | "admin";
+export type AppRole = "teacher" | "school" | "admin" | "recruiter";
 
 type AuthContextValue = {
   user: User | null;
@@ -46,11 +46,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setRole(
         roles.includes("admin")
           ? "admin"
-          : roles.includes("school")
-            ? "school"
-            : roles.includes("teacher")
-              ? "teacher"
-              : null,
+          : roles.includes("recruiter")
+            ? "recruiter"
+            : roles.includes("school")
+              ? "school"
+              : roles.includes("teacher")
+                ? "teacher"
+                : null,
       );
       setRoleUserId(userId);
     };
@@ -95,4 +97,7 @@ export function useAuth() {
 }
 
 export const dashboardPathForRole = (role: AppRole | null) =>
-  role === "admin" ? "/admin" : role === "school" ? "/school" : "/teacher";
+  role === "admin" || role === "recruiter" ? "/admin" : role === "school" ? "/school" : "/teacher";
+
+/** Admins and recruiters share the Operations CRM. */
+export const isStaffRole = (role: AppRole | null) => role === "admin" || role === "recruiter";

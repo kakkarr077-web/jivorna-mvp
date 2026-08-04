@@ -43,12 +43,13 @@ export type TeacherProfileRow = {
   resume_url: string | null;
   video_demo_url: string | null;
   status: TeacherStatus;
+  assigned_recruiter: string | null;
   created_at: string;
   updated_at: string;
 };
 
 const TEACHER_COLUMNS =
-  "user_id,full_name,email,phone,headline,bio,subjects,grades,boards,languages,experience_years,qualification,current_school,current_salary,expected_salary,city,state,location,available,available_from,notice_period_days,profile_photo_url,resume_url,video_demo_url,status,created_at,updated_at";
+  "user_id,full_name,email,phone,headline,bio,subjects,grades,boards,languages,experience_years,qualification,current_school,current_salary,expected_salary,city,state,location,available,available_from,notice_period_days,profile_photo_url,resume_url,video_demo_url,status,assigned_recruiter,created_at,updated_at";
 
 export type TeacherListRow = TeacherProfileRow & {
   avatar_url: string | null;

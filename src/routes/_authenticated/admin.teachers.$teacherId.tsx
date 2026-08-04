@@ -32,6 +32,10 @@ import {
   InterviewsSection,
   InternalCommentsSection,
 } from "@/components/admin/TeacherProfileSections";
+import { CommunicationTimeline } from "@/components/crm/CommunicationTimeline";
+import { TasksPanel } from "@/components/crm/TasksPanel";
+import { RecruiterSelect } from "@/components/crm/RecruiterSelect";
+import { assignRecruiter } from "@/lib/recruiters";
 import {
   fetchTeacherDetail,
   teacherProfileCompletion,
@@ -51,6 +55,16 @@ function AdminTeacherProfile() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["admin-teacher", teacherId],
     queryFn: () => fetchTeacherDetail(teacherId),
+  });
+
+  const setRecruiter = useMutation({
+    mutationFn: (recruiterId: string | null) => assignRecruiter("teacher_profiles", [teacherId], recruiterId),
+    onSuccess: () => {
+      toast.success("Recruiter updated.");
+      void qc.invalidateQueries({ queryKey: ["admin-teacher", teacherId] });
+      void qc.invalidateQueries({ queryKey: ["admin-teachers"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not assign recruiter"),
   });
 
   const setStatus = useMutation({
@@ -168,7 +182,12 @@ function AdminTeacherProfile() {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <RecruiterSelect
+              value={profile.assigned_recruiter}
+              onChange={(v) => setRecruiter.mutate(v)}
+              className="h-9 w-48"
+            />
             <Button
               variant={verified ? "outline" : "gold"}
               size="sm"
@@ -215,6 +234,8 @@ function AdminTeacherProfile() {
           <DocumentsSection documents={documents} onDownload={downloadDocument} />
           <ApplicationsSection applications={applications} />
           <InterviewsSection interviews={interviews} />
+          <CommunicationTimeline entityType="teacher" entityId={profile.user_id} />
+          <TasksPanel relatedType="teacher" relatedId={profile.user_id} />
           <InfoCard title="Timeline">
             <Timeline items={timeline} />
           </InfoCard>

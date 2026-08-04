@@ -12,10 +12,11 @@ import { useAuth, dashboardPathForRole, type AppRole } from "@/hooks/useAuth";
  * Children are never mounted until the role check has fully resolved, so an
  * unauthorised visitor never sees a flash of the wrong dashboard shell.
  */
-export function RoleGate({ allow, children }: { allow: AppRole; children: ReactNode }) {
+export function RoleGate({ allow, children }: { allow: AppRole | AppRole[]; children: ReactNode }) {
   const { role, loading } = useAuth();
   const router = useRouter();
-  const allowed = !loading && role === allow;
+  const allowedRoles = Array.isArray(allow) ? allow : [allow];
+  const allowed = !loading && !!role && allowedRoles.includes(role);
 
   useEffect(() => {
     if (loading || allowed) return;

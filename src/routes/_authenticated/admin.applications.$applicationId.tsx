@@ -2,16 +2,9 @@ import { useRef, useState } from "react";
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ArrowLeft, CalendarClock, Download, Paperclip, Trash2 } from "lucide-react";
+import { ArrowLeft, CalendarClock, Download, Paperclip, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   PageHeader,
   InfoCard,
@@ -23,11 +16,14 @@ import {
 } from "@/components/crm/CrmPrimitives";
 import { Timeline, type TimelineItem } from "@/components/crm/Timeline";
 import { NotesPanel, type CrmNote } from "@/components/crm/NotesPanel";
-import { formatDate, formatDateTime, initialsOf } from "@/lib/crm";
-import { PIPELINE_STAGES, normalizeStage, stageLabel, type StageId } from "@/lib/pipeline";
+import { CommunicationTimeline } from "@/components/crm/CommunicationTimeline";
+import { TasksPanel } from "@/components/crm/TasksPanel";
+import { RecruiterSelect } from "@/components/crm/RecruiterSelect";
+import { formatDate, formatDateTime, formatMoney, initialsOf } from "@/lib/crm";
+import { ATS_STAGES, atsStage, atsStageIndex, atsStageLabel, atsStageTone, isTerminalStage, type AtsStageId } from "@/lib/ats";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { fetchAdminApplication, updateApplicationStage } from "@/lib/admin-applications";
+import { bulkAssignRecruiter, fetchAdminApplication, updateApplicationStage } from "@/lib/admin-applications";
 import { fetchAdminInterviews } from "@/lib/admin-interviews";
 
 export const Route = createFileRoute("/_authenticated/admin/applications/$applicationId")({
@@ -107,18 +103,31 @@ function AdminApplicationDetail() {
     },
   });
 
+  const invalidateApp = () => {
+    void qc.invalidateQueries({ queryKey: ["admin-application", applicationId] });
+    void qc.invalidateQueries({ queryKey: ["admin-applications"] });
+    void qc.invalidateQueries({ queryKey: ["application-events", applicationId] });
+  };
+
   const changeStage = useMutation({
-    mutationFn: async (to: StageId) => {
+    mutationFn: async (to: AtsStageId) => {
       if (!appQuery.data) return;
       await updateApplicationStage({ applicationId, from: appQuery.data.status, to, actorId: user?.id });
     },
     onSuccess: () => {
       toast.success("Stage updated.");
-      void qc.invalidateQueries({ queryKey: ["admin-application", applicationId] });
-      void qc.invalidateQueries({ queryKey: ["admin-applications"] });
-      void qc.invalidateQueries({ queryKey: ["application-events", applicationId] });
+      invalidateApp();
     },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Could not update stage"),
+  });
+
+  const assignRecruiterMutation = useMutation({
+    mutationFn: async (recruiterId: string | null) => bulkAssignRecruiter([applicationId], recruiterId),
+    onSuccess: () => {
+      toast.success("Recruiter updated.");
+      invalidateApp();
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not assign recruiter"),
   });
 
   const addNote = useMutation({
@@ -211,6 +220,9 @@ function AdminApplicationDetail() {
     created_at: c.created_at,
   }));
 
+  const currentIndex = app ? atsStageIndex(app.status) : -1;
+  const nextStage = app && currentIndex >= 0 && currentIndex < ATS_STAGES.length - 2 ? ATS_STAGES[currentIndex + 1] : null;
+
   return (
     <div>
       <Link to="/admin/applications" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
@@ -223,14 +235,29 @@ function AdminApplicationDetail() {
         <EmptyState title="Application not found" description="It may have been removed." />
       ) : (
         <>
-          <PageHeader title={app.teacher_name} description={`${app.job_title} at ${app.school_name}`} />
+          <PageHeader
+            title={app.teacher_name}
+            description={`${app.job_title} at ${app.school_name}`}
+            action={
+              <div className="flex flex-wrap items-center gap-2">
+                <StatusBadge label={atsStageLabel(app.status)} tone={atsStageTone(app.status)} />
+                {nextStage && (
+                  <Button size="sm" onClick={() => changeStage.mutate(nextStage.id)} disabled={changeStage.isPending}>
+                    Advance to {nextStage.label}
+                  </Button>
+                )}
+                {!isTerminalStage(app.status) && (
+                  <Button size="sm" variant="outline" onClick={() => changeStage.mutate("rejected")} disabled={changeStage.isPending}>
+                    <XCircle className="mr-2 h-4 w-4" /> Reject
+                  </Button>
+                )}
+              </div>
+            }
+          />
 
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
             <div className="space-y-4">
-              <InfoCard
-                title="Candidate"
-                action={<StatusBadge label={stageLabel(app.status)} />}
-              >
+              <InfoCard title="Candidate">
                 <div className="flex items-center gap-3">
                   <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-soft font-serif text-sm text-primary">
                     {initialsOf(app.teacher_name)}
@@ -242,6 +269,10 @@ function AdminApplicationDetail() {
                 </div>
                 <InfoRow label="Applied on" value={formatDate(app.created_at)} />
                 <InfoRow label="Last updated" value={formatDate(app.updated_at)} />
+                <InfoRow label="City" value={app.teacher_city ?? undefined} />
+                <InfoRow label="Experience" value={app.teacher_experience_years != null ? `${app.teacher_experience_years} yrs` : undefined} />
+                <InfoRow label="Subjects" value={app.teacher_subjects.length ? app.teacher_subjects.join(", ") : undefined} />
+                <InfoRow label="Expected salary" value={formatMoney(app.expected_salary)} />
                 {app.cover_letter && <InfoRow label="Cover letter" value={app.cover_letter} />}
               </InfoCard>
 
@@ -250,15 +281,12 @@ function AdminApplicationDetail() {
                 <InfoRow label="School" value={app.school_name} />
               </InfoCard>
 
-              <InfoCard title="Stage" description="Move this application through the pipeline.">
-                <Select value={normalizeStage(app.status)} onValueChange={(v) => changeStage.mutate(v as StageId)}>
-                  <SelectTrigger className="w-full sm:w-64"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {PIPELINE_STAGES.map((s) => (
-                      <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <InfoCard title="Recruiter" description="Assign the team member owning this candidate.">
+                <RecruiterSelect
+                  value={app.assigned_recruiter}
+                  onChange={(v) => assignRecruiterMutation.mutate(v)}
+                  className="w-full sm:w-64"
+                />
               </InfoCard>
 
               <InfoCard title="Interview history">
@@ -307,18 +335,22 @@ function AdminApplicationDetail() {
                 )}
               </InfoCard>
 
-              <InfoCard title="Activity timeline">
-                <Timeline items={timelineItems} />
-              </InfoCard>
-            </div>
-
-            <div>
               <NotesPanel
                 notes={notes}
                 onAdd={(body) => addNote.mutateAsync(body)}
                 onDelete={(id) => setPendingDeleteNote(id)}
                 isBusy={addNote.isPending}
               />
+            </div>
+
+            <div className="space-y-4">
+              <CommunicationTimeline entityType="application" entityId={applicationId} />
+
+              <InfoCard title="Activity timeline">
+                <Timeline items={timelineItems} />
+              </InfoCard>
+
+              <TasksPanel relatedType="application" relatedId={applicationId} />
             </div>
           </div>
         </>

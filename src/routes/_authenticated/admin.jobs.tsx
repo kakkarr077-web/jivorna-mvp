@@ -63,12 +63,17 @@ import {
   newEditorState,
   type JobEditorState,
 } from "@/components/admin/JobDialogs";
+import { Checkbox } from "@/components/ui/checkbox";
+import { BulkActionsToolbar } from "@/components/crm/CrmPrimitives";
+import { RecruiterLabel, RecruiterSelect } from "@/components/crm/RecruiterSelect";
+import { assignRecruiter } from "@/lib/recruiters";
 
 export const Route = createFileRoute("/_authenticated/admin/jobs")({
   component: AdminJobs,
 });
 
 const ANY = "__any";
+const ANY_RECRUITER = "__any_recruiter__";
 const PAGE_SIZE = 10;
 
 type SortKey =
@@ -101,6 +106,7 @@ const COLUMNS: Column[] = [
   { key: "createdBy", label: "Created by", width: 160, sortable: true },
   { key: "created_at", label: "Created", width: 120, sortable: true },
   { key: "updated_at", label: "Last updated", width: 130, sortable: true },
+  { key: "recruiter" as SortKey, label: "Assigned recruiter", width: 170, sortable: false },
   { key: "actions", label: "Actions", width: 100, sortable: false },
 ];
 
@@ -124,6 +130,8 @@ function AdminJobs() {
   const [board, setBoard] = useState<string>(ANY);
   const [city, setCity] = useState<string>(ANY);
   const [type, setType] = useState<string>(ANY);
+  const [recruiter, setRecruiter] = useState<string>(ANY_RECRUITER);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [sort, setSort] = useState<{ key: SortKey; dir: "asc" | "desc" }>({ key: "created_at", dir: "desc" });
@@ -159,6 +167,7 @@ function AdminJobs() {
       if (board !== ANY && r.board !== board) return false;
       if (city !== ANY && r.location !== city) return false;
       if (type !== ANY && r.employment_type !== type) return false;
+      if (recruiter !== ANY_RECRUITER && (r.assigned_recruiter ?? "") !== recruiter) return false;
       const created = new Date(r.created_at).getTime();
       if (fromTs !== null && created < fromTs) return false;
       if (toTs !== null && created >= toTs) return false;
@@ -167,7 +176,7 @@ function AdminJobs() {
         .filter(Boolean)
         .some((v) => String(v).toLowerCase().includes(needle));
     });
-  }, [rows, q, status, board, city, type, from, to]);
+  }, [rows, q, status, board, city, type, recruiter, from, to]);
 
   const sorted = useMemo(() => {
     const copy = [...filtered];
@@ -195,7 +204,14 @@ function AdminJobs() {
   }, [rows]);
 
   const filtersActive =
-    q !== "" || status !== ANY || board !== ANY || city !== ANY || type !== ANY || from !== "" || to !== "";
+    q !== "" ||
+    status !== ANY ||
+    board !== ANY ||
+    city !== ANY ||
+    type !== ANY ||
+    recruiter !== ANY_RECRUITER ||
+    from !== "" ||
+    to !== "";
 
   const resetFilters = () => {
     setQ("");
@@ -203,10 +219,21 @@ function AdminJobs() {
     setBoard(ANY);
     setCity(ANY);
     setType(ANY);
+    setRecruiter(ANY_RECRUITER);
     setFrom("");
     setTo("");
     setPage(1);
   };
+
+  const bulkAssign = useMutation({
+    mutationFn: (recruiterId: string | null) => assignRecruiter("jobs", selectedIds, recruiterId),
+    onSuccess: () => {
+      toast.success("Recruiter assigned.");
+      setSelectedIds([]);
+      void qc.invalidateQueries({ queryKey: ["admin-jobs"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not assign recruiter"),
+  });
 
   const setStatusMutation = useMutation({
     mutationFn: async ({ id, next }: { id: string; next: JobStatus }) => {
@@ -355,6 +382,19 @@ function AdminJobs() {
             options={facets.types.map((t) => ({ value: t, label: t }))}
           />
           <div className="space-y-1.5">
+            <Label className="text-xs font-medium text-muted-foreground">Assigned recruiter</Label>
+            <RecruiterSelect
+              value={recruiter === ANY_RECRUITER ? null : recruiter}
+              onChange={(v) => {
+                setRecruiter(v ?? ANY_RECRUITER);
+                setPage(1);
+              }}
+              placeholder="Any recruiter"
+              includeUnassigned
+              className="h-10 bg-card"
+            />
+          </div>
+          <div className="space-y-1.5">
             <Label className="text-xs font-medium text-muted-foreground">Created between</Label>
             <div className="flex items-center gap-2">
               <Input
@@ -416,11 +456,33 @@ function AdminJobs() {
           }
         />
       ) : (
+        <>
+        <BulkActionsToolbar count={selectedIds.length} onClear={() => setSelectedIds([])}>
+          <RecruiterSelect
+            value={null}
+            onChange={(v) => bulkAssign.mutate(v)}
+            placeholder="Assign recruiter"
+            className="h-9 w-52"
+          />
+        </BulkActionsToolbar>
         <div className="overflow-hidden rounded-xl border border-border bg-card">
           <div className="max-h-[70vh] overflow-auto">
             <table className="w-full border-collapse text-sm" style={{ tableLayout: "fixed" }}>
               <thead className="sticky top-0 z-10 bg-muted/95 backdrop-blur">
                 <tr>
+                  <th className="w-10 border-b border-border px-4 py-3">
+                    <Checkbox
+                      checked={paged.length > 0 && paged.every((j) => selectedIds.includes(j.id))}
+                      aria-label="Select all rows"
+                      onCheckedChange={(v) =>
+                        setSelectedIds((prev) =>
+                          v
+                            ? Array.from(new Set([...prev, ...paged.map((j) => j.id)]))
+                            : prev.filter((id) => !paged.map((j) => j.id).includes(id)),
+                        )
+                      }
+                    />
+                  </th>
                   {COLUMNS.map((c) => (
                     <th
                       key={c.key}
@@ -453,6 +515,15 @@ function AdminJobs() {
               <tbody>
                 {paged.map((j) => (
                   <tr key={j.id} className="border-b border-border last:border-0 hover:bg-muted/40">
+                    <td className="px-4 py-3">
+                      <Checkbox
+                        checked={selectedIds.includes(j.id)}
+                        aria-label="Select row"
+                        onCheckedChange={(v) =>
+                          setSelectedIds((prev) => (v ? [...prev, j.id] : prev.filter((id) => id !== j.id)))
+                        }
+                      />
+                    </td>
                     <td className="truncate px-4 py-3 font-medium">{j.title}</td>
                     <td className="truncate px-4 py-3">{j.schoolName}</td>
                     <td className="truncate px-4 py-3">{j.board ?? "—"}</td>
@@ -468,6 +539,9 @@ function AdminJobs() {
                     <td className="truncate px-4 py-3">{j.createdBy}</td>
                     <td className="truncate px-4 py-3 text-muted-foreground">{dateOnly(j.created_at)}</td>
                     <td className="truncate px-4 py-3 text-muted-foreground">{dateOnly(j.updated_at)}</td>
+                    <td className="truncate px-4 py-3 text-sm">
+                      <RecruiterLabel id={j.assigned_recruiter} />
+                    </td>
                     <td className="px-4 py-3 text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -544,6 +618,7 @@ function AdminJobs() {
             </div>
           </div>
         </div>
+        </>
       )}
 
       <AdminJobEditorDialog state={editor} schools={schoolsQuery.data ?? []} onClose={() => setEditor(null)} />
