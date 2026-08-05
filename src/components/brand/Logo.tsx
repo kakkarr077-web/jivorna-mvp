@@ -25,14 +25,11 @@ export function Logo({
         width={64}
         height={64}
       />
-      <span
-        className={cn(
-          "font-serif text-xl tracking-[0.12em] uppercase",
-          tone === "dark" ? "text-foreground" : "text-primary-foreground",
-        )}
-      >
-        Jivorna
+      <span className="font-serif text-xl tracking-[0.12em] uppercase">
+        <span className="text-gold">Jivo</span>
+        <span className={tone === "dark" ? "text-primary" : "text-primary-foreground"}>Rna</span>
       </span>
+
     </Link>
   );
 }
