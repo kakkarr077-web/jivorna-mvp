@@ -281,6 +281,30 @@ function Index() {
         </div>
       </section>
 
+      {/* Why Schools Choose Jivorna */}
+      <section className="border-b border-border bg-surface py-20 lg:py-24">
+        <div className="mx-auto max-w-6xl px-5 lg:px-8">
+          <SectionHeading
+            eyebrow="Why Jivorna"
+            title="Why Schools Choose Jivorna"
+            align="center"
+          />
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {schoolBenefits.map((b, i) => (
+              <Reveal key={b.title} delay={i * 90}>
+                <div className="card-premium card-premium-hover h-full p-6">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-soft text-primary">
+                    <b.icon className="h-5 w-5" />
+                  </span>
+                  <h3 className="mt-5 font-serif text-xl text-primary">{b.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{b.body}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Choose Your Journey */}
       <section className="border-b border-border py-20 lg:py-24">
         <div className="mx-auto max-w-6xl px-5 lg:px-8">
@@ -319,29 +343,6 @@ function Index() {
         </div>
       </section>
 
-      {/* Why Schools Choose Jivorna */}
-      <section className="border-b border-border bg-surface py-20 lg:py-24">
-        <div className="mx-auto max-w-6xl px-5 lg:px-8">
-          <SectionHeading
-            eyebrow="Why Jivorna"
-            title="Why Schools Choose Jivorna"
-            align="center"
-          />
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {schoolBenefits.map((b, i) => (
-              <Reveal key={b.title} delay={i * 90}>
-                <div className="card-premium card-premium-hover h-full p-6">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-soft text-primary">
-                    <b.icon className="h-5 w-5" />
-                  </span>
-                  <h3 className="mt-5 font-serif text-xl text-primary">{b.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{b.body}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
 
 
 
