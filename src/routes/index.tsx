@@ -214,52 +214,43 @@ function Index() {
   return (
     <PublicLayout>
       {/* Hero */}
-      <section className="relative isolate overflow-hidden border-b border-border">
-        <img
-          src={heroImage}
-          alt="A teacher standing in a bright school library"
-          className="absolute inset-0 -z-20 h-full w-full object-cover"
-          loading="eager"
-        />
-        <div aria-hidden className="absolute inset-0 -z-10 bg-primary/80" />
+      <section className="relative overflow-hidden border-b border-border bg-background">
         <div
           aria-hidden
-          className="absolute inset-0 -z-10 bg-linear-to-b from-primary/70 via-primary/60 to-primary/90"
+          className="pointer-events-none absolute -top-40 -right-32 h-[38rem] w-[38rem] rounded-full bg-gradient-navy opacity-[0.05] blur-3xl"
         />
-
-        <div className="mx-auto max-w-4xl px-5 py-24 text-center lg:px-8 lg:py-36">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -bottom-48 -left-40 h-[32rem] w-[32rem] rounded-full bg-gradient-gold opacity-[0.07] blur-3xl"
+        />
+        <div className="mx-auto grid max-w-6xl items-center gap-14 px-5 py-20 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-28">
           <Reveal>
-            <p className="eyebrow inline-flex items-center gap-2 rounded-full border border-gold/40 bg-primary-foreground/10 px-3 py-1.5 text-gold backdrop-blur-sm">
+            <p className="eyebrow inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold-soft px-3 py-1.5 text-accent-foreground">
               <Sparkles className="h-3.5 w-3.5" /> RECRUITMENT, REDEFINED
             </p>
-            <h1 className="mt-6 font-serif text-4xl leading-tight text-primary-foreground sm:text-5xl lg:text-[3.75rem]">
+            <h1 className="text-display mt-6 text-4xl sm:text-5xl lg:text-[3.6rem]">
               India's Recruitment Platform Built{" "}
               <span className="text-gold">Exclusively for Schools</span>
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-primary-foreground/80">
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
               Helping schools hire verified teachers faster while helping teachers discover
               trusted opportunities across India.
             </p>
-            <div className="mt-9 flex flex-wrap justify-center gap-3">
-              <Button asChild size="lg" variant="gold" className="rounded-full shadow-lift">
+            <div className="mt-9 flex flex-wrap gap-3">
+              <Button asChild size="lg" className="rounded-full shadow-soft">
                 <Link to="/for-schools">
                   Hire Teachers <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="rounded-full border-primary-foreground/50 bg-transparent text-primary-foreground hover:bg-primary-foreground hover:text-primary"
-              >
+              <Button asChild size="lg" variant="outline" className="rounded-full">
                 <Link to="/jobs">Find Teaching Jobs</Link>
               </Button>
             </div>
-            <ul className="mx-auto mt-10 grid max-w-2xl grid-cols-2 gap-3 sm:gap-4">
+            <ul className="mt-8 grid max-w-xl grid-cols-2 gap-3 sm:gap-4">
               {trustBadges.map((b) => (
                 <li
                   key={b.label}
-                  className="flex items-center gap-2.5 rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-3.5 py-2 text-sm text-primary-foreground backdrop-blur-sm"
+                  className="flex items-center gap-2.5 rounded-full border border-border bg-card/70 px-3.5 py-2 text-sm text-foreground shadow-soft"
                 >
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gold-soft text-gold">
                     <b.icon className="h-3.5 w-3.5" />
@@ -268,14 +259,27 @@ function Index() {
                 </li>
               ))}
             </ul>
-            <p className="mt-8 text-sm text-primary-foreground/70">
-              {stats ? `${stats.live_job_count} live roles` : "Live roles"} across IB, CBSE, ICSE &
-              Cambridge
-            </p>
+
+          </Reveal>
+
+          <Reveal delay={120} className="relative">
+            <div className="absolute -inset-4 -z-10 rounded-3xl bg-gradient-navy opacity-[0.06]" />
+            <img
+              src={heroImage}
+              alt="A teacher standing in a bright school library"
+              className="aspect-4/5 w-full rounded-3xl object-cover shadow-lift"
+              loading="eager"
+            />
+            <div className="card-premium absolute -bottom-6 -left-4 hidden w-56 p-4 sm:block">
+              <p className="eyebrow text-gold">Now hiring</p>
+              <p className="mt-2 font-serif text-2xl text-primary">
+                {stats ? `${stats.live_job_count} live roles` : "Live roles"}
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">Across IB, CBSE, ICSE & Cambridge</p>
+            </div>
           </Reveal>
         </div>
       </section>
-
 
       {/* Why Schools Choose Jivorna */}
       <section className="border-b border-border bg-surface py-20 lg:py-24">
