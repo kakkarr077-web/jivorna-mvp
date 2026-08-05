@@ -348,8 +348,9 @@ function Index() {
 
 
 
-      {/* Statistics */}
-      <section className="border-b border-border bg-surface py-16">
+      {/* Statistics — hidden for now */}
+      <section className="hidden border-b border-border bg-surface py-16">
+
         <div className="mx-auto max-w-6xl px-5 lg:px-8">
           <div className="grid grid-cols-2 gap-5 lg:grid-cols-4">
             {liveStats.map((s, i) => (
