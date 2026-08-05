@@ -25,7 +25,7 @@ export function Logo({
         width={64}
         height={64}
       />
-      <span className="font-serif text-xl tracking-[0.12em] uppercase">
+      <span className="font-serif text-xl font-semibold tracking-[0.12em] uppercase">
         <span className="text-gold">Jivo</span>
         <span className={tone === "dark" ? "text-primary" : "text-primary-foreground"}>Rna</span>
       </span>
