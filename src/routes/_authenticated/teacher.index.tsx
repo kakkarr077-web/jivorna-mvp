@@ -372,7 +372,7 @@ function TeacherOverview() {
 
       {/* Recommended jobs */}
       <section>
-        <SectionTitle title="Recommended jobs" to="/teacher/jobs" search={{}} linkLabel="See all jobs" />
+        <SectionTitle title="Recommended jobs" to="/teacher/jobs" linkLabel="See all jobs" />
         {jobsLoading ? (
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {[0, 1, 2].map((i) => (
@@ -554,7 +554,7 @@ function TeacherOverview() {
           value={(saved ?? []).length}
           hint="Roles you bookmarked"
           icon={Bookmark}
-          to="/teacher/jobs" search={{}}
+          to="/teacher/jobs"
         />
         <WidgetCard
           label="Notifications"
