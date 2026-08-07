@@ -50,7 +50,7 @@ function ForTeachers() {
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline">
-              <Link to="/jobs">See open roles</Link>
+              <Link to="/jobs" search={{}}>See open roles</Link>
             </Button>
           </div>
         </div>

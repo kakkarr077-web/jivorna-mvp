@@ -1192,7 +1192,34 @@ export type Database = {
           teacher_count: number
         }[]
       }
+      school_can_view_teacher: {
+        Args: { _school_owner: string; _teacher_id: string }
+        Returns: boolean
+      }
       school_owner_for_job: { Args: { _job_id: string }; Returns: string }
+      teacher_directory: {
+        Args: never
+        Returns: {
+          available: boolean
+          available_from: string
+          boards: string[]
+          city: string
+          current_salary: number
+          expected_salary: number
+          experience_years: number
+          full_name: string
+          grades: string[]
+          headline: string
+          languages: string[]
+          notice_period_days: number
+          profile_photo_url: string
+          qualification: string
+          state: string
+          status: Database["public"]["Enums"]["teacher_status"]
+          subjects: string[]
+          user_id: string
+        }[]
+      }
     }
     Enums: {
       app_role: "teacher" | "school" | "admin" | "recruiter"

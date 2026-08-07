@@ -58,14 +58,12 @@ function BrowseTeachers() {
   const { data: teachers, isLoading } = useQuery({
     queryKey: ["browse-teachers"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("teacher_profiles")
-        .select(
-          "user_id,full_name,headline,city,state,qualification,subjects,grades,boards,languages,experience_years,expected_salary,current_salary,notice_period_days,available,available_from,profile_photo_url,status",
-        )
-        .order("experience_years", { ascending: false });
+      // Directory view: safe columns only (no email, phone, resume or video links).
+      const { data, error } = await supabase.rpc("teacher_directory");
       if (error) throw error;
-      return (data ?? []) as TeacherRow[];
+      return ((data ?? []) as TeacherRow[]).sort(
+        (a, b) => (b.experience_years ?? 0) - (a.experience_years ?? 0),
+      );
     },
   });
 
