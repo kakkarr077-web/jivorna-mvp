@@ -1145,7 +1145,69 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      teacher_directory: {
+        Row: {
+          available: boolean | null
+          available_from: string | null
+          boards: string[] | null
+          city: string | null
+          current_salary: number | null
+          expected_salary: number | null
+          experience_years: number | null
+          full_name: string | null
+          grades: string[] | null
+          headline: string | null
+          languages: string[] | null
+          notice_period_days: number | null
+          profile_photo_url: string | null
+          qualification: string | null
+          state: string | null
+          status: Database["public"]["Enums"]["teacher_status"] | null
+          subjects: string[] | null
+          user_id: string | null
+        }
+        Insert: {
+          available?: boolean | null
+          available_from?: string | null
+          boards?: string[] | null
+          city?: string | null
+          current_salary?: number | null
+          expected_salary?: number | null
+          experience_years?: number | null
+          full_name?: string | null
+          grades?: string[] | null
+          headline?: string | null
+          languages?: string[] | null
+          notice_period_days?: number | null
+          profile_photo_url?: string | null
+          qualification?: string | null
+          state?: string | null
+          status?: Database["public"]["Enums"]["teacher_status"] | null
+          subjects?: string[] | null
+          user_id?: string | null
+        }
+        Update: {
+          available?: boolean | null
+          available_from?: string | null
+          boards?: string[] | null
+          city?: string | null
+          current_salary?: number | null
+          expected_salary?: number | null
+          experience_years?: number | null
+          full_name?: string | null
+          grades?: string[] | null
+          headline?: string | null
+          languages?: string[] | null
+          notice_period_days?: number | null
+          profile_photo_url?: string | null
+          qualification?: string | null
+          state?: string | null
+          status?: Database["public"]["Enums"]["teacher_status"] | null
+          subjects?: string[] | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
@@ -1191,6 +1253,10 @@ export type Database = {
           school_count: number
           teacher_count: number
         }[]
+      }
+      school_can_view_teacher: {
+        Args: { _school_owner: string; _teacher_id: string }
+        Returns: boolean
       }
       school_owner_for_job: { Args: { _job_id: string }; Returns: string }
     }
