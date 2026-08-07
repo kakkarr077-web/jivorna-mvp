@@ -243,7 +243,7 @@ function Index() {
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="rounded-full">
-                <Link to="/jobs">Find Teaching Jobs</Link>
+                <Link to="/jobs" search={{}}>Find Teaching Jobs</Link>
               </Button>
             </div>
             <ul className="mt-8 grid max-w-xl grid-cols-2 gap-3 sm:gap-4">
@@ -505,7 +505,7 @@ function Index() {
             <div className="flex flex-wrap items-end justify-between gap-6">
               <SectionHeading eyebrow="Latest jobs" title="Recently published vacancies" />
               <Button asChild variant="ghost">
-                <Link to="/jobs">
+                <Link to="/jobs" search={{}}>
                   View all jobs <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>

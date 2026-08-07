@@ -87,7 +87,7 @@ function FaqPage() {
               <Link to="/contact">Contact support</Link>
             </Button>
             <Button asChild size="lg" variant="outline">
-              <Link to="/jobs">Browse live roles</Link>
+              <Link to="/jobs" search={{}}>Browse live roles</Link>
             </Button>
           </div>
         </div>
