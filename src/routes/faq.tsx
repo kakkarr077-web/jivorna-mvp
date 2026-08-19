@@ -1,3 +1,4 @@
+import { defaultJobSearch } from "@/lib/job-search";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PublicLayout } from "@/components/layouts/PublicLayout";
 import { SectionHeading } from "@/components/shared/Primitives";
@@ -87,7 +88,7 @@ function FaqPage() {
               <Link to="/contact">Contact support</Link>
             </Button>
             <Button asChild size="lg" variant="outline">
-              <Link to="/jobs" search={{}}>Browse live roles</Link>
+              <Link to="/jobs" search={defaultJobSearch}>Browse live roles</Link>
             </Button>
           </div>
         </div>

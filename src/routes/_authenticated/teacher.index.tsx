@@ -1,3 +1,4 @@
+import { defaultJobSearch } from "@/lib/job-search";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -342,7 +343,7 @@ function TeacherOverview() {
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <Button asChild size="lg">
-              <Link to="/teacher/jobs" search={{}}>Browse new jobs</Link>
+              <Link to="/teacher/jobs" search={defaultJobSearch}>Browse new jobs</Link>
             </Button>
             <Button asChild size="lg" variant="outline">
               <Link to="/teacher/onboarding">Complete profile</Link>
@@ -385,7 +386,7 @@ function TeacherOverview() {
             description="Add your subjects and city to your profile so we can match you faster."
             action={
               <Button asChild>
-                <Link to="/teacher/jobs" search={{}}>Browse all jobs</Link>
+                <Link to="/teacher/jobs" search={defaultJobSearch}>Browse all jobs</Link>
               </Button>
             }
           />
@@ -403,7 +404,7 @@ function TeacherOverview() {
                       </Badge>
                     )}
                     <Button asChild size="sm">
-                      <Link to="/teacher/jobs" search={{}}>View & apply</Link>
+                      <Link to="/teacher/jobs" search={defaultJobSearch}>View & apply</Link>
                     </Button>
                   </div>
                 }
@@ -423,7 +424,7 @@ function TeacherOverview() {
               description="Apply to a role and track its progress right here."
               action={
                 <Button asChild>
-                  <Link to="/teacher/jobs" search={{}}>Browse roles</Link>
+                  <Link to="/teacher/jobs" search={defaultJobSearch}>Browse roles</Link>
                 </Button>
               }
             />
@@ -594,7 +595,7 @@ function TeacherOverview() {
           description="Apply to a role or save a job and your activity trail starts here."
           action={
             <Button asChild>
-              <Link to="/teacher/jobs" search={{}}>Browse roles</Link>
+              <Link to="/teacher/jobs" search={defaultJobSearch}>Browse roles</Link>
             </Button>
           }
         />

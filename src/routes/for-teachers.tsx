@@ -1,3 +1,4 @@
+import { defaultJobSearch } from "@/lib/job-search";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarCheck, FileText, Sparkles, Wallet } from "lucide-react";
 import { PublicLayout } from "@/components/layouts/PublicLayout";
@@ -50,7 +51,7 @@ function ForTeachers() {
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline">
-              <Link to="/jobs" search={{}}>See open roles</Link>
+              <Link to="/jobs" search={defaultJobSearch}>See open roles</Link>
             </Button>
           </div>
         </div>
