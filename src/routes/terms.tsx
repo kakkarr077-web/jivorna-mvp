@@ -70,7 +70,7 @@ function TermsPage() {
             ))}
           </div>
           <p className="mt-10 text-xs text-muted-foreground">
-            Last updated {new Date().getFullYear()}. Questions? Email legal@jivorna.com.
+            Last updated {new Date().getFullYear()}. Questions? Email legal@jivorna.in.
           </p>
         </div>
       </section>
