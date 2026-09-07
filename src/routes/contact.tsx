@@ -35,6 +35,9 @@ const details = [
 
 function Contact() {
   const [sending, setSending] = useState(false);
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const sendEnquiry = useServerFn(submitContactEnquiry);
+
 
   return (
     <PublicLayout>
