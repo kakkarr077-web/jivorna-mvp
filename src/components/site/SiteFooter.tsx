@@ -30,7 +30,7 @@ const contactDetails = [
 
 
 const socials = [
-  { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/" },
+  { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/jivorna-talent-partners-657b91433/" },
   { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/" },
 ] as const;
 
