@@ -440,7 +440,8 @@ function Index() {
       </section>
 
       {/* Featured Schools */}
-      <section className="py-20 lg:py-24">
+      <section className="hidden py-20 lg:py-24">
+
         <div className="mx-auto max-w-6xl px-5 lg:px-8">
           <Reveal>
             <SectionHeading
@@ -500,7 +501,8 @@ function Index() {
       </section>
 
       {/* Latest Jobs */}
-      <section className="py-20 lg:py-24">
+      <section className="hidden py-20 lg:py-24">
+
         <div className="mx-auto max-w-6xl px-5 lg:px-8">
           <Reveal>
             <div className="flex flex-wrap items-end justify-between gap-6">
