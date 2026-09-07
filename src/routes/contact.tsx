@@ -67,28 +67,56 @@ function Contact() {
 
         <form
           className="rounded-2xl border border-border bg-card p-7 shadow-soft"
-          onSubmit={(e) => {
+          onSubmit={async (e) => {
             e.preventDefault();
+            if (sending) return;
             setSending(true);
-            setTimeout(() => {
-              setSending(false);
-              (e.target as HTMLFormElement).reset();
+            try {
+              await sendEnquiry({ data: form });
+              setForm({ name: "", email: "", message: "" });
               toast.success("Thanks — we'll be in touch shortly.");
-            }, 600);
+            } catch {
+              toast.error("Sorry, your message couldn't be sent. Please email Info@jivorna.in.");
+            } finally {
+              setSending(false);
+            }
           }}
         >
           <div className="grid gap-5">
             <div className="grid gap-2">
               <Label htmlFor="name">Full name</Label>
-              <Input id="name" required placeholder="Amara Okafor" />
+              <Input
+                id="name"
+                required
+                maxLength={100}
+                placeholder="Amara Okafor"
+                value={form.name}
+                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+              />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" required placeholder="you@school.org" />
+              <Input
+                id="email"
+                type="email"
+                required
+                maxLength={255}
+                placeholder="you@school.org"
+                value={form.email}
+                onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+              />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="message">How can we help?</Label>
-              <Textarea id="message" required rows={5} placeholder="Tell us a little about your school or your teaching background." />
+              <Textarea
+                id="message"
+                required
+                rows={5}
+                maxLength={2000}
+                placeholder="Tell us a little about your school or your teaching background."
+                value={form.message}
+                onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
+              />
             </div>
             <Button type="submit" size="lg" disabled={sending}>
               {sending ? "Sending…" : "Send message"}
