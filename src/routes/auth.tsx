@@ -313,7 +313,7 @@ function AuthPage() {
 
           <p className="mt-4 text-center text-xs text-muted-foreground">
             <Link to="/" className="hover:text-foreground">
-              Back to jivorna.com
+              Back to jivorna.in
             </Link>
           </p>
         </div>

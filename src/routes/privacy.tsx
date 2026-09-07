@@ -43,7 +43,7 @@ const sections = [
   },
   {
     title: "Your rights",
-    body: "You may request access to, correction of, or deletion of your personal data. Write to privacy@jivorna.com and we will respond within 30 days.",
+    body: "You may request access to, correction of, or deletion of your personal data. Write to privacy@jivorna.in and we will respond within 30 days.",
   },
 ];
 
@@ -66,7 +66,7 @@ function PrivacyPage() {
             ))}
           </div>
           <p className="mt-10 text-xs text-muted-foreground">
-            Last updated {new Date().getFullYear()}. Questions? Email privacy@jivorna.com.
+            Last updated {new Date().getFullYear()}. Questions? Email privacy@jivorna.in.
           </p>
         </div>
       </section>

@@ -25,10 +25,11 @@ export const Route = createFileRoute("/contact")({
 });
 
 const details = [
-  { icon: Mail, label: "Email", value: "hello@jivorna.com" },
-  { icon: Phone, label: "Phone", value: "+44 20 7946 0210" },
-  { icon: MapPin, label: "Office", value: "London, United Kingdom" },
+  { icon: Mail, label: "Email", value: "Info@jivorna.in" },
+  { icon: Phone, label: "Phone", value: "+91 81308 15002" },
+  { icon: MapPin, label: "Office", value: "Gurugram, Haryana, 122505" },
 ];
+
 
 function Contact() {
   const [sending, setSending] = useState(false);
