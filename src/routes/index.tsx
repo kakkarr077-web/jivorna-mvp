@@ -158,7 +158,7 @@ const testimonials = [
     quote:
       "We filled three senior science vacancies in under two weeks. The shortlists were genuinely relevant — no scattergun CVs.",
     name: "Dr. Ananya Rao",
-    role: "Principal, Ashcroft International",
+    role: "Principal",
   },
   {
     quote:
@@ -170,7 +170,7 @@ const testimonials = [
     quote:
       "The interview tracking alone saved our HR team hours each week. Everything lives in one place, and nothing gets lost.",
     name: "Meera Kulkarni",
-    role: "HR Lead, Northfield Academy",
+    role: "HR Head",
   },
 ];
 
