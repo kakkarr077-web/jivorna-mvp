@@ -24,9 +24,10 @@ const columns = [
 ] as const;
 
 const contactDetails = [
-  { icon: Phone, label: "+91 80 4718 2200", href: "tel:+918047182200" },
-  { icon: Mail, label: "hello@jivorna.com", href: "mailto:hello@jivorna.com" },
+  { icon: Phone, label: "+91 81308 15002", href: "tel:+918130815002" },
+  { icon: Mail, label: "Info@jivorna.in", href: "mailto:Info@jivorna.in" },
 ] as const;
+
 
 const socials = [
   { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/" },
@@ -94,10 +95,11 @@ export function SiteFooter() {
             <li className="flex items-start gap-2.5 text-sm text-muted-foreground">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
               <span>
-                Jivorna HQ, 4th Floor, Prestige Atrium
+                Gurugram, Haryana
                 <br />
-                Residency Road, Bengaluru 560025
+                122505
               </span>
+
             </li>
           </ul>
         </div>
