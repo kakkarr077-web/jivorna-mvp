@@ -5,6 +5,7 @@ import { template as interviewInvitation } from './interview-invitation'
 import { template as interviewAccepted } from './interview-accepted'
 import { template as offerExtended } from './offer-extended'
 import { template as jobPendingApproval } from './job-pending-approval'
+import { template as contactEnquiry } from './contact-enquiry'
 
 
 export interface TemplateEntry {
@@ -27,5 +28,6 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'interview-accepted': interviewAccepted,
   'offer-extended': offerExtended,
   'job-pending-approval': jobPendingApproval,
+  'contact-enquiry': contactEnquiry,
 }
 
